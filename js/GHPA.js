@@ -204,7 +204,7 @@ function ghpaLoadPage() {
 
         /* If we didn't find a custom data attribute, then just use the
          * global ghpaLoginForm variable. */
-        if (!loginFormSourcefile) {
+        if (!loginFormSourceFile) {
             loginFormSourceFile = ghpaLoginFormFile;
         }
 
