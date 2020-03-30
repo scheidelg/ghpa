@@ -244,7 +244,7 @@ function ghpaLoadPage() {
         if (loginFormSourceFile != '-') {
             /* Load the login form and replace the HTML of the element
              * ghpaLoginForm. */
-            fetch(ghpaLoginFormFile).then(function (response) {
+            fetch(loginFormSourceFile).then(function (response) {
                 return response.text();
             }).then(function (data) {
                 document.getElementById("ghpaLoginForm").innerHTML = data;
