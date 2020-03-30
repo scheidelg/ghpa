@@ -107,7 +107,7 @@ ghpaFilename                  string
 
     This is generally *not* set.
 ----------------------------------------------------------------------------*/
-const ghpaOrg = 'scheidel';
+const ghpaOrg = 'scheidelg';
 const ghpaRepo = 'ghpa-private';
 const ghpaBranch = 'master';
 const ghpaDefaultHTMLfile = 'index.html';
