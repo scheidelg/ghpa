@@ -202,23 +202,22 @@ function ghpaLoadPage() {
          * attribute specifying which login form to use. */
         loginFormSourceFile = document.getElementById("ghpaLoginForm").getAttribute("data-loginFormSourceFile");
 
-        /* If we didn't find a custom data attribute, then just use the
-         * global ghpaLoginForm variable. */
+        /* If we didn't find a custom data attribute or it's the empty
+         * string, then just use the ghpaLoginForm variable. */
         if (!loginFormSourceFile) {
             loginFormSourceFile = ghpaLoginFormFile;
         }
 
-        /* If we did find a custom data attribute and the value is any
-         * empty string, then don't replace the element ghpaLoginForm. */
-        if (loginFormSourceFile = "") {
- 
-        /* Load the login form and replace the HTML of the element
-         * ghpaLoginForm. */
-        fetch(ghpaLoginFormFile).then(function (response) {
-            return response.text();
-        }).then(function (data) {
-            document.getElementById("ghpaLoginForm").innerHTML = data;
-        });
+        /* If we did find a custom data attribute and the value is '-', then
+         * don't replace the element ghpaLoginForm. */
+        if (loginFormSourceFile != '-') {
+            /* Load the login form and replace the HTML of the element
+             * ghpaLoginForm. */
+            fetch(ghpaLoginFormFile).then(function (response) {
+                return response.text();
+            }).then(function (data) {
+                document.getElementById("ghpaLoginForm").innerHTML = data;
+            });
         }
     }
 }
