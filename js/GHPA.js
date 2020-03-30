@@ -381,7 +381,7 @@ function ghpaRetrieve(form) {
             /* Updating document.getElementById("ghpaAuthMessage").innerHTML
              * instead of document.body.innerHTML to avoid a Javascript error
              * if the content wasn't successfully retrieved. */
-             document.getElementById("ghpaAuthMessage").innerHTML = `Confirmed GitHub authentication to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
+             document.getElementById("ghpaAuthMessage").innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
 
             /* Hide the login form (if it's currently displayed).  Once
              * the user successfully logs in, we don't want to confuse
