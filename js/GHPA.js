@@ -163,6 +163,8 @@ Arguments: none
 Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaLoadPage() {
+    let loginFormSourceFile;
+ 
     /* Attempt to retrieve GitHub authentication credentials from
      * localStorage.
      *
@@ -198,7 +200,7 @@ function ghpaLoadPage() {
 
         /* Check the element ghpaLoginForm to see if it has a custom data
          * attribute specifying which login form to use. */
-        let testvar = document.getElementById("ghpaLoginForm").getAttribute("data-loginformHTML");
+        loginFormSourceFile = document.getElementById("ghpaLoginForm").getAttribute("data-loginFormSourceFile");
 
         /* Load the login form and replace the HTML of the element
          * ghpaLoginForm. */
