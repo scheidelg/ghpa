@@ -60,7 +60,7 @@ ghpaLoginFormFile             const string
     overridden for a specific ghpaLoginForm form by setting a custom data
     attribute of 'data-loginFormSourceFile'.  For example:
     
-        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.htm">
+        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.html">
 
     Or, to prevent the element ghpaLoginForm from being replaced at all:
 
@@ -179,7 +179,7 @@ loginFormSourceFile           string
     custom data attribute 'data-loginFormSourceFile'.  As an example of
     setting the custom data attribute:
 
-        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.htm">
+        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.html">
 
     If there is no such custom data attribute or it is set to an empty string:
 
