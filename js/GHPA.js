@@ -159,7 +159,7 @@ Arguments: none
 Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaClearSSO() {
-   localStorage.removeItem('ghpaToken');
+   sessionStorage.removeItem('ghpaToken');
 }
 
 
@@ -205,15 +205,14 @@ Variables: none
 ----------------------------------------------------------------------------*/
 function ghpaLoadPage() {
     /* Attempt to retrieve GitHub authentication credentials from
-     * localStorage.
+     * sessionStorage.
      *
      * This is horribly insecure because any JavaScript on the page can access
-     * localStorage.  This is only for testing / proof-of-concept purpsoes; I
-     * need to (1) switch to sessionStorage and (2) use an encrypted storage
-     * mechanism.
+     * sessionStorage.  This is only for testing / proof-of-concept purpsoes; I
+     * need to use an encrypted storage mechanism.
      *
      * Also need to enable support for OAuth. */
-    const ghpaExistingAuth = JSON.parse(localStorage.getItem('ghpaToken'));
+    const ghpaExistingAuth = JSON.parse(sessionStorage.getItem('ghpaToken'));
 
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
@@ -296,7 +295,7 @@ function ghpaRetrieve(form) {
     
     /* Extract the login and password that were passed to this function
      * (either from the authentication form or retrieved from
-     * localStorage). */
+     * sessionStorage). */
     const login = form.username || form.querySelector('#ghpaLogin').value;
     const password = form.token || form.querySelector('#ghpaPassword').value;
 
@@ -357,7 +356,7 @@ function ghpaRetrieve(form) {
          * authentication, and we're using SSO, then store credentials for
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
-            localStorage.setItem('ghpaToken', JSON.stringify({ username: login, token: password }));
+            sessionStorage.setItem('ghpaToken', JSON.stringify({ username: login, token: password }));
         }
 
         /* If we're performing an authentication-only check and we were able
@@ -448,7 +447,7 @@ function ghpaRetrieve(form) {
      *      function... but we should return *something.*
      *
      *  (b) From ghpaLoadPage.js when both SSO is enabled and authentication
-     *      credentials are in localStorage.
+     *      credentials are in sessionStorage.
      *
      *      In this case we want to return true/false to identify whether
      *      content was successfully loaded.  That way the loading script code
