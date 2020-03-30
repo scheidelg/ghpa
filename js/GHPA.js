@@ -107,9 +107,9 @@ ghpaFilename                  string
 
     This is generally *not* set.
 ----------------------------------------------------------------------------*/
-const ghpaOrg = 'sans-blue-team';
-const ghpaRepo = 'cdnw2';
-const ghpaBranch = 'test';
+const ghpaOrg = 'scheidel';
+const ghpaRepo = 'ghpa-private';
+const ghpaBranch = 'master';
 const ghpaDefaultHTMLfile = 'index.html';
 const ghpaLoginFormFile ='/examples/loginform.html';
 let ghpaSSOFlag = true;
