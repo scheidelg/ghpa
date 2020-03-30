@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="localstyle.css">
+    </head>
+    <body>
+        <noscript><p>
+            GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
+        <p></noscript>
+
+        <h>GitHub Pages Authentication (GHP-Auth or GHPA)</h>
+        
+        <p>GitHub Pages Authentication (GHP-Auth or GHPA) can allow a GitHub Pages website to be used as a secure front-end for content stored in a private GitHub repository. For details, see:</p>
+        <ul>
+            <li>GHPA GitHub repository
+                <p><a href="https://github.com/scheidelg/ghpa">https://github.com/scheidelg/ghpa</a></p>
+            </li>
+            <li>GHPA GitHub repository: README.md
+                <p><a href="https://github.com/scheidelg/ghpa/blob/master/README.md>README.md</a></p>
+            </li>
+            <li>Corresponding GHPA website, published through GitHub Pages
+                <p><a href="https://scheidelg.github.io/ghpa">https://scheidelg.github.io/ghpa</a> or <a href="https://ghpa.scheidel.net">https://ghpa.scheidel.net</a></p>
+            </li>
+        </ul>
+
+        <p>The pages in this list demonstrate different ways to use GHPA to access the content in the private GitHub repository</p>
+
+        <ul>
+            <li><a href="file1_exists.html">Public stub file, corresponding private file</a>
+                <p>The stub file 'file1_exists.html' exists in the public repository and a corresponding private file exists in the private repository.</p>
+            </li>
+
+            <li><a href="file2_exists.html">Public stub file, corresponding private file, no SSO</a>
+                <p>The stub file 'file2_exists.html' exists in the private repository and a corresponding private file exists in the private repository. However, the public stub file explicitly includes a flag to <b>not</b>use or cache credentials.</p>
+            </li>
+
+            <li><a href="explicit.html">Public stub file, different private file</a>
+                <p>The stub file 'explicit.html' exists in the public repository but explicitly identifies 'file1_exists.html' as the file to load from the private repository.</p>
+            </li>
+
+            <li><a href="no_file.html">Public stub file, no corresponding private file</a>
+                <p>The stub file 'no_file.html' exists in the public repository but there's no corresponding file in the private repository.</p>
+            </li>
+
+            <li><a href="login.html">Login to private repository</a>
+                <p>Access the login page to authenticate to the private repository without actually loading a private file, and cache credentials. This is useful only to establish authentication for SSO.</p>
+            </li>
+
+            <li><a href="logout.html">Logout of the private repository</a>
+                <p>Clear cached credentials so that you have to authenticate again to access content from the private repository.</p>
+            </li>
+        </ul>
+    </body>
+</html>

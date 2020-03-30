@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="localstyle.css">
+
+        <!-- Load the GHPA functions and initial configuration. -->
+        <script src="js/GHPA.js"></script>
+    </head>
+    <body>
+        <noscript><p>
+            GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
+        <p></noscript>
+
+         <!-- Call the JavaScript function that clears the saved
+              authentication token - if any - from localStorage. -->
+        <script>ghpaClearSSO();</script>
+        Cleared SSO authentication credentials.
+    </body>
+</html>
