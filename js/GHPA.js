@@ -26,55 +26,84 @@ Switch this over to a JSON configuration file later.
 ------------------------------------------------------------------------------
 Global variables are named starting with 'ghpa'.  Local variables aren't.
 
+Any of the variables that aren't declared as 'const' can be overridden on a
+specific web page by the values in the <head> of the web page.
+
 ghpaAuthOnlyFlag              boolean
 
     Flag whether a web page that calls ghpaRetrieve() should just perform an
     authentication check (e.g., authentication-only) or should load a page
-    from the private GitHub repository.  This is set globally in this file
-    but can be overridden within an individual web page, for example:
+    from the private GitHub repository.
 
-        <head><script>ghpAuthOnlyFlag=true;</script></head>
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaAuthOnlyFlag=true;</script></head>
 
     True:  authentication-only
     False: load a page from the private GitHub repository (recommended global
            value)
 
-ghpaBranch                    const string
+ghpaBranch                    string
 
     Name of the repository branch to use when accessing the private GitHub
     repository.
 
-ghpaDefaultHTMLfile           const string
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaBranch='master';</script></head>
+
+ghpaDefaultHTMLfile           string
 
     Name of the file to load if ghpaRetrieve() is called with ghpaFileName
     set to a directory name or from a web page that has a
     window.location.pathname of a directory name.  In both cases, identified
     by the name ending in a '/a' character.
 
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaDefaultHTMLfile='index.htm';</script></head>
+
     Typically set to 'index.html'.
 
-ghpaLoginFormFile             const string
+ghpaLoginFormFile             string
 
     Name of the file to load HTML from to replace the HTML element ID
-    ghpaLoginForm.  This can be an absolute or relative path.  This can be
-    overridden for a specific ghpaLoginForm form by setting a custom data
-    attribute of 'data-loginFormSourceFile'.  For example:
+    ghpaLoginForm.  This can be an absolute or relative path.
     
-        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.html">
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
 
-    Or, to prevent the element ghpaLoginForm from being replaced at all:
+        <head><script>ghpaLoginFormFile='/specialform.html';</script></head>
 
-        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
+    If this variable is set to '-':
+    
+        <head><script>ghpaLoginFormFile='-';</script></head>
+        
+    then the element ghpaLoginForm isn't replaced at all.
 
-ghpaOrg                       const string
+
+ghpaOrg                       string
 
     Name of the organization to use when accessing the private GitHub
     repository.
 
-ghpaRepo                      const string
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaOrg='scheidelg';</script></head>
+
+ghpaRepo                      string
 
     Name of the repository to use when accessing the private GitHub
     repository.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaRepo='ghpa-private';</script></head>
 
 ghpaSSOFlag                   boolean
 
@@ -107,13 +136,15 @@ ghpaFilename                  string
 
     This is generally *not* set.
 ----------------------------------------------------------------------------*/
-const ghpaOrg = 'scheidelg';
-const ghpaRepo = 'ghpa-private';
-const ghpaBranch = 'master';
-const ghpaDefaultHTMLfile = 'index.html';
-const ghpaLoginFormFile ='/examples/loginform.html';
-let ghpaSSOFlag = true;
+let ghpaOrg = 'scheidelg';
+let ghpaRepo = 'ghpa-private';
+let ghpaBranch = 'master';
+
+let ghpaDefaultHTMLfile = 'index.html';
+let ghpaLoginFormFile ='/examples/loginform.html';
 let ghpaFilename = '';
+
+let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
 
 
@@ -170,32 +201,9 @@ Arguments: none
 ------------------------------------------------------------------------------
 Return value: none
 ------------------------------------------------------------------------------
-Variables
-
-loginFormSourceFile           string
-
-    The name of the source file that should be used to replace the element
-    ghpaLoginForm on the web page.  This is retrieved from the element's
-    custom data attribute 'data-loginFormSourceFile'.  As an example of
-    setting the custom data attribute:
-
-        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.html">
-
-    If there is no such custom data attribute or it is set to an empty string:
-
-        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
-
-    then the global ghpaLoginFormFile is used.
-
-    If the custom data attribute is set to '-':
-    
-        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
-        
-    then the element ghpaLoginForm isn't replaced at all.
+Variables: none
 ----------------------------------------------------------------------------*/
 function ghpaLoadPage() {
-    let loginFormSourceFile;
-
     /* Attempt to retrieve GitHub authentication credentials from
      * localStorage.
      *
@@ -229,22 +237,12 @@ function ghpaLoadPage() {
          * setting it to a null string. */
         document.getElementById("ghpaPrompt").style.display = "";
 
-        /* Check the element ghpaLoginForm to see if it has a custom data
-         * attribute specifying which login form to use. */
-        loginFormSourceFile = document.getElementById("ghpaLoginForm").getAttribute("data-loginFormSourceFile");
-
-        /* If we didn't find a custom data attribute or it's the empty
-         * string, then just use the ghpaLoginForm variable. */
-        if (!loginFormSourceFile) {
-            loginFormSourceFile = ghpaLoginFormFile;
-        }
-
-        /* If we did find a custom data attribute and the value is '-', then
-         * don't replace the element ghpaLoginForm. */
-        if (loginFormSourceFile != '-') {
+        /* If ghpaLoginFormFile is set to '-', then don't replace the element
+         * ghpaLoginForm. */
+        if (ghpaLoginFormFile != '-') {
             /* Load the login form and replace the HTML of the element
              * ghpaLoginForm. */
-            fetch(loginFormSourceFile).then(function (response) {
+            fetch(ghpaLoginFormFile).then(function (response) {
                 return response.text();
             }).then(function (data) {
                 document.getElementById("ghpaLoginForm").innerHTML = data;
