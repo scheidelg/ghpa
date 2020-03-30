@@ -202,6 +202,16 @@ function ghpaLoadPage() {
          * attribute specifying which login form to use. */
         loginFormSourceFile = document.getElementById("ghpaLoginForm").getAttribute("data-loginFormSourceFile");
 
+        /* If we didn't find a custom data attribute, then just use the
+         * global ghpaLoginForm variable. */
+        if (!loginFormSourcefile) {
+            loginFormSourceFile = ghpaLoginFormFile;
+        }
+
+        /* If we did find a custom data attribute and the value is any
+         * empty string, then don't replace the element ghpaLoginForm. */
+        if (loginFormSourceFile = "") {
+ 
         /* Load the login form and replace the HTML of the element
          * ghpaLoginForm. */
         fetch(ghpaLoginFormFile).then(function (response) {
@@ -209,6 +219,7 @@ function ghpaLoadPage() {
         }).then(function (data) {
             document.getElementById("ghpaLoginForm").innerHTML = data;
         });
+        }
     }
 }
 
