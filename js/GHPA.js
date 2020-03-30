@@ -198,7 +198,7 @@ function ghpaLoadPage() {
 
         /* Check the element ghpaLoginForm to see if it has a custom data
          * attribute specifying which login form to use. */
-        let testvar = document.getElementByID("ghpaLoginForm").getAttribute("data-loginformHTML");
+        let testvar = document.getElementById("ghpaLoginForm").getAttribute("data-loginformHTML");
 
         /* Load the login form and replace the HTML of the element
          * ghpaLoginForm. */
