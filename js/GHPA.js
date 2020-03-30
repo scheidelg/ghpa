@@ -25,7 +25,7 @@ Switch this over to a JSON configuration file later.
 
 ------------------------------------------------------------------------------
 Global variables are named starting with 'ghpa'.  Local variables aren't.
-------------------------------------------------------------------------------
+
 ghpaAuthOnlyFlag              boolean
 
     Flag whether a web page that calls ghpaRetrieve() should just perform an
@@ -56,7 +56,15 @@ ghpaDefaultHTMLfile           const string
 ghpaLoginFormFile             const string
 
     Name of the file to load HTML from to replace the HTML element ID
-    ghpaLoginForm.  This can be an absolute or relative path.
+    ghpaLoginForm.  This can be an absolute or relative path.  This can be
+    overridden for a specific ghpaLoginForm form by setting a custom data
+    attribute of 'data-loginFormSourceFile'.  For example:
+    
+        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.htm">
+
+    Or, to prevent the element ghpaLoginForm from being replaced at all:
+
+        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
 
 ghpaOrg                       const string
 
@@ -161,10 +169,33 @@ Another option is to run the script within - preferably at the bottom of - the
 Arguments: none
 ------------------------------------------------------------------------------
 Return value: none
+------------------------------------------------------------------------------
+Variables
+
+loginFormSourceFile           string
+
+    The name of the source file that should be used to replace the element
+    ghpaLoginForm on the web page.  This is retrieved from the element's
+    custom data attribute 'data-loginFormSourceFile'.  As an example of
+    setting the custom data attribute:
+
+        <div id="ghpaLoginForm" data-loginFormSourceFile="/specialform.htm">
+
+    If there is no such custom data attribute or it is set to an empty string:
+
+        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
+
+    then the global ghpaLoginFormFile is used.
+
+    If the custom data attribute is set to '-':
+    
+        <div id="ghpaLoginForm" data-loginFormSourceFile="-">
+        
+    then the element ghpaLoginForm isn't replaced at all.
 ----------------------------------------------------------------------------*/
 function ghpaLoadPage() {
     let loginFormSourceFile;
- 
+
     /* Attempt to retrieve GitHub authentication credentials from
      * localStorage.
      *
