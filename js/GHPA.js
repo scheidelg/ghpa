@@ -46,12 +46,17 @@ ghpaBranch                    const string
 
 ghpaDefaultHTMLfile           const string
 
-    Name of the file to load if  ghpaRetrieve() is called with ghpaFileName
+    Name of the file to load if ghpaRetrieve() is called with ghpaFileName
     set to a directory name or from a web page that has a
     window.location.pathname of a directory name.  In both cases, identified
     by the name ending in a '/a' character.
 
     Typically set to 'index.html'.
+
+ghpaLoginFormFile             const string
+
+    Name of the file to load HTML from to replace the HTML element ID
+    ghpaLoginForm.  This can be an absolute or relative path.
 
 ghpaOrg                       const string
 
@@ -98,6 +103,7 @@ const ghpaOrg = 'sans-blue-team';
 const ghpaRepo = 'cdnw2';
 const ghpaBranch = 'test';
 const ghpaDefaultHTMLfile = 'index.html';
+const ghpaLoginFormFile ='/examples/loginform.html';
 let ghpaSSOFlag = true;
 let ghpaFilename = '';
 let ghpaAuthOnlyFlag = false;
@@ -192,7 +198,7 @@ function ghpaLoadPage() {
 
         /* Load the login form and replace the HTML of the element
          * ghpaLoginForm. */
-        fetch("/loginform.html").then(function (response) {
+        fetch(ghpaLoginFormFile).then(function (response) {
             return response.text();
         }).then(function (data) {
             document.getElementById("ghpaLoginForm").innerHTML = data;
