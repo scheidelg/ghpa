@@ -40,7 +40,7 @@ Arguments: none
 Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaClearSSO() {
-   sessionStorage.removeItem('ghpaToken');
+   sessionStorage.removeItem('ghpaCreds');
 }
 
 
