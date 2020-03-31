@@ -97,7 +97,7 @@ retrievedCredsKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
     retrieved, this will be the key that can be used to decrypt the
     retrievedCred content.
 ----------------------------------------------------------------------------*/
-function ghpaLoadPage() {
+async function ghpaLoadPage() {
     /* As an aside: Using sessionStorage and localStorage is insecure because
      * any JavaScript running in the context of this web page can access
      * either, including enumerating and retrieving all stored objects. While
