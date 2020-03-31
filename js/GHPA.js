@@ -188,11 +188,12 @@ function ghpaLoadPage() {
      * decrypt the retrievedToken. */
     if (retrievedToken && retrievedTokenKey) {
 // TO DO: do stuff here!!!
+        let x =1;
     }
 
     /* If we have retrievedToken (which was either plaintext to begin with or
      * is now decrypted), then convert back to a JSON object. */
-    If (retrievedToken) {
+    if (retrievedToken) {
         retrievedToken = JSON.parse(retrievedToken);
     }
 
@@ -234,7 +235,7 @@ function ghpaLoadPage() {
 
 
 /*============================================================================
-function ghpaRetrieve(form)
+function ghpaRetrieve(formObject)
 ------------------------------------------------------------------------------
 Attempt to authenticate to and retrieve content from the private GitHub
 repository.
@@ -352,6 +353,11 @@ function ghpaRetrieve(formObject) {
          * authentication, and we're using SSO, then store credentials for
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
+// TO DO!!!
+//  - generate an AES-256 encryption key
+//  - encrypt the JSON.stringify'd version of the authentication credentials, before saving in sessionStorage
+//  - convert the encryption key to a format that can be saved in sessionStorage
+//  - save the formatted encryption key to sessionStorage
             sessionStorage.setItem('ghpaToken', JSON.stringify({ username: login, token: password }));
         }
 
