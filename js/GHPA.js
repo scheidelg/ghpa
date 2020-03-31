@@ -450,7 +450,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 /* Create a string of hexadecimal text representing the array
                  * values. */
                 let hexString='';
-                for (let index = 0, arrayLength = exportedKeyBuffer.arrayLength; index < arrayLength; index++) {
+                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
                     hexString += exportedKeyBuffer[index].toString(16);
                 }
  // TO DO - STOPPED HERE ... converting Uint8Array to a base64-encoded representation, then save to sessionStorage <------------- TO DO!!!!!!!!!!!!!!!!!!!
