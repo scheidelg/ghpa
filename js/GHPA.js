@@ -157,7 +157,7 @@ let cipherkey = window.crypto.subtle.generateKey(
   ["encrypt", "decrypt"]
 );
 
-const exportedkey = await window.crypto.subtle.exportKey(
+const exportedkey = window.crypto.subtle.exportKey(
     "raw",
     cipherkey
 );
