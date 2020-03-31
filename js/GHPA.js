@@ -338,6 +338,9 @@ false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
+    let login;
+    let password;
+ 
     let fetchResponse=0; // set an initial value of 'no response'
 
     /* If we retrieved credentials from sessionStorage (and incidentally have
@@ -350,14 +353,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         }
         
         /* Extract the credentials. */
-        const login = creds.LOGIN;
-        const password = creds.PASSWORD;
+        login = creds.LOGIN;
+        password = creds.PASSWORD;
 
     /* If we were passed credentials from a form, then extract the username
      * and password / personal access token. */
     } else {
-        const login = creds.querySelector('#ghpaLogin').value;
-        const password = creds.querySelector('#ghpaPassword').value;
+        login = creds.querySelector('#ghpaLogin').value;
+        password = creds.querySelector('#ghpaPassword').value;
     }
 
     /* Extract the login and password that were passed to this function
