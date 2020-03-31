@@ -25,7 +25,7 @@ async function exportCryptoKey(key) {
   ghpaExportedKeyBuffer = new Uint8Array(exported);
  const tempvar = new Uint8Array(exported);
  
- return (tempvar);
+ return tempvar;
 }
 
 
