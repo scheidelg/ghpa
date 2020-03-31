@@ -183,11 +183,11 @@ async function ghpaLoadPage() {
      * sessionStorage.  In sessionStorage, this is either a JSON.stringify
      * string of a JSON object; or an AES-256-encrypted version of that
      * string. */
-    let retrievedCreds = sessionStorage.getItem('ghpaToken');
+    let retrievedCreds = sessionStorage.getItem('ghpaCreds');
 
     /* Attempt to retrieve encryption key for GitHub authentication
      * credentials from sessionStorage. */
-    const retrievedCredsKey = sessionStorage.getItem('ghpaTokenKey');
+    const retrievedCredsKey = sessionStorage.getItem('ghpaCredsKey');
  
     /* If we have both retrievedCreds and retrievedCredsKey, then attempt to
      * decrypt the retrievedCreds. */
@@ -287,6 +287,8 @@ encryptionKey                 (TO DO!!! - UPDATE AFTER CODING THIS)
 
     An AES-256 encryption key to use when encrypting GitHub authentication
     credentials before storing them in sessionStorage.
+
+TO DO!!! 'token' and other variables that are declared throughout the function<---------!!!!!!!!!!!!!!!!!!
 ------------------------------------------------------------------------------
 Return Value
 
@@ -341,7 +343,7 @@ async function ghpaRetrieve(formObject) {
 
     /* Create the authentication token using the login and password that were
      * passed to this function. */
-    const token = btoa(`${login}:${password}`);
+    const GitHubToken = btoa(`${login}:${password}`);
     
     // Craft the GitHub GET request to retrieve the specified file.
     const request = new Request(
@@ -351,7 +353,7 @@ async function ghpaRetrieve(formObject) {
             credentials: 'omit',
             headers: {
                 Accept: 'application/json',
-                Authorization: `Basic ${token}`
+                Authorization: `Basic ${GitHubToken}`
             },
         }
     );
@@ -363,20 +365,28 @@ async function ghpaRetrieve(formObject) {
          * authentication, and we're using SSO, then store credentials for
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
+            /* prepare the authentication credentials as a string, to be
+             * stored in sessionStorage by other pages on this website. */
+            let preppedCreds=JSON.stringify({ username: login, token: password });
 
-            /* Generate an AES-256 encryption key and export it to a
-             * variable so that we can save it. */
-            await window.crypto.subtle.generateKey(
-                {   name: "AES-GCM",
-                    length: 256, },
-                true,
-                ["encrypt", "decrypt"]
-            ).then( async (encryptionKey) => {
+            /* Generate an AES-256 encryption key, encrypt the prepared
+             * credentials, and save the encryption key in sessionStorage. */
+/*--------------------------------------------------------------------------*/
+            await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (encryptionKey) => {
+
+/* TO DO: encrypt the pepared credentials (already in preppedCreds) */
+
+                /* Export the encryption key and save to an array so that we
+                 * can save it in sessionStorage (along with the prepared
+                 * credentials. */
+                const exportedKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
+                const exportedKeyBuffer = new Uint8Array(exportedKey);
  
-                let bubbaExportedKey;
+/*                let bubbaExportedKey;
                 bubbaExportedKey = await exportCryptoKey(encryptionKey);
                 let xyzzy;
                 xyzzy=3;
+*/
                 //await exportCryptoKey(encryptionKey);
             });
 
@@ -385,7 +395,7 @@ async function ghpaRetrieve(formObject) {
 //  - encrypt the JSON.stringify'd version of the authentication credentials, before saving in sessionStorage
 //  - convert the encryption key to a format that can be saved in sessionStorage
 //  - save the formatted encryption key to sessionStorage
-            sessionStorage.setItem('ghpaToken', JSON.stringify({ username: login, token: password }));
+            sessionStorage.setItem('ghpaCreds', JSON.stringify({ username: login, token: password }));
         }
 
         /* If we're performing an authentication-only check and we were able
