@@ -25,7 +25,7 @@ which you may want to strip out before using on a website.
 //
 //  const exportKeyOutput = document.querySelector(".exported-key");
 //  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
-}
+//}
 
 
 /*============================================================================
