@@ -368,6 +368,7 @@ async function ghpaRetrieve(formObject) {
                 ["encrypt", "decrypt"]
             ).then( (key) => {
                 let exportedKey=3;
+                exportCryptoKey(key);
             });
 
 // TO DO!!!
