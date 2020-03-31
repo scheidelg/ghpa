@@ -147,6 +147,15 @@ let ghpaFilename = '';
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
 
+let plaintext='this is a plaintext message';
+let cipherkey = window.crypto.subtle.generateKey(
+  {
+    name: "AES-GCM",
+    length: 256
+  },
+  true,
+  ["encrypt", "decrypt"]
+);
 
 /*============================================================================
 function ghpaClearSSO
