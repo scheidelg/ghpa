@@ -85,12 +85,11 @@ Variables
 
 retrievedToken                JavaScript Object
 
-    Token, if any, retrieved from sessionStorage.  If retrieved, this will be
-    a JSON string containing the GitHub authentication credentials; either
-    plaintext or AES-256-encrypted.  If present, use this to attempt initial
-    authentication to GitHub by calling with arguments of the retrievedToken
-    and the retrievedTokenKey; vs. the call from the form inside the element
-    ghpaLoginForm which just passes in the form element.
+    Token, if any, retrieved from sessionStorage and converted to a JSON
+    object.  If present, use this to attempt initial authentication to GitHub
+    by calling with arguments of the retrievedToken and the retrievedTokenKey;
+    vs. the call from the form inside the element ghpaLoginForm which just
+    passes in the form element.
 
 retrievedTokenKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
 
@@ -176,12 +175,26 @@ function ghpaLoadPage() {
      *     enabled website. */
 
     /* Attempt to retrieve GitHub authentication credentials from
-     * sessionStorage. */
-    const retrievedToken = JSON.parse(sessionStorage.getItem('ghpaToken'));
+     * sessionStorage.  In sessionStorage, this is either a JSON.stringify
+     * string of a JSON object; or an AES-256-encrypted version of that
+     * object. */
+    let retrievedToken = sessionStorage.getItem('ghpaToken');
 
     /* Attempt to retrieve encryption key for GitHub authentication
      * credentials from sessionStorage. */
-    const retrievedTokenKey = JSON.parse(sessionStorage.getItem('ghpaTokenKey'));
+    const retrievedTokenKey = sessionStorage.getItem('ghpaTokenKey');
+ 
+    /* If we have both retrievedToken and retrievedTokenKey, then attempt to
+     * decrypt the retrievedToken. */
+    if (retrievedToken) { && retrievedTokenKey) {
+        // do stuff here
+    }
+
+    /* If we have retrievedToken (which was either plaintext to begin with or
+     * is now decrypted), then convert back to a JSON object. */
+    If (retrievedToken) {
+        retrievedToken = JSON.parse(retrievedToken);
+    }
 
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
@@ -243,13 +256,22 @@ the submit action on a form.  For example:
 ------------------------------------------------------------------------------
 Arguments
 
-form                          JavaScript object
+formObject                    JavaScript object
 
-    The form element must have two input fields:
+    The formObject must have two input fields:
 
      - An id of 'ghpaLogin' to hold the user's login name.
 
      - An  id of 'ghpaPassword' to hold the user's password.
+------------------------------------------------------------------------------
+Variables
+
+fetchResponse                 integer
+
+    Holds the response of the HTTPS query to retrieve content from GitHub.
+    The only reason we need this is so that we have a variable scoped to the
+    overall function, and so can set the variable and use it to determine the
+    return value from the overall function.
 ------------------------------------------------------------------------------
 Return Value
 
@@ -258,15 +280,15 @@ true:  received an HTML response code of 200 when retrieving the content
 
 false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
-function ghpaRetrieve(form, encryptionKey) {
+function ghpaRetrieve(formObject, encryptionKey) {
 
-    let fetchResponse=0; // really the only reason we need this is so that we can do a final check at the end, outside of the scope of the fetch request
+    let fetchResponse=0; // set an initial value of 'no response'
 
     /* Extract the login and password that were passed to this function
      * (either from the authentication form or retrieved from
      * sessionStorage). */
-    const login = form.username || form.querySelector('#ghpaLogin').value;
-    const password = form.token || form.querySelector('#ghpaPassword').value;
+    const login = formObject.username || formObject.querySelector('#ghpaLogin').value;
+    const password = formObject.token || formObject.querySelector('#ghpaPassword').value;
 
     /* The ghpaFilename variable is initially defined in the ghpaConfig.js
      * file, and set to an emptry string.  The calling page can optionally
@@ -561,53 +583,53 @@ let ghpaAuthOnlyFlag = false;
 
 
 
-let exportedKeyBufferText;
-let exportedKeyBuffer;
-let exportedKeyGlobal;
-let secretKey;
-
-async function exportCryptoKey(key) {
-  const exported = await window.crypto.subtle.exportKey(
-    "raw",
-    key
-  );
-  exportedKeyBuffer = new Uint8Array(exported);
+//let exportedKeyBufferText;
+//let exportedKeyBuffer;
+//let exportedKeyGlobal;
+//let secretKey;
 //
-//  const exportKeyOutput = document.querySelector(".exported-key");
-//  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
-    exportedKeyBufferText = `[${exportedKeyBuffer}]`;
- 
-    return exportedKeyBuffer;
-}
+//async function exportCryptoKey(key) {
+//  const exported = await window.crypto.subtle.exportKey(
+//    "raw",
+//    key
+//  );
+//  exportedKeyBuffer = new Uint8Array(exported);
+//
+////  const exportKeyOutput = document.querySelector(".exported-key");
+////  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
+//    exportedKeyBufferText = `[${exportedKeyBuffer}]`;
+// 
+//    return exportedKeyBuffer;
+//}
 
 /*
 Import an AES secret key from an ArrayBuffer containing the raw bytes.
 Takes an ArrayBuffer string containing the bytes, and returns a Promise
 that will resolve to a CryptoKey representing the secret key.
 */
-function importSecretKey(rawKey) {
-  return window.crypto.subtle.importKey(
-    "raw",
-    rawKey,
-    "AES-GCM",
-    true,
-    ["encrypt", "decrypt"]
-  );
-}
+//function importSecretKey(rawKey) {
+//  return window.crypto.subtle.importKey(
+//    "raw",
+//    rawKey,
+//    "AES-GCM",
+//    true,
+//    ["encrypt", "decrypt"]
+//  );
+//}
 
 /*
 Generate an encrypt/decrypt secret key,
 then set up an event listener on the "Export" button.
 */
-window.crypto.subtle.generateKey(
-  {
-    name: "AES-GCM",
-    length: 256,
-  },
-  true,
-  ["encrypt", "decrypt"]
-).then((key) => {
-    exportedKeyGlobal = exportCryptoKey(key);
-});
+//window.crypto.subtle.generateKey(
+//  {
+//    name: "AES-GCM",
+//    length: 256,
+//  },
+//  true,
+//  ["encrypt", "decrypt"]
+//).then((key) => {
+//    exportedKeyGlobal = exportCryptoKey(key);
+//});
 
-secretKey = importSecretKey(exportedKeyGlobal);
+//secretKey = importSecretKey(exportedKeyGlobal);
