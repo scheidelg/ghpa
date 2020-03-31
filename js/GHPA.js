@@ -207,11 +207,15 @@ function ghpaLoadPage() {
     /* Attempt to retrieve GitHub authentication credentials from
      * sessionStorage.
      *
-     * This is horribly insecure because any JavaScript on the page can access
-     * sessionStorage.  This is only for testing / proof-of-concept purpsoes; I
-     * need to use an encrypted storage mechanism.
-     *
-     * Also need to enable support for OAuth. */
+     * As an aside: Using sessionStorage and localStorage is insecure because
+     * any JavaScript running in the context of this web page can access both,
+     * including enumerating and retrieving all stored objects. While access
+     * to sessionStorage and localStorage is subject to "same-origin policy"
+     * so that there is a separate storage area for each origin (combination
+     * of website domain, protocol, and port), a successful XSS attack that
+     * runs malicious JavaScript runs in the context of the compromised web
+     * page.  This means the malicious code runs is operating in the context
+     * of the legitimate website's origin. */
     const ghpaExistingAuth = JSON.parse(sessionStorage.getItem('ghpaToken'));
 
     /* If SSO is enabled and we have existing authentication credentials to
