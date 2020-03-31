@@ -192,8 +192,8 @@ async function ghpaLoadPage() {
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
-    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds, retrievedCredsKey))) {
-
+//    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds, retrievedCredsKey))) {
+    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds))) {  // <----------- TO DO: Intentionally not passing retrievedCredsKey until after we have the encrypt/decrypt code written
         /* If any of:
          *  - SSO isn't enabled;
          *
@@ -309,9 +309,21 @@ creds                         (type varies; see below)
 
 credsKey                      string; optional
 
-    An optional string argument containing a base64-encoded representation of
-    an AES-256 encryption key, which can be used to decrypt the 'creds'
+    An optional string argument containing an encoded representation of an
+    AES-256 encryption key, which can be used to decrypt the 'creds'
     argument contents.
+
+    When the key is exported as raw data, it's represented as Uint8Array
+    containing 32 values.  Encoding is simply a concatenation of the
+    hexadecimal representation of each element.  For example, if the array
+    had elements:
+
+        array[0]=127
+        array[1]=59
+        array[2]=12
+        array[3]=241
+
+    Then the encoded string would be: 7f3b0cf1
 ------------------------------------------------------------------------------
 Variables
 
@@ -453,6 +465,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
                     hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
                 }
+                
+                sessionStorage.setItem('ghpaCredsKey', hexString);
+
  // TO DO - STOPPED HERE ... converting Uint8Array to a base64-encoded representation, then save to sessionStorage <------------- TO DO!!!!!!!!!!!!!!!!!!!
 /*                let bubbaExportedKey;
                 bubbaExportedKey = await exportCryptoKey(encryptionKey);
