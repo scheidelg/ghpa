@@ -354,7 +354,7 @@ async function ghpaRetrieve(formObject) {
 
     /* send the GitHub GET request and process the results; wait for this to
      * finish before continuing. */
-    await fetch(request).then(function (response) {
+    await fetch(request).then(async function (response) {
         /* If we received a response code that indicates successful
          * authentication, and we're using SSO, then store credentials for
          * later use. */
