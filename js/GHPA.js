@@ -83,13 +83,13 @@ Return value: none
 ------------------------------------------------------------------------------
 Variables
 
-retrievedToken                string
+retrievedToken                JavaScript Object
 
     Token, if any, retrieved from sessionStorage.  If retrieved, this will be
     a JSON string containing the GitHub authentication credentials; either
     plaintext or AES-256-encrypted.  If present, use this to attempt initial
-    authentication to GitHub by calling 'ghpaRetrieve(retrievedToken,
-    retrievedTokenKey)'; vs. the call from the form inside element
+    authentication to GitHub by calling with arguments of the retrievedToken
+    and the retrievedTokenKey; vs. the call from the form inside the element
     ghpaLoginForm which just passes in the form element.
 
 retrievedTokenKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
@@ -186,7 +186,7 @@ function ghpaLoadPage() {
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
-    if (!(ghpaSSOFlag && ghpaToken && ghpaRetrieve(retrievedToken))) {
+    if (!(ghpaSSOFlag && retrievedToken && ghpaRetrieve(retrievedToken))) {
 
         /* If any of:
          *  - SSO isn't enabled;
@@ -235,15 +235,15 @@ content on the calling web page.
 If there are any errors, update HTML on the calling web page to display the
 error message.
 
-This function can be called either from ghpaLoadPage() or directly from a web
-page.  For the latter case, the most common use would be to call as part of
+This function is called either from ghpaLoadPage() or directly from a web page
+For the latter case, the most common use would be to call as part of the
 the submit action on a form.  For example:
 
     <form onsubmit="event.preventDefault(); ghpaRetrieve(this);">
 ------------------------------------------------------------------------------
 Arguments
 
-form                          form element (TO DO!!! ... TEST THIS OUT)
+form                          JavaScript object
 
     The form element must have two input fields:
 
