@@ -664,17 +664,38 @@ let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
 
 
+let exportedKeyBufferText;
+let exportedKeyBuffer;
+let exportedKeyGlobal;
+let secretKey;
 
 async function exportCryptoKey(key) {
   const exported = await window.crypto.subtle.exportKey(
     "raw",
     key
   );
-  const exportedKeyBuffer = new Uint8Array(exported);
+  exportedKeyBuffer = new Uint8Array(exported);
 //
 //  const exportKeyOutput = document.querySelector(".exported-key");
 //  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
-    let exportedKeyBufferText = `[${exportedKeyBuffer}]`;
+    exportedKeyBufferText = `[${exportedKeyBuffer}]`;
+ 
+    return exportedKeyBuffer;
+}
+
+/*
+Import an AES secret key from an ArrayBuffer containing the raw bytes.
+Takes an ArrayBuffer string containing the bytes, and returns a Promise
+that will resolve to a CryptoKey representing the secret key.
+*/
+function importSecretKey(rawKey) {
+  return window.crypto.subtle.importKey(
+    "raw",
+    rawKey,
+    "AES-GCM",
+    true,
+    ["encrypt", "decrypt"]
+  );
 }
 
 /*
@@ -689,5 +710,7 @@ window.crypto.subtle.generateKey(
   true,
   ["encrypt", "decrypt"]
 ).then((key) => {
-    exportCryptoKey(key);
+    exportedKeyGlobal = exportCryptoKey(key);
 });
+
+secretKey = importSecretKey(exportedKeyGlobal);
