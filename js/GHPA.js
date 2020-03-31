@@ -157,6 +157,12 @@ let cipherkey = window.crypto.subtle.generateKey(
   ["encrypt", "decrypt"]
 );
 
+const exportedkey = await window.crypto.subtle.exportKey(
+    "raw",
+    cipherkey
+);
+const exportedKeyBuffer = new Uint8Array(exportedkey);
+
 /*============================================================================
 function ghpaClearSSO
 ------------------------------------------------------------------------------
