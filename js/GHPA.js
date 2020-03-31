@@ -16,12 +16,12 @@ which you may want to strip out before using on a website.
 ----------------------------------------------------------------------------*/
 
 
-async function exportCryptoKey(key) {
-  const exported = await window.crypto.subtle.exportKey(
-    "raw",
-    key
-  );
-  const exportedKeyBuffer = new Uint8Array(exported);
+//async function exportCryptoKey(key) {
+//  const exported = await window.crypto.subtle.exportKey(
+//    "raw",
+//    key
+//  );
+//  const exportedKeyBuffer = new Uint8Array(exported);
 //
 //  const exportKeyOutput = document.querySelector(".exported-key");
 //  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
@@ -644,3 +644,29 @@ then set up an event listener on the "Export" button.
 //});
 
 //secretKey = importSecretKey(exportedKeyGlobal);
+let exportedKey;
+
+window.crypto.subtle.generateKey(
+  {
+    name: "AES-GCM",
+    length: 256,
+  },
+  true,
+  ["encrypt", "decrypt"]
+).then(async (key) => {
+    exportedKey=3;
+});
+
+//async function exportCryptoKey(key) {
+//  const exported = await window.crypto.subtle.exportKey(
+//    "raw",
+//    key
+//  );
+//  exportedKeyBuffer = new Uint8Array(exported);
+//
+////  const exportKeyOutput = document.querySelector(".exported-key");
+////  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
+//    exportedKeyBufferText = `[${exportedKeyBuffer}]`;
+// 
+//    return exportedKeyBuffer;
+//}
