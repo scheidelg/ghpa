@@ -26,7 +26,7 @@
              This form can be loaded into other HTML pages using a JavaScript
              fetch(), so that a consistent form can be presented without
              needing to recreate it in every individual HTML file. -->
-        <form onsubmit="event.preventDefault(); ghpaRetrieve(this);" style="margin-top: 5px;">
+        <form onsubmit="event.preventDefault(); ghpaRetrieve(false, this);" style="margin-top: 5px;">
             <input type="text" id="ghpaLogin" name="ghpaLogin" placeholder="Github username" required>
             <input type="password" id="ghpaPassword" name="ghpaPassword" placeholder="Github password/token" required>
             <input type="submit" value="Login">
