@@ -353,8 +353,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         }
         
         /* Extract the credentials. */
-        login = creds.LOGIN;
-        password = creds.PASSWORD;
+        login = creds.login;
+        password = creds.password;
 
     /* If we were passed credentials from a form, then extract the username
      * and password / personal access token. */
@@ -429,7 +429,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
             /* prepare the authentication credentials as a string, to be
              * stored in sessionStorage by other pages on this website. */
-            let preppedCreds=JSON.stringify({ LOGIN: login, PASSWORD: password });
+            let preppedCreds=JSON.stringify({ login: login, password: password });
 
             /* Generate an AES-256 encryption key, encrypt the prepared
              * credentials, and save the encryption key in sessionStorage. */
