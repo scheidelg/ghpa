@@ -224,7 +224,7 @@ function ghpaLoadPage() {
         if (ghpaLoginFormFile != '-') {
             /* Load the login form and replace the HTML of the element
              * ghpaLoginForm. */
-            fetch(ghpaLoginFormFile).then(function (response) {
+            await fetch(ghpaLoginFormFile).then(function (response) {
                 return response.text();
             }).then(function (data) {
                 document.getElementById("ghpaLoginForm").innerHTML = data;
@@ -254,6 +254,10 @@ For the latter case, the most common use would be to call as part of the
 the submit action on a form.  For example:
 
     <form onsubmit="event.preventDefault(); ghpaRetrieve(this);">
+
+Declared as an async function because we're retrieving content using fetch()
+and then acting on that content; and need to wait until all of that is done
+before returning from this function.
 ------------------------------------------------------------------------------
 Arguments
 
@@ -347,7 +351,8 @@ async function ghpaRetrieve(formObject) {
         }
     );
 
-    // send the GitHub GET request and process the results
+    /* send the GitHub GET request and process the results; wait for this to
+     * finish before continuing. */
     await fetch(request).then(function (response) {
         /* If we received a response code that indicates successful
          * authentication, and we're using SSO, then store credentials for
