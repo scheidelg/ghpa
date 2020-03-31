@@ -362,6 +362,17 @@ async function ghpaRetrieve(formObject) {
          * authentication, and we're using SSO, then store credentials for
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
+
+//  - generate an AES-256 encryption key
+            window.crypto.subtle.generateKey(
+                {   name: "AES-GCM",
+                    length: 256, },
+                true,
+                ["encrypt", "decrypt"]
+            ).then((key) {
+                let exportedKey=3;
+            });
+
 // TO DO!!!
 //  - generate an AES-256 encryption key
 //  - encrypt the JSON.stringify'd version of the authentication credentials, before saving in sessionStorage
@@ -653,9 +664,9 @@ then set up an event listener on the "Export" button.
 //});
 
 //secretKey = importSecretKey(exportedKeyGlobal);
-let exportedKey;
+//let exportedKey;
 
-window.crypto.subtle.generateKey(
+/*window.crypto.subtle.generateKey(
   {
     name: "AES-GCM",
     length: 256,
@@ -663,8 +674,9 @@ window.crypto.subtle.generateKey(
   true,
   ["encrypt", "decrypt"]
 ).then( (key) => {
-    await exportedKey=3;
+    exportedKey=3;
 });
+*/
 
 //async function exportCryptoKey(key) {
 //  const exported = await window.crypto.subtle.exportKey(
