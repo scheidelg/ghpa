@@ -136,16 +136,6 @@ ghpaFilename                  string
 
     This is generally *not* set.
 ----------------------------------------------------------------------------*/
-let ghpaOrg = 'scheidelg';
-let ghpaRepo = 'ghpa-private';
-let ghpaBranch = 'master';
-
-let ghpaDefaultHTMLfile = 'index.html';
-let ghpaLoginFormFile ='/examples/loginform.html';
-let ghpaFilename = '';
-
-let ghpaSSOFlag = true;
-let ghpaAuthOnlyFlag = false;
 
 
 
@@ -160,20 +150,6 @@ async function exportCryptoKey(key) {
 //  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
 }
 
-/*
-Generate an encrypt/decrypt secret key,
-then set up an event listener on the "Export" button.
-*/
-window.crypto.subtle.generateKey(
-  {
-    name: "AES-GCM",
-    length: 256,
-  },
-  true,
-  ["encrypt", "decrypt"]
-).then((key) => {
-    exportCryptoKey(key);
-});
 
 /*============================================================================
 function ghpaClearSSO
@@ -554,3 +530,164 @@ function ghpaRetrieve(form) {
      */
     return (fetchResponse == 200);
 }
+
+
+/*============================================================================
+Declare and define the public variables that configure the GHPA environment,
+including the private GitHub organization, repository, and branch from which
+we want to retrieve content.
+
+Switch this over to a JSON configuration file later.
+
+------------------------------------------------------------------------------
+Global variables are named starting with 'ghpa'.  Local variables aren't.
+
+Any of the variables that aren't declared as 'const' can be overridden on a
+specific web page by the values in the <head> of the web page.
+
+ghpaAuthOnlyFlag              boolean
+
+    Flag whether a web page that calls ghpaRetrieve() should just perform an
+    authentication check (e.g., authentication-only) or should load a page
+    from the private GitHub repository.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaAuthOnlyFlag=true;</script></head>
+
+    True:  authentication-only
+    False: load a page from the private GitHub repository (recommended global
+           value)
+
+ghpaBranch                    string
+
+    Name of the repository branch to use when accessing the private GitHub
+    repository.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaBranch='master';</script></head>
+
+ghpaDefaultHTMLfile           string
+
+    Name of the file to load if ghpaRetrieve() is called with ghpaFileName
+    set to a directory name or from a web page that has a
+    window.location.pathname of a directory name.  In both cases, identified
+    by the name ending in a '/a' character.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaDefaultHTMLfile='index.htm';</script></head>
+
+    Typically set to 'index.html'.
+
+ghpaLoginFormFile             string
+
+    Name of the file to load HTML from to replace the HTML element ID
+    ghpaLoginForm.  This can be an absolute or relative path.
+    
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaLoginFormFile='/specialform.html';</script></head>
+
+    If this variable is set to '-':
+    
+        <head><script>ghpaLoginFormFile='-';</script></head>
+        
+    then the element ghpaLoginForm isn't replaced at all.
+
+
+ghpaOrg                       string
+
+    Name of the organization to use when accessing the private GitHub
+    repository.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaOrg='scheidelg';</script></head>
+
+ghpaRepo                      string
+
+    Name of the repository to use when accessing the private GitHub
+    repository.
+
+    This is set globally in this file but can be overridden on an individual
+    web page, for example:
+
+        <head><script>ghpaRepo='ghpa-private';</script></head>
+
+ghpaSSOFlag                   boolean
+
+    Flag whether a web page that calls ghpaRetrieve() should just use and save
+    credentials to be used for single sign-on (SSO).  When SSO is used:
+
+     - after successful authentication to the private GitHub repository, an
+       authentication token is saved in memory
+
+     - when attempting to access the private GitHub repository, memory is
+       checked for a saved authentication token; if found, the token is used
+       instead of prompting the user for authentication credentials
+
+    This is set globally in this file but can be overridden within an
+    individual web page, for example:
+
+        <head><script>ghpSSOFlag=false;</script></head>
+
+    True:  SSO is in use (recommended global value)
+    False: SSO is not in use
+
+ghpaFilename                  string
+
+    The filename to retrieve from the private GitHub repository.  This can
+    optionally be set in the calling web page to specify that a specific
+    file should be retrieved instead of just using the
+    window.location.pathname of the current browser window.  For example:
+
+        <head><script>ghpaFilename='getthisfile.html';</script></head>
+
+    This is generally *not* set.
+----------------------------------------------------------------------------*/
+let ghpaOrg = 'scheidelg';
+let ghpaRepo = 'ghpa-private';
+let ghpaBranch = 'master';
+
+let ghpaDefaultHTMLfile = 'index.html';
+let ghpaLoginFormFile ='/examples/loginform.html';
+let ghpaFilename = '';
+
+let ghpaSSOFlag = true;
+let ghpaAuthOnlyFlag = false;
+
+
+
+async function exportCryptoKey(key) {
+  const exported = await window.crypto.subtle.exportKey(
+    "raw",
+    key
+  );
+  const exportedKeyBuffer = new Uint8Array(exported);
+//
+//  const exportKeyOutput = document.querySelector(".exported-key");
+//  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
+    let exportedKeyBufferText = `[${exportedKeyBuffer}]`;
+}
+
+/*
+Generate an encrypt/decrypt secret key,
+then set up an event listener on the "Export" button.
+*/
+window.crypto.subtle.generateKey(
+  {
+    name: "AES-GCM",
+    length: 256,
+  },
+  true,
+  ["encrypt", "decrypt"]
+).then((key) => {
+    exportCryptoKey(key);
+});
