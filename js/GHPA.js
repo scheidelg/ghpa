@@ -186,8 +186,8 @@ function ghpaLoadPage() {
  
     /* If we have both retrievedToken and retrievedTokenKey, then attempt to
      * decrypt the retrievedToken. */
-    if (retrievedToken) { && retrievedTokenKey) {
-        // do stuff here
+    if (retrievedToken && retrievedTokenKey) {
+// TO DO: do stuff here!!!
     }
 
     /* If we have retrievedToken (which was either plaintext to begin with or
@@ -272,6 +272,11 @@ fetchResponse                 integer
     The only reason we need this is so that we have a variable scoped to the
     overall function, and so can set the variable and use it to determine the
     return value from the overall function.
+
+encryptionKey                 (TO DO!!! - UPDATE AFTER CODING THIS)
+
+    An AES-256 encryption key to use when encrypting GitHub authentication
+    credentials before storing them in sessionStorage.
 ------------------------------------------------------------------------------
 Return Value
 
@@ -280,7 +285,7 @@ true:  received an HTML response code of 200 when retrieving the content
 
 false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
-function ghpaRetrieve(formObject, encryptionKey) {
+function ghpaRetrieve(formObject) {
 
     let fetchResponse=0; // set an initial value of 'no response'
 
