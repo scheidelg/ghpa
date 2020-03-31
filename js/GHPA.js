@@ -353,6 +353,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         }
         
         /* Extract the credentials. */
+        creds = JSON.parse(creds);
         login = creds.login;
         password = creds.password;
 
