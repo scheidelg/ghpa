@@ -361,7 +361,7 @@ async function ghpaRetrieve(formObject) {
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
 //  - generate an AES-256 encryption key and export it
-            window.crypto.subtle.generateKey(
+            await window.crypto.subtle.generateKey(
                 {   name: "AES-GCM",
                     length: 256, },
                 true,
