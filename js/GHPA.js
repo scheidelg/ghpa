@@ -83,19 +83,19 @@ Return value: none
 ------------------------------------------------------------------------------
 Variables
 
-retrievedToken                JavaScript Object
+retrievedCreds                JavaScript Object
 
-    Token, if any, retrieved from sessionStorage and converted to a JSON
+    Credentials, if any, retrieved from sessionStorage and converted to a JSON
     object.  If present, use this to attempt initial authentication to GitHub
-    by calling with arguments of the retrievedToken and the retrievedTokenKey;
+    by calling with arguments of the retrievedCreds and the retrievedCredsnKey;
     vs. the call from the form inside the element ghpaLoginForm which just
     passes in the form element.
 
-retrievedTokenKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
+retrievedCredsKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
 
     AES-256 enryption key, if any, retrieved from sessionStorage.  If
     retrieved, this will be the key that can be used to decrypt the
-    retrievedToken content.
+    retrievedCred content.
 ----------------------------------------------------------------------------*/
 function ghpaLoadPage() {
     /* As an aside: Using sessionStorage and localStorage is insecure because
@@ -177,30 +177,30 @@ function ghpaLoadPage() {
     /* Attempt to retrieve GitHub authentication credentials from
      * sessionStorage.  In sessionStorage, this is either a JSON.stringify
      * string of a JSON object; or an AES-256-encrypted version of that
-     * object. */
-    let retrievedToken = sessionStorage.getItem('ghpaToken');
+     * string. */
+    let retrievedCreds = sessionStorage.getItem('ghpaToken');
 
     /* Attempt to retrieve encryption key for GitHub authentication
      * credentials from sessionStorage. */
-    const retrievedTokenKey = sessionStorage.getItem('ghpaTokenKey');
+    const retrievedCredsKey = sessionStorage.getItem('ghpaTokenKey');
  
-    /* If we have both retrievedToken and retrievedTokenKey, then attempt to
-     * decrypt the retrievedToken. */
-    if (retrievedToken && retrievedTokenKey) {
+    /* If we have both retrievedCreds and retrievedCredsKey, then attempt to
+     * decrypt the retrievedCreds. */
+    if (retrievedCreds && retrievedCredsKey) {
 // TO DO: do stuff here!!!
         let x =1;
     }
 
-    /* If we have retrievedToken (which was either plaintext to begin with or
+    /* If we have retrievedCreds (which was either plaintext to begin with or
      * is now decrypted), then convert back to a JSON object. */
-    if (retrievedToken) {
-        retrievedToken = JSON.parse(retrievedToken);
+    if (retrievedCreds) {
+        retrievedCreds = JSON.parse(retrievedCreds);
     }
 
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
-    if (!(ghpaSSOFlag && retrievedToken && ghpaRetrieve(retrievedToken))) {
+    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(retrievedCreds))) {
 
         /* If any of:
          *  - SSO isn't enabled;
@@ -235,7 +235,7 @@ function ghpaLoadPage() {
 
 
 /*============================================================================
-function ghpaRetrieve(formObject)
+async function ghpaRetrieve(formObject)
 ------------------------------------------------------------------------------
 Attempt to authenticate to and retrieve content from the private GitHub
 repository.
@@ -286,7 +286,7 @@ true:  received an HTML response code of 200 when retrieving the content
 
 false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
-function ghpaRetrieve(formObject) {
+async function ghpaRetrieve(formObject) {
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -348,7 +348,7 @@ function ghpaRetrieve(formObject) {
     );
 
     // send the GitHub GET request and process the results
-    fetch(request).then(function (response) {
+    await fetch(request).then(function (response) {
         /* If we received a response code that indicates successful
          * authentication, and we're using SSO, then store credentials for
          * later use. */
