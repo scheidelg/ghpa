@@ -76,6 +76,10 @@ Another option is to run the script within - preferably at the bottom of - the
         <!-- ideally this should be at the bottom of the <body> -->
         <script>ghpaLoadPage();</script>
     </body>
+
+Declared as an async function because we're retrieving content using fetch()
+and then acting on that content; and need to wait until all of that is done
+before returning from this function.
 ------------------------------------------------------------------------------
 Arguments: none
 ------------------------------------------------------------------------------
@@ -658,8 +662,8 @@ window.crypto.subtle.generateKey(
   },
   true,
   ["encrypt", "decrypt"]
-).then(async (key) => {
-    exportedKey=3;
+).then( (key) => {
+    await exportedKey=3;
 });
 
 //async function exportCryptoKey(key) {
