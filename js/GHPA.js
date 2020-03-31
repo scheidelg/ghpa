@@ -41,7 +41,7 @@ function ghpaClearSSO() {
 
 
 /*============================================================================
-function ghpaLoadPage
+async function ghpaLoadPage
 ------------------------------------------------------------------------------
 Attempt to retrieve authentication credentials from memory and - if SSO is
 enabled - use them to retrieve content from the private GitHub repository.
@@ -368,7 +368,7 @@ async function ghpaRetrieve(formObject) {
                 ["encrypt", "decrypt"]
             ).then( (key) => {
                 let exportedKey=3;
-                exportCryptoKey(key);
+                await exportCryptoKey(key);
             });
 
 // TO DO!!!
