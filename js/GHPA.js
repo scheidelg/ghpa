@@ -208,14 +208,80 @@ function ghpaLoadPage() {
      * sessionStorage.
      *
      * As an aside: Using sessionStorage and localStorage is insecure because
-     * any JavaScript running in the context of this web page can access both,
-     * including enumerating and retrieving all stored objects. While access
-     * to sessionStorage and localStorage is subject to "same-origin policy"
-     * so that there is a separate storage area for each origin (combination
-     * of website domain, protocol, and port), a successful XSS attack that
-     * runs malicious JavaScript runs in the context of the compromised web
-     * page.  This means the malicious code runs is operating in the context
-     * of the legitimate website's origin. */
+     * any JavaScript running in the context of this web page can access
+     * either, including enumerating and retrieving all stored objects. While
+     * access to sessionStorage and localStorage is subject to "same-origin
+     * policy" so that there is a separate storage area for each origin
+     * (combination of website domain, protocol, and port), a successful XSS
+     * attack that runs malicious JavaScript runs in the context of the
+     * compromised web page.  This means the malicious code runs would be
+     * operating in the context of the legitimate website's origin.
+     *
+     * Encrypting the Github authentication credentials before storing in
+     * sessionStorage would result in a marginal improvement in security.
+     * With encryption an attacker would need to find the encryption key and
+     * decrypt the GitHub authentication credentials (that were retrieved from
+     * sessionStorage).  However, the decryption key needs to be available to
+     * this script and malicious JavaScript running in the context of this
+     * script would have access to wherever the key was stored (e.g., another
+     * sessionStorage object, a global JavaScript variable, a cookie).
+     * Moreover, since this script needs to be available to a user of the
+     * publicly accessible GitHub Pages website, the attacker could retrieve
+     * the script code not only from browser memory but by accessing the
+     * GitHub Pages website itself.  In either case the attacker would see the
+     * code needed to decrypt the GitHub authentication credentials, and
+     * either the decryption key itself or the code needed to access the
+     * decryption key.
+     *
+     * All in all, better to:
+     *
+     *  1. Consider this a basic capability that may be suitable for some
+     *     cases, taking into account the "pros and cons" and recommended
+     *     mitigations:
+     *
+     *      - CON: It is vulnerable in the event of a XSS attack that can run
+     *        malicious JavaScript on a user's browser.
+     *
+     *      - CON: From an end user's perspective, authenticating through GHPA
+     *        with either user ID / password or user ID / token means them
+     *        trusting that the GHPA-enabled website is not going to do
+     *        anything malicious with their authentication credentials.  This
+     *        includes trusting that the website isn't intentionally malicious
+     *        and that the website won't be compromised through XSS or some
+     *        other vulnerability.
+     *
+     *      - PRO: Authenticaiton through GHPA with either user ID / password
+     *        or user ID / token is simple.
+     *
+     *      - PRO: Multiple websites using GHPA will have separate
+     *        sessionStorage memory.  They won't step on each other and even
+     *        malicious JavaScript on one website won't be able to access
+     *        sessonStorage for another website.
+     *
+     *      - Mitigations:
+     *
+     *         - Don't use user ID / password with GHPA.  Instead use a
+     *           GitHub private access token or machine account.
+     *
+     *           Note: User ID / password access to the GitHub API is being
+     *           deprecated; it will be fully deprecated in November 2020.
+     *
+     *         - When using a GitHub private access token, limit the scope of
+     *           the token to 'repo' (the minimum scope required to read
+     *           content from a private GitHub repository).  This scope does
+     *           grant 'full control of private repositories' which also
+     *           includes full control of public repositories - but at least
+     *           doesn't include administrative control over the organization,
+     *           reading or writing the user's keys, reading or writing the
+     *           user's account information, etc.
+     *
+     *         - Use two-factor authentication for your regular GitHub
+     *           access.  This will automatically prevent GHPA from
+     *           authenticating with user ID / password (as per the note
+     *           above).
+     *
+     *  2. Ultimately, switch to using a GitHub Application for a GHPA-
+     *     enabled website. */
     const ghpaExistingAuth = JSON.parse(sessionStorage.getItem('ghpaToken'));
 
     /* If SSO is enabled and we have existing authentication credentials to
