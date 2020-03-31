@@ -227,7 +227,7 @@ async function ghpaLoadPage() {
 
 
 /*============================================================================
-async function ghpaRetrieve(formObject)
+async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey)
 ------------------------------------------------------------------------------
 Attempt to authenticate to and retrieve content from the private GitHub
 repository.
@@ -245,7 +245,7 @@ This function is called either from ghpaLoadPage() or directly from a web page
 For the latter case, the most common use would be to call as part of the
 the submit action on a form.  For example:
 
-    <form onsubmit="event.preventDefault(); ghpaRetrieve(this);">
+    <form onsubmit="event.preventDefault(); ghpaRetrieve(false, this);">
 
 Declared as an async function because we're retrieving content using fetch()
 and then acting on that content; and need to wait until all of that is done
@@ -253,13 +253,65 @@ before returning from this function.
 ------------------------------------------------------------------------------
 Arguments
 
-formObject                    JavaScript object
+retrievedCredsFlag            boolean
 
-    The formObject must have two input fields:
+    Identifies whether this call is being made after retrieving SSO
+    credentials from sessionStorage, vs. from a form where the username and
+    password (or personal access token) have been entered.
 
-     - An id of 'ghpaLogin' to hold the user's login name.
+    True:  SSO credentials are passwed in the creds and credsKey arguments
+    False: SSO credentials are not available; the creds argument contains a
+           reference to a form element
 
-     - An  id of 'ghpaPassword' to hold the user's password.
+creds                         (type varies; see below)
+
+    Credentials can be passed in one of three ways:
+    
+     1. As a form element when a form submits using:
+
+            <form onsubmit="event.preventDefault(); ghpaRetrieve(false, this);">
+
+        In this case the form must have two input fields:
+
+         a. An id of 'ghpaLogin' to hold the user's login name.
+
+         b. An  id of 'ghpaPassword' to hold the user's password.
+
+        This is the method used when first accessing content from the
+        private repository, and authentication credentials have not yet
+        been saved in sessionStorage.
+
+     2. As a string created by:
+     
+            JSON.stringify({ LOGIN: login, PASSWORD: password });
+
+        where 'login' and 'password' are variables identifying the user ID
+        and password to use for GitHub authentication.
+
+        This string is retrieved from sessionStorage, and must then be
+        converted back to a JSON object.
+
+        This is the method used when the user has already authenticated to
+        GitHub, the ghpaSSOFlag option is set, credentials were not able to
+        be encrypted with AES-256 (see the next method, below), and
+        the credentials have been stored in sessionStorage for later use.
+
+     3. As a string created using the above method, but then encrypted with
+        AES-256 and base-64 encoded.  This string is also retrieved from
+        sessionStorage, and must then be converted back to a JSON object.
+
+        This is the method used when the user has already authenticated to
+        GitHub, the ghpaSSOFlag option is set, credentials *are* able to
+        be encrypted with AES-256 (see the next method, below), and
+        the credentials have been stored in sessionStorage for later use.
+        
+        This is preferred over method #2 and will automatically be attemped.
+
+credsKey                      string; optional
+
+    An optional string argument containing a base64-encoded representation of
+    an AES-256 encryption key, which can be used to decrypt the 'creds'
+    argument contents.
 ------------------------------------------------------------------------------
 Variables
 
@@ -284,15 +336,35 @@ true:  received an HTML response code of 200 when retrieving the content
 
 false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
-async function ghpaRetrieve(formObject) {
+async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let fetchResponse=0; // set an initial value of 'no response'
+
+    /* If we retrieved credentials from sessionStorage (and incidentally have
+     * some credentials to process), then convert them to a JSON object and
+     * retrieve the username and password / personal access token. */
+    if (retrievedCredsFlag && creds) {
+        /* If we have an AES-256 key then decrypt */
+        if (credsKey) {
+            let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+        
+        /* Extract the credentials. */
+        const login = creds.LOGIN;
+        const password = creds.PASSWORD;
+
+    /* If we were passed credentials from a form, then extract the username
+     * and password / personal access token. */
+    } else {
+        const login = creds.querySelector('#ghpaLogin').value;
+        const password = creds.querySelector('#ghpaPassword').value;
+    }
 
     /* Extract the login and password that were passed to this function
      * (either from the authentication form or retrieved from
      * sessionStorage). */
-    const login = formObject.username || formObject.querySelector('#ghpaLogin').value;
-    const password = formObject.token || formObject.querySelector('#ghpaPassword').value;
+//    const login = formObject.username || formObject.querySelector('#ghpaLogin').value;
+//    const password = formObject.token || formObject.querySelector('#ghpaPassword').value;
 
     /* The ghpaFilename variable is initially defined in the ghpaConfig.js
      * file, and set to an emptry string.  The calling page can optionally
@@ -354,21 +426,21 @@ async function ghpaRetrieve(formObject) {
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
             /* prepare the authentication credentials as a string, to be
              * stored in sessionStorage by other pages on this website. */
-            let preppedCreds=JSON.stringify({ username: login, token: password });
+            let preppedCreds=JSON.stringify({ LOGIN: login, PASSWORD: password });
 
             /* Generate an AES-256 encryption key, encrypt the prepared
              * credentials, and save the encryption key in sessionStorage. */
 /*--------------------------------------------------------------------------*/
             await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (encryptionKey) => {
 
-/* TO DO: encrypt the pepared credentials (already in preppedCreds) */
+// TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
 
                 /* Export the encryption key and save to an array so that we
                  * can save it in sessionStorage (along with the prepared
                  * credentials. */
                 const exportedKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
                 const exportedKeyBuffer = new Uint8Array(exportedKey);
- 
+ // TO DO - STOPPED HERE ... converting Uint8Array to a base64-encoded representation, then save to sessionStorage <------------- TO DO!!!!!!!!!!!!!!!!!!!
 /*                let bubbaExportedKey;
                 bubbaExportedKey = await exportCryptoKey(encryptionKey);
                 let xyzzy;
@@ -382,7 +454,12 @@ async function ghpaRetrieve(formObject) {
 //  - encrypt the JSON.stringify'd version of the authentication credentials, before saving in sessionStorage
 //  - convert the encryption key to a format that can be saved in sessionStorage
 //  - save the formatted encryption key to sessionStorage
-            sessionStorage.setItem('ghpaCreds', JSON.stringify({ username: login, token: password }));
+
+/*--------------------------------------------------------------------------*/
+            /* Save the credentials to sessionStorage.  They will definitely
+             * be converted to a JSON.stringify output at this point, and
+             * should be encrypted and base64-encoded. */
+            sessionStorage.setItem('ghpaCreds', preppedCreds);
         }
 
         /* If we're performing an authentication-only check and we were able
