@@ -16,16 +16,13 @@ which you may want to strip out before using on a website.
 ----------------------------------------------------------------------------*/
 
 
-//async function exportCryptoKey(key) {
-//  const exported = await window.crypto.subtle.exportKey(
-//    "raw",
-//    key
-//  );
-//  const exportedKeyBuffer = new Uint8Array(exported);
-//
-//  const exportKeyOutput = document.querySelector(".exported-key");
-//  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
-//}
+async function exportCryptoKey(key) {
+  const exported = await window.crypto.subtle.exportKey(
+    "raw",
+    key
+  );
+  ghpaExportedKeyBuffer = new Uint8Array(exported);
+}
 
 
 /*============================================================================
@@ -363,7 +360,7 @@ async function ghpaRetrieve(formObject) {
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
-//  - generate an AES-256 encryption key
+//  - generate an AES-256 encryption key and export it
             window.crypto.subtle.generateKey(
                 {   name: "AES-GCM",
                     length: 256, },
@@ -691,3 +688,4 @@ then set up an event listener on the "Export" button.
 // 
 //    return exportedKeyBuffer;
 //}
+let ghpaExportedKeyBuffer;
