@@ -180,32 +180,19 @@ async function ghpaLoadPage() {
      *     enabled website. */
 
     /* Attempt to retrieve GitHub authentication credentials from
-     * sessionStorage.  In sessionStorage, this is either a JSON.stringify
-     * string of a JSON object; or an AES-256-encrypted version of that
-     * string. */
-    let retrievedCreds = sessionStorage.getItem('ghpaCreds');
+     * sessionStorage.  This is either a JSON.stringify string of a JSON
+     * object; or that string after being AES-256 encrypted and then
+     * base-64 encoded. */
+    const retrievedCreds = sessionStorage.getItem('ghpaCreds');
 
     /* Attempt to retrieve encryption key for GitHub authentication
      * credentials from sessionStorage. */
     const retrievedCredsKey = sessionStorage.getItem('ghpaCredsKey');
  
-    /* If we have both retrievedCreds and retrievedCredsKey, then attempt to
-     * decrypt the retrievedCreds. */
-    if (retrievedCreds && retrievedCredsKey) {
-// TO DO: do stuff here!!!
-        let x =1;
-    }
-
-    /* If we have retrievedCreds (which was either plaintext to begin with or
-     * is now decrypted), then convert back to a JSON object. */
-    if (retrievedCreds) {
-        retrievedCreds = JSON.parse(retrievedCreds);
-    }
-
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
-    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(retrievedCreds))) {
+    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds, retrievedCredsKey))) {
 
         /* If any of:
          *  - SSO isn't enabled;
