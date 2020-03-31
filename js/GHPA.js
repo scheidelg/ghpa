@@ -147,21 +147,33 @@ let ghpaFilename = '';
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
 
-let plaintext='this is a plaintext message';
-let cipherkey = window.crypto.subtle.generateKey(
+
+
+async function exportCryptoKey(key) {
+  const exported = await window.crypto.subtle.exportKey(
+    "raw",
+    key
+  );
+  const exportedKeyBuffer = new Uint8Array(exported);
+//
+//  const exportKeyOutput = document.querySelector(".exported-key");
+//  exportKeyOutput.textContent = `[${exportedKeyBuffer}]`;
+}
+
+/*
+Generate an encrypt/decrypt secret key,
+then set up an event listener on the "Export" button.
+*/
+window.crypto.subtle.generateKey(
   {
     name: "AES-GCM",
-    length: 256
+    length: 256,
   },
   true,
   ["encrypt", "decrypt"]
-);
-
-const exportedkey = window.crypto.subtle.exportKey(
-    "raw",
-    cipherkey
-);
-const exportedKeyBuffer = new Uint8Array(exportedkey);
+).then((key) => {
+    exportCryptoKey(key);
+});
 
 /*============================================================================
 function ghpaClearSSO
