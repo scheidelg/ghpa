@@ -192,6 +192,7 @@ async function ghpaLoadPage() {
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
+// TO DO: adjust code so that if the credsKey is retrieved then DON'T bother generating a new key and saving it to sessionStorage; just re-use the existing key <--- TO DO!!!!!!!!!!!
 //    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds, retrievedCredsKey))) {
     if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds))) {  // <----------- TO DO: Intentionally not passing retrievedCredsKey until after we have the encrypt/decrypt code written
         /* If any of:
