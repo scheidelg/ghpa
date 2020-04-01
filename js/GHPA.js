@@ -397,7 +397,7 @@ exportedKeyBuffer = new Uint8Array(32)
             GitHubToken='';
 
         } else {
-            login = creds.Slice(0,tempvar-1);
+            login = creds.slice(0, tempvar);
         }
 
     /* If we were passed credentials from a form, then extract the username
