@@ -372,10 +372,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * decrypt the GitHub token. */
         if (credsKey) {
 
-
-let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
-
-
             /* Create a new Uint8Array to hold the AES-256 binary data. */
             let AESkeyBuffer = new Uint8Array(32);
 
@@ -565,11 +561,9 @@ let bobster = 1;
                  * sessionStorage */
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
 
-//3456789012345678901234567890123456789012345678901234567890123456789012345678
                 /* Encode the GitHub token (using TextEncoder) into a
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
-//                let encoder = new TextEncoder();
                 const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder.encode(GitHubToken));
 
                 /* Convert the cipherText into a Uint8Array to work with. */
@@ -577,24 +571,13 @@ let bobster = 1;
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the cipherText. */
-//                let GitHubToken='';
-let GitHubTokenX='';
+                let GitHubToken='';
                 for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-//                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
-GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
+                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
                 }
 
-
-    // TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
-
-    // TO DO!!!
-    //  - encrypt the the authentication credentials, possibly need to base64-encode them, before saving in sessionStorage
-
-                /* Save the credentials to sessionStorage.  They will definitely
-                 * be converted to a JSON.stringify output at this point, and
-                 * should be encrypted and base64-encoded. */
+                /* Save the encrypted credentials to sessionStorage. */
                 sessionStorage.setItem('ghpaCreds', GitHubToken);
-sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
             }
 
             /* If we're performing an authentication-only check and we were able
