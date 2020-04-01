@@ -361,7 +361,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     let AESKey;
     let AESKeyBuffer;
     let GitHubToken;
-    let tempvar;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -393,14 +392,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * time do at least some basic validation that the retrieved token is
          * valid. */
         creds = atob(creds);
-        tempvar=creds.search(":");
-        if (tempvar == -1) {
+        let delimiterPosition=creds.search(":");
+        if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken='';
 
         } else {
-            login = creds.slice(0, tempvar);
+            login = creds.slice(0, delimiterPosition);
         }
 
     /* If we were passed credentials from a form, then extract the username
@@ -421,6 +420,24 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
 
+    /* According to github.com/join, GitHub usernames:
+     *
+     *  - can contain alpahnumeric characters or single hyphens
+     *  - cannot begin or end with a hyphen
+     *
+     * We also don't want to accept empty user names, so reject those as well.
+     *
+     * If there is an error, then don't display the bogus user name.  Part of
+     * the point in this filtering is to prevent XSS by only allowing valid
+     * characters; it would be self-defeating to then display the invalid
+     * characters to the user. */
+----------------------------------------------------------------------------*/
+    if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i) {
+        let xyzzy=1;
+    }
+    
+
+    
     /* The ghpaFilename variable is initially defined in the ghpaConfig.js
      * file, and set to an emptry string.  The calling page can optionally
      * specify the private page to load by setting the value of the variable.
@@ -440,6 +457,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     }
     
     /* If the filename begins with a '/' character then remove that character.
+     *
      * Two notes:
      *
      *  - Every window.location.pathname should start with a '/' character, so
@@ -475,10 +493,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * authentication, and we're using SSO, then store credentials for
          * later use. */
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
-            /* prepare the authentication credentials as a string, to be
-             * stored in sessionStorage by other pages on this website. */
-//            let preppedCreds=JSON.stringify({ login: login, password: password });
-// TO DO: IF YOU ALREADY HAVE A KEY LOADED FROM sessionStorage, THEN YOU DON'T NEED TO GENERATE A NEW ONE <--- TO DO!!!!!!!!!!!!!!!!
             /* If we don't already have an AES-256 key, then generate one and
              * save it to sessionStorage. */
             if (!AESKey) {
@@ -503,13 +517,10 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 });
             }
 
-// TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
+// TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
 
 // TO DO!!!
-//  - generate an AES-256 encryption key
 //  - encrypt the the authentication credentials, possibly need to base64-encode them, before saving in sessionStorage
-//  - convert the encryption key to a format that can be saved in sessionStorage
-//  - save the formatted encryption key to sessionStorage
 
             /* Save the credentials to sessionStorage.  They will definitely
              * be converted to a JSON.stringify output at this point, and
