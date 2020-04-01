@@ -376,9 +376,11 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         if (credsKey) {
             /* Create a new Uint8Array to hold the binary data, and conver
              * convert the saved key data back to binary. */
+            let y;
+         
             exportedKeyBuffer = new Uint8Array(32);
             for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-                exportedKeyBuffer[index]=parseInt(credsKey.slice(index*2, 2), 16);
+                exportedKeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
             }
 //                let hexString='';
 //                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
@@ -444,7 +446,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     /* If the pathname for the file to retrieve is empty or ends with a '/'
      * character, then append the default HTML file name that was set in the
      * ghpaDefaultHTMLfile variable (usually via the ghpaConfig.js file). */
-    if (ghpaFilename == '' || ghpaFilename.slice(ghpaFilename.length -1) == '/') {
+    if (ghpaFilename == '' || ghpaFilename.slice(ghpaFilename.length - 1) == '/') {
         ghpaFilename = ghpaFilename + ghpaDefaultHTMLfile
     }
     
