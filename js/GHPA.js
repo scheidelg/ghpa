@@ -369,7 +369,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 //                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
 //                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
 //                }
-            const rawKey = window.crypto.getRandomValues(new Uint8Array(16));
+const rawKey = window.crypto.getRandomValues(new Uint8Array(32));
+exportedKeyBuffer = new Uint8Array(32)
             
             let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
