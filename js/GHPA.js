@@ -479,7 +479,7 @@ exportedKeyBuffer = new Uint8Array(32)
         if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
             /* prepare the authentication credentials as a string, to be
              * stored in sessionStorage by other pages on this website. */
-            let preppedCreds=JSON.stringify({ login: login, password: password });
+//            let preppedCreds=JSON.stringify({ login: login, password: password });
 // TO DO: IF YOU ALREADY HAVE A KEY LOADED FROM sessionStorage, THEN YOU DON'T NEED TO GENERATE A NEW ONE <--- TO DO!!!!!!!!!!!!!!!!
             /* Generate an AES-256 encryption key so that we can encrypt the
              * prepared credentials and save the encryption key in
@@ -517,7 +517,7 @@ exportedKeyBuffer = new Uint8Array(32)
             /* Save the credentials to sessionStorage.  They will definitely
              * be converted to a JSON.stringify output at this point, and
              * should be encrypted and base64-encoded. */
-            sessionStorage.setItem('ghpaCreds', preppedCreds);
+            sessionStorage.setItem('ghpaCreds', GitHubToken);
         }
 
         /* If we're performing an authentication-only check and we were able
