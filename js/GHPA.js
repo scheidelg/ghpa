@@ -358,9 +358,6 @@ false: did *not* receive an HTML response code of 200
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
-    let AESkey;
-    let AESkeyBuffer;
-    let AESiv;
     let GitHubToken;
     let credsIV;
 
@@ -376,22 +373,30 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         if (credsKey) {
 
             /* Create a new Uint8Array to hold the AES-256 binary data, and
-             * convert the saved key data back to binary. */
-            AESkeyBuffer = new Uint8Array(32);
+             * convert the saved key data back to binary.
+             *
+             * Characters 1 through 64 (of the data retrieved from
+             * sessionStorage) is a hexadecimal character representation of
+             * the AES-256 key's binary data. */
+            let AESkeyBuffer = new Uint8Array(32);
             for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
                 AESkeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
             }
             
             /* Create a new Uint8Array to hold the IV as binary data, and
-             * convert the saved back to binary. */
-            AESiv = new Uint8Array(12);
+             * convert the saved back to binary.
+             *
+             * Characters 65 through 88 (of the data retrieved from
+             * sessionStorage) is a hexadecimal character representation of
+             * the AES-256 IV's binary data. */
+            let AESiv = new Uint8Array(12);
             for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
                 AESiv[index]=parseInt(credsKey.slice((index*2)+64, (index*2)+66), 16);
             }
 
             /* Import the saved key data into a usable encryption key
              * object. */
-           AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+           const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
             /* Decrypt the GitHub token. */
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -428,8 +433,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         login = creds.querySelector('#ghpaLogin').value;
 
         /* We're saving the token in a new variable name instead of re-using
-         * the variable for the argument passed to this function, because we
-         * might want to reference the login form later in this function. */
+         * the variable for the argument passed to this function; because we
+         * might want to reference this specific login form later in this
+         * function. */
         GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
 
@@ -438,17 +444,19 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      *  - can contain alpahnumeric characters or single hyphens
      *  - cannot begin or end with a hyphen
      *
-     * We also don't want to accept empty user names, so reject those as
-     * well. */
+     * We also don't want to accept empty user names, so reject those as well.
+     * The username and password fields on the login form should be marked as
+     * 'required' but users are crazy.  This will also serve as a (minor)
+     * check against a problem with data retrieved from sessionStorage. */
     if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
-        /* The ghpaFilename variable is initially defined in the ghpaConfig.js
-         * file, and set to an emptry string.  The calling page can optionally
+        /* The ghpaFilename variable is initially defined in the JavaScript
+         * header, and set to an emptry string.  The calling page can optionally
          * specify the private page to load by setting the value of the variable.
          *
          * If the variable is set to an empty string then retrieve the pathname of
          * the URL for the current window; if the variable is set to a non-empty
-         * string, the use the current value. */
+         * string, the use (keep) the current value. */
         if (ghpaFilename === '') {
             ghpaFilename = window.location.pathname;
         }
@@ -471,8 +479,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          *
          *  - Strictly speaking this shouldn't be necessary because the GitHub API
          *    is smart enough to deal with GET requests that contain '//'
-         *    sequences. But, it's just a few lines of code and I think it's
-         *    better to keep the GET request cleaner. */
+         *    sequences. But it's just a few lines of code and I think it's better
+         *    to keep the GET request cleaner. */
         if (ghpaFilename.slice(0, 1) == '/') {
             ghpaFilename = ghpaFilename.slice(1)
         }
@@ -490,27 +498,32 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             }
         );
 
-        /* send the GitHub GET request and process the results; wait for this to
+        /* Send the GitHub GET request and process the results; wait for this to
          * finish before continuing. */
         await fetch(request).then(async function (response) {
             /* If we received a response code that indicates successful
              * authentication, and we're using SSO, then store credentials for
              * later use. */
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
-                /* generate a new AES-256 key */
 
+                let AESkey;
+
+                /* generate a new AES-256 key */
                 await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
                     /* Save the new key in the AESkey variable so that it's
                      * available after exiting this '.then' function. */
                     AESkey = newKey;
                 });
 
-                /* Export the encryption key and convert it to an array of
-                * 8-bit unsigned integers. */
-                AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
+                /* Generate a new initialization vector (IV). */
+                const AESiv = window.crypto.getRandomValues(new Uint8Array(12));
 
-                /* generate a new initialization vector (IV) */
-                AESiv = window.crypto.getRandomValues(new Uint8Array(12));
+                /* Export the encryption key and convert it to an array of
+                * 8-bit unsigned integers.  The only reason we're doing this
+                * is so that we can save the key for use when another web
+                * page (during this session) attempts to retrieve and reuse
+                * the GitHub credentails. */
+                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the key and IV. */
@@ -525,7 +538,12 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 /* Save the text representation of the AES-256 key and IV to
                  * sessionStorage */
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
-                
+
+
+
+                const ciphertext = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, GitHubToken);
+
+
 
     // TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
 
