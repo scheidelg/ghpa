@@ -376,24 +376,26 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
 
 
-            /* Create a new Uint8Array to hold the AES-256 binary data;
-             * convert the saved key data back to binary.
+            /* Create a new Uint8Array to hold the AES-256 binary data. */
+            let AESkeyBuffer = new Uint8Array(32);
+
+            /* Convert the saved key data back to binary.
              *
              * Characters 1 through 64 (of the data retrieved from
              * sessionStorage) is a hexadecimal character representation of
              * the AES-256 key's binary data. */
-            let AESkeyBuffer = new Uint8Array(32);
             for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
                 AESkeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
             }
             
-            /* Create a new Uint8Array to hold the IV as binary data; convert
-             * the saved IV back to binary.
+            /* Create a new Uint8Array to hold the IV as binary data. */
+            let AESiv = new Uint8Array(12);
+
+            /* Convert the saved IV back to binary.
              *
              * Characters 65 through 88 (of the data retrieved from
              * sessionStorage) is a hexadecimal character representation of
              * the AES-256 IV's binary data. */
-            let AESiv = new Uint8Array(12);
             for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
                 AESiv[index]=parseInt(credsKey.slice((index*2)+64, (index*2)+66), 16);
             }
@@ -404,19 +406,24 @@ let credsX = sessionStorage.getItem('ghpaCredsX');    // <----------------------
 
 /*--------------------------------------------------------------------------*/
             /* Create a new Uint8Array to hold the encrypted token as binary
-             * data; convert the saved encrypted token back to binary.
+             * data.
              *
              * The encrypted token is saved as hexadecimal characters, where
              * every two characters represents a byte.  So, the number of
              * elements in the array = ((# of characters) / 2). */
             let credsBuffer = new Uint8Array(credsX.length/2);
+         
+            /* Convert the saved encrypted token back to binary. */
             for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
                 credsBuffer[index]=parseInt(credsX.slice((index*2), (index*2)+2), 16);
             }
 
-let bob = 1;
             /* Decrypt the GitHub token. */
+
+            let bobbo = await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer);
+
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+let bobster = 1;
         }
 
         /* Save the retrieved token in a new variable name. */
@@ -560,8 +567,8 @@ let bob = 1;
                 /* Encode the GitHub token (using TextEncoder) into a
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
-                let encoder = new TextEncoder();
-                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, encoder.encode(GitHubToken));
+//                let encoder = new TextEncoder();
+                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder.encode(GitHubToken));
 
                 /* Convert the cipherText into a Uint8Array to work with. */
                 let cipherBuffer = new Uint8Array(cipherText);
