@@ -419,9 +419,9 @@ let credsX = sessionStorage.getItem('ghpaCredsX');    // <----------------------
             }
 
             /* Decrypt the GitHub token. */
-
             let bobbo = await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer);
 
+            const plaintext = new TextDecoder().decode(bobbo);
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 let bobster = 1;
         }
