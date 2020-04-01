@@ -386,7 +386,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * convert the saved back to binary. */
             AESiv = new Uint8Array(12);
             for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
-                AESiv[index]=parseInt(credsKey.slice((index*2)+32, (index*2)+34), 16);
+                AESiv[index]=parseInt(credsKey.slice((index*2)+64, (index*2)+66), 16);
             }
 
             /* Import the saved key data into a usable encryption key
