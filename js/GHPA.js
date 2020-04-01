@@ -41,6 +41,7 @@ Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaClearSSO() {
    sessionStorage.removeItem('ghpaCreds');
+   sessionStorage.removeItem('ghpaCredsKey');
 }
 
 
@@ -481,7 +482,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* Generate an AES-256 encryption key so that we can encrypt the
              * prepared credentials and save the encryption key in
              * sessionStorage. */
-/*--------------------------------------------------------------------------*/
             await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (encryptionKey) => {
 
 // TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
@@ -491,7 +491,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
-                AESKeyBuffer = new Uint8Array(AESKey);
+//                AESKeyBuffer = new Uint8Array(AESKey);
+                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", encryptionKey));
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
@@ -510,7 +511,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 //  - convert the encryption key to a format that can be saved in sessionStorage
 //  - save the formatted encryption key to sessionStorage
 
-/*--------------------------------------------------------------------------*/
             /* Save the credentials to sessionStorage.  They will definitely
              * be converted to a JSON.stringify output at this point, and
              * should be encrypted and base64-encoded. */
@@ -524,14 +524,13 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * response.status of 404 is really what we want, as it indicates
          * that authentication was successful but the specified file
          * ghpaFilename doesn't exist in the private repository.  If we get a
-         * response.status of 202 then it means that the specified file does
+         * response.status of 200 then it means that the specified file does
          * exist in the private repository - which doesn't make sense for an
          * authentication-only check, since there's no reason to have a
-         * corresponding file in the private repository.
-         *
-         * If we have a static file in the private repository that we want to
-         * display after a successful login, then just retrieve that without
-         * setting ghpaAuthOnlyFlag. */
+         * corresponding file in the private repository.  If, on the other
+         * hand, we have a static file in the private repository that we want
+         * to display after a successful login, then just retrieve that
+         * without setting ghpaAuthOnlyFlag. */
         if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
             /* Updating document.getElementById("ghpaAuthMessage").innerHTML
              * instead of document.body.innerHTML to avoid a Javascript error
