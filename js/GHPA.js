@@ -425,185 +425,187 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      *  - can contain alpahnumeric characters or single hyphens
      *  - cannot begin or end with a hyphen
      *
-     * We also don't want to accept empty user names, so reject those as well.
-     *
-     * If there is an error, then don't display the bogus user name.  Part of
-     * the point in this filtering is to prevent XSS by only allowing valid
-     * characters; it would be self-defeating to then display the invalid
-     * characters to the user. */
+     * We also don't want to accept empty user names, so reject those as
+     * well. */
     if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
-        let xyzzy=1;
-    }
-    
 
-    
-    /* The ghpaFilename variable is initially defined in the ghpaConfig.js
-     * file, and set to an emptry string.  The calling page can optionally
-     * specify the private page to load by setting the value of the variable.
-     *
-     * If the variable is set to an empty string then retrieve the pathname of
-     * the URL for the current window; if the variable is set to a non-empty
-     * string, the use the current value. */
-    if (ghpaFilename === '') {
-        ghpaFilename = window.location.pathname;
-    }
-
-    /* If the pathname for the file to retrieve is empty or ends with a '/'
-     * character, then append the default HTML file name that was set in the
-     * ghpaDefaultHTMLfile variable (usually via the ghpaConfig.js file). */
-    if (ghpaFilename == '' || ghpaFilename.slice(ghpaFilename.length - 1) == '/') {
-        ghpaFilename = ghpaFilename + ghpaDefaultHTMLfile
-    }
-    
-    /* If the filename begins with a '/' character then remove that character.
-     *
-     * Two notes:
-     *
-     *  - Every window.location.pathname should start with a '/' character, so
-     *    this will always match unless (a) a calling page specifically sets
-     *    the ghpaFilename variable without a leading '/', or (b) an edge
-     *    case in a browser.
-     *
-     *  - Strictly speaking this shouldn't be necessary because the GitHub API
-     *    is smart enough to deal with GET requests that contain '//'
-     *    sequences. But, it's just a few lines of code and I think it's
-     *    better to keep the GET request cleaner. */
-    if (ghpaFilename.slice(0, 1) == '/') {
-        ghpaFilename = ghpaFilename.slice(1)
-    }
-
-    // Craft the GitHub GET request to retrieve the specified file.
-    const request = new Request(
-        `https://api.github.com/repos/${ghpaOrg}/${ghpaRepo}/contents/${ghpaFilename}?ref=${ghpaBranch}`,
-        {
-            method: 'GET',
-            credentials: 'omit',
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Basic ${GitHubToken}`
-            },
-        }
-    );
-
-    /* send the GitHub GET request and process the results; wait for this to
-     * finish before continuing. */
-    await fetch(request).then(async function (response) {
-        /* If we received a response code that indicates successful
-         * authentication, and we're using SSO, then store credentials for
-         * later use. */
-        if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
-            /* If we don't already have an AES-256 key, then generate one and
-             * save it to sessionStorage. */
-            if (!AESKey) {
-                await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
-                    /* Save the new key in the AESKey variable so that it's
-                     * available after exiting this '.then' function. */
-                    AESKey = newKey;
-
-                    /* Export the encryption key and convert it to an array of
-                    * 8-bit unsigned integers. */
-                    AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
-
-                    /* Create a string of hexadecimal text representing the array
-                     * values. */
-                    credsKey='';
-                    for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
-                        credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
-                    }
-
-                    /* save the converted AES-256 key to sessionStorage */
-                    sessionStorage.setItem('ghpaCredsKey', credsKey);
-                });
-            }
-
-// TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
-
-// TO DO!!!
-//  - encrypt the the authentication credentials, possibly need to base64-encode them, before saving in sessionStorage
-
-            /* Save the credentials to sessionStorage.  They will definitely
-             * be converted to a JSON.stringify output at this point, and
-             * should be encrypted and base64-encoded. */
-            sessionStorage.setItem('ghpaCreds', GitHubToken);
-        }
-
-        /* If we're performing an authentication-only check and we were able
-         * to authenticate, then display an appropriate message.
+        /* The ghpaFilename variable is initially defined in the ghpaConfig.js
+         * file, and set to an emptry string.  The calling page can optionally
+         * specify the private page to load by setting the value of the variable.
          *
-         * Note that when performing an authentication-only check, a
-         * response.status of 404 is really what we want, as it indicates
-         * that authentication was successful but the specified file
-         * ghpaFilename doesn't exist in the private repository.  If we get a
-         * response.status of 200 then it means that the specified file does
-         * exist in the private repository - which doesn't make sense for an
-         * authentication-only check, since there's no reason to have a
-         * corresponding file in the private repository.  If, on the other
-         * hand, we have a static file in the private repository that we want
-         * to display after a successful login, then just retrieve that
-         * without setting ghpaAuthOnlyFlag. */
-        if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
-            /* Updating document.getElementById("ghpaAuthMessage").innerHTML
-             * instead of document.body.innerHTML to avoid a Javascript error
-             * if the content wasn't successfully retrieved. */
-             document.getElementById("ghpaAuthMessage").innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
-
-            /* Hide the login form (if it's currently displayed).  Once
-             * the user successfully logs in, we don't want to confuse
-             * them by still presenting a login form. */
-            document.getElementById("ghpaLoginForm").style.display = "none";
-
-        /* If we successfully retrieved the contents and we are not performing
-         * an authentication-only check, then display the retrieved
-         * content. */
-        } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
-            response.json().then(function (json) { // 5
-                const content = json.encoding === 'base64' ? atob(json.content) : json.content;
-
-                // 6
-                const startIdx = content.indexOf('<body');
-                document.body.innerHTML = content.substring(
-                    content.indexOf('>', startIdx) + 1,
-                    content.indexOf('</body>'));
-
-            });
-
-        /* If we didn't successfully retrieve the content, then display an
-         * appropriate error message. */
-        } else if (response.status != 200) {
-            /* Define a variable to build the message to display, so that we
-             * can just have one instance in this section where we set the
-             * message. */
-            let authMessage = '';
-            
-            /* Updating document.getElementById("ghpaAuthMessage").innerHTML
-             * instead of document.body.innerHTML to avoid a Javascript error
-             * if the content wasn't successfully retrieved. */
-
-            /* If this is an authentication-only check and the response code
-             * was *not* 404 (file not found), then display an error message
-             * specific to 'authentication failed. */
-            if (ghpaAuthOnlyFlag && response.status != 404) {
-                authMessage = `Failed to authenticate to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login} (status: ${response.status}).`;
-
-            /* If this was an attempt to actually retrieve content (i.e., not
-             * an authentication-only check), then display a generic error
-             * message.
-             *
-             * Note: We can check present error-specific messages here if
-             * desired; either inside this 'else' or through a series of
-             * additional 'else if' statements. */
-            } else {
-                authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
-            }
-        
-            document.getElementById("ghpaAuthMessage").innerHTML = authMessage;
+         * If the variable is set to an empty string then retrieve the pathname of
+         * the URL for the current window; if the variable is set to a non-empty
+         * string, the use the current value. */
+        if (ghpaFilename === '') {
+            ghpaFilename = window.location.pathname;
         }
-        
-        /* Save response.status so that we can check the response status
-         * outside of the response function (i.e., at the end when we're
-         * setting a return value for this entire function. */
-        fetchResponse=response.status;
-    });
+
+        /* If the pathname for the file to retrieve is empty or ends with a '/'
+         * character, then append the default HTML file name that was set in the
+         * ghpaDefaultHTMLfile variable (usually via the ghpaConfig.js file). */
+        if (ghpaFilename == '' || ghpaFilename.slice(ghpaFilename.length - 1) == '/') {
+            ghpaFilename = ghpaFilename + ghpaDefaultHTMLfile
+        }
+
+        /* If the filename begins with a '/' character then remove that character.
+         *
+         * Two notes:
+         *
+         *  - Every window.location.pathname should start with a '/' character, so
+         *    this will always match unless (a) a calling page specifically sets
+         *    the ghpaFilename variable without a leading '/', or (b) an edge
+         *    case in a browser.
+         *
+         *  - Strictly speaking this shouldn't be necessary because the GitHub API
+         *    is smart enough to deal with GET requests that contain '//'
+         *    sequences. But, it's just a few lines of code and I think it's
+         *    better to keep the GET request cleaner. */
+        if (ghpaFilename.slice(0, 1) == '/') {
+            ghpaFilename = ghpaFilename.slice(1)
+        }
+
+        // Craft the GitHub GET request to retrieve the specified file.
+        const request = new Request(
+            `https://api.github.com/repos/${ghpaOrg}/${ghpaRepo}/contents/${ghpaFilename}?ref=${ghpaBranch}`,
+            {
+                method: 'GET',
+                credentials: 'omit',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Basic ${GitHubToken}`
+                },
+            }
+        );
+
+        /* send the GitHub GET request and process the results; wait for this to
+         * finish before continuing. */
+        await fetch(request).then(async function (response) {
+            /* If we received a response code that indicates successful
+             * authentication, and we're using SSO, then store credentials for
+             * later use. */
+            if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
+                /* If we don't already have an AES-256 key, then generate one and
+                 * save it to sessionStorage. */
+                if (!AESKey) {
+                    await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
+                        /* Save the new key in the AESKey variable so that it's
+                         * available after exiting this '.then' function. */
+                        AESKey = newKey;
+
+                        /* Export the encryption key and convert it to an array of
+                        * 8-bit unsigned integers. */
+                        AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
+
+                        /* Create a string of hexadecimal text representing the array
+                         * values. */
+                        credsKey='';
+                        for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
+                            credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
+                        }
+
+                        /* save the converted AES-256 key to sessionStorage */
+                        sessionStorage.setItem('ghpaCredsKey', credsKey);
+                    });
+                }
+
+    // TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
+
+    // TO DO!!!
+    //  - encrypt the the authentication credentials, possibly need to base64-encode them, before saving in sessionStorage
+
+                /* Save the credentials to sessionStorage.  They will definitely
+                 * be converted to a JSON.stringify output at this point, and
+                 * should be encrypted and base64-encoded. */
+                sessionStorage.setItem('ghpaCreds', GitHubToken);
+            }
+
+            /* If we're performing an authentication-only check and we were able
+             * to authenticate, then display an appropriate message.
+             *
+             * Note that when performing an authentication-only check, a
+             * response.status of 404 is really what we want, as it indicates
+             * that authentication was successful but the specified file
+             * ghpaFilename doesn't exist in the private repository.  If we get a
+             * response.status of 200 then it means that the specified file does
+             * exist in the private repository - which doesn't make sense for an
+             * authentication-only check, since there's no reason to have a
+             * corresponding file in the private repository.  If, on the other
+             * hand, we have a static file in the private repository that we want
+             * to display after a successful login, then just retrieve that
+             * without setting ghpaAuthOnlyFlag. */
+            if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
+                /* Updating document.getElementById("ghpaAuthMessage").innerHTML
+                 * instead of document.body.innerHTML to avoid a Javascript error
+                 * if the content wasn't successfully retrieved. */
+                 document.getElementById("ghpaAuthMessage").innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
+
+                /* Hide the login form (if it's currently displayed).  Once
+                 * the user successfully logs in, we don't want to confuse
+                 * them by still presenting a login form. */
+                document.getElementById("ghpaLoginForm").style.display = "none";
+
+            /* If we successfully retrieved the contents and we are not performing
+             * an authentication-only check, then display the retrieved
+             * content. */
+            } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
+                response.json().then(function (json) { // 5
+                    const content = json.encoding === 'base64' ? atob(json.content) : json.content;
+
+                    // 6
+                    const startIdx = content.indexOf('<body');
+                    document.body.innerHTML = content.substring(
+                        content.indexOf('>', startIdx) + 1,
+                        content.indexOf('</body>'));
+
+                });
+
+            /* If we didn't successfully retrieve the content, then display an
+             * appropriate error message. */
+            } else if (response.status != 200) {
+                
+                /* Define a variable to build the message to display.  We'll
+                 * have just one instance in this section where we actually
+                 * set the message. */
+                let authMessage = '';
+
+                /* Updating document.getElementById("ghpaAuthMessage").innerHTML
+                 * instead of document.body.innerHTML to avoid a Javascript error
+                 * if the content wasn't successfully retrieved. */
+
+                /* If this is an authentication-only check and the response code
+                 * was *not* 404 (file not found), then display an error message
+                 * specific to 'authentication failed. */
+                if (ghpaAuthOnlyFlag && response.status != 404) {
+                    authMessage = `Failed to authenticate to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login} (status: ${response.status}).`;
+
+                /* If this was an attempt to actually retrieve content (i.e., not
+                 * an authentication-only check), then display a generic error
+                 * message.
+                 *
+                 * Note: We can check present error-specific messages here if
+                 * desired; either inside this 'else' or through a series of
+                 * additional 'else if' statements. */
+                } else {
+                    authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
+                }
+
+                document.getElementById("ghpaAuthMessage").innerHTML = authMessage;
+            }
+
+            /* Save response.status so that we can check the response status
+             * outside of the response function (i.e., at the end when we're
+             * setting a return value for this entire function. */
+            fetchResponse=response.status;
+        });
+
+    /* The login name presented isn't valid.
+     *
+     * Don't display the bogus user name.  Part of the point in this filtering
+     * is to prevent XSS by only allowing valid characters; it would be
+     * self-defeating to then display the invalid characters to the user. */
+    } else {
+        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, and cannotb egin or end with a hyphen.";
+    }
 
     /* We're generally calling this from one of two places:
      *
