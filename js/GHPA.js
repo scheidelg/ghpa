@@ -378,7 +378,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * convert the saved key data back to binary. */
             exportedKeyBuffer = new Uint8Array(32);
             for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-                exportedKeyBuffer[index]=parseInt(credskey.slice(index*2, 2), 16);
+                exportedKeyBuffer[index]=parseInt(credsKey.slice(index*2, 2), 16);
             }
 //                let hexString='';
 //                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
