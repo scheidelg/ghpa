@@ -364,7 +364,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let fetchResponse=0; // set an initial value of 'no response'
 
-
     /* If we retrieved a token from sessionStorage, then prepare it for
      * use in authenticating to GitHub. */
     if (retrievedCredsFlag && creds) {
@@ -383,7 +382,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
            AESKey = await window.crypto.subtle.importKey("raw", AESKeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
             /* Decrypt the GitHub token. */
-
+// TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
         /* Save the retrieved token in a new variable name. */
@@ -396,7 +395,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         tempvar=creds.search(":");
         if (tempvar == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
-             * have a ':' character the somethign isn't right. */
+             * have a ':' character then something isn't right. */
             GitHubToken='';
 
         } else {
@@ -407,28 +406,19 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * and password (or personal access token string) and create the GitHub
      * token. */
     } else {
-        /* Aside from 'general best practices' dictating that we define
-         * variables within the scope where we need them, declaring 'password'
-         * here has the effect that the variable is only in memory for a very
-         * short period of time.  I know, this has minimal value because the
-         * password is still in base64-encoded format in the GitHubToken
-         * variable and in the form field.  But it doesn't hurt. */
-        let password;
-
+        /* Save the login name for error messages.
+         *
+         * Don't save the password anywhere except in the base64-encoded
+         * GitHub token (yes, it's already exposed in the form and we're going
+         * to put a base64-encoded version in a variable; still, minimize
+         * exposure whereever it's reasonable). */
         login = creds.querySelector('#ghpaLogin').value;
-        password = creds.querySelector('#ghpaPassword').value;
-
 
         /* We're saving the token in a new variable name instead of re-using
          * the variable for the argument passed to this function, because we
          * might want to reference the login form later in this function. */
-// TO DO: can we simply use the 'creds.querySelector' in this one command instead of having to first save the login and password in separate variables?  We'll still want the login name for messages, but not pwd.
-//        GitHubToken = btoa(`${login}:${password}`);
-//        GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
-        GitHubToken = btoa(`${login}:${creds.querySelector('#ghpaPassword').value)}`;
-
+        GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
-
 
     /* The ghpaFilename variable is initially defined in the ghpaConfig.js
      * file, and set to an emptry string.  The calling page can optionally
