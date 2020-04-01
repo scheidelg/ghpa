@@ -353,15 +353,24 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
     let password;
- 
+    let exportedKeyBuffer;
+
     let fetchResponse=0; // set an initial value of 'no response'
 
     /* If we retrieved credentials from sessionStorage (and incidentally have
      * some credentials to process), then convert them to a JSON object and
      * retrieve the username and password / personal access token. */
     if (retrievedCredsFlag && creds) {
-        /* If we have an AES-256 key then decrypt */
+        /* If we retrieved an AES-256 key string from sessionStorage then
+         * convert it to a usable key and attempt to decrypt the
+         * credentials. */
         if (credsKey) {
+//                let hexString='';
+//                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
+//                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
+//                }
+            const rawKey = window.crypto.getRandomValues(new Uint8Array(16));
+            
             let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
         
@@ -444,7 +453,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* prepare the authentication credentials as a string, to be
              * stored in sessionStorage by other pages on this website. */
             let preppedCreds=JSON.stringify({ login: login, password: password });
-
+// TO DO: IF YOU ALREADY HAVE A KEY LOADED FROM sessionStorage, THEN YOU DON'T NEED TO GENERATE A NEW ONE <--- TO DO!!!!!!!!!!!!!!!!
             /* Generate an AES-256 encryption key so that we can encrypt the
              * prepared credentials and save the encryption key in
              * sessionStorage. */
@@ -458,24 +467,17 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
-                const exportedKeyBuffer = new Uint8Array(exportedKey);
+                exportedKeyBuffer = new Uint8Array(exportedKey);
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
-                let hexString='';
+                credsKey='';
                 for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
+                    credsKey += exportedKeyBuffer[index].toString(16).padStart(2, '0');
                 }
                 
-                sessionStorage.setItem('ghpaCredsKey', hexString);
-
- // TO DO - STOPPED HERE ... converting Uint8Array to a base64-encoded representation, then save to sessionStorage <------------- TO DO!!!!!!!!!!!!!!!!!!!
-/*                let bubbaExportedKey;
-                bubbaExportedKey = await exportCryptoKey(encryptionKey);
-                let xyzzy;
-                xyzzy=3;
-*/
-                //await exportCryptoKey(encryptionKey);
+                /* save the converted AES-256 key to sessionStorage */
+                sessionStorage.setItem('ghpaCredsKey', credsKey);
             });
 
 // TO DO!!!
