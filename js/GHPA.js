@@ -358,28 +358,40 @@ false: did *not* receive an HTML response code of 200
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
-    let AESKey;
-    let AESKeyBuffer;
+    let AESkey;
+    let AESkeyBuffer;
+    let AESiv;
     let GitHubToken;
+    let credsIV;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
     /* If we retrieved a token from sessionStorage, then prepare it for
      * use in authenticating to GitHub. */
     if (retrievedCredsFlag && creds) {
-        /* If we retrieved an AES-256 key string from sessionStorage then
-         * convert it to a usable key and decrypt the GitHub token. */
+
+        /* If we retrieved a string representation of the AES-256 key and IV
+         * from sessionStorage then convert them to a usable key and IV and
+         * decrypt the GitHub token. */
         if (credsKey) {
-            /* Create a new Uint8Array to hold the binary data, and convert
-             * the saved key data back to binary. */
-            AESKeyBuffer = new Uint8Array(32);
-            for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
-                AESKeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
+
+            /* Create a new Uint8Array to hold the AES-256 binary data, and
+             * convert the saved key data back to binary. */
+            AESkeyBuffer = new Uint8Array(32);
+            for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
+                AESkeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
+            }
+            
+            /* Create a new Uint8Array to hold the IV as binary data, and
+             * convert the saved back to binary. */
+            AESiv = new Uint8Array(12);
+            for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
+                AESiv[index]=parseInt(credsKey.slice((index*2)+32, (index*2)+34), 16);
             }
 
             /* Import the saved key data into a usable encryption key
              * object. */
-           AESKey = await window.crypto.subtle.importKey("raw", AESKeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+           AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
             /* Decrypt the GitHub token. */
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -396,7 +408,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
-            GitHubToken='';
+            GitHubToken = '';
+            login = '';
 
         } else {
             login = creds.slice(0, delimiterPosition);
@@ -484,29 +497,35 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * authentication, and we're using SSO, then store credentials for
              * later use. */
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
-                /* If we don't already have an AES-256 key, then generate one and
-                 * save it to sessionStorage. */
-                if (!AESKey) {
-                    await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
-                        /* Save the new key in the AESKey variable so that it's
-                         * available after exiting this '.then' function. */
-                        AESKey = newKey;
+                /* generate a new AES-256 key */
 
-                        /* Export the encryption key and convert it to an array of
-                        * 8-bit unsigned integers. */
-                        AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
+                await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
+                    /* Save the new key in the AESkey variable so that it's
+                     * available after exiting this '.then' function. */
+                    AESkey = newKey;
+                });
 
-                        /* Create a string of hexadecimal text representing the array
-                         * values. */
-                        credsKey='';
-                        for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
-                            credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
-                        }
+                /* Export the encryption key and convert it to an array of
+                * 8-bit unsigned integers. */
+                AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
 
-                        /* save the converted AES-256 key to sessionStorage */
-                        sessionStorage.setItem('ghpaCredsKey', credsKey);
-                    });
+                /* generate a new initialization vector (IV) */
+                AESiv = window.crypto.getRandomValues(new Uint8Array(12));
+
+                /* Create a string of hexadecimal text representing the array
+                 * values for the key and IV. */
+                credsKey='';
+                for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
+                    credsKey += AESkeyBuffer[index].toString(16).padStart(2, '0');
                 }
+                for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
+                    credsKey += AESiv[index].toString(16).padStart(2, '0');
+                }
+
+                /* Save the text representation of the AES-256 key and IV to
+                 * sessionStorage */
+                sessionStorage.setItem('ghpaCredsKey', credsKey);
+                
 
     // TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
 
