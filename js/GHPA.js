@@ -482,17 +482,17 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* Generate an AES-256 encryption key so that we can encrypt the
              * prepared credentials and save the encryption key in
              * sessionStorage. */
-            await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (encryptionKey) => {
+            await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (AESKey) => {
 
 // TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
 
                 /* export the encryption key */
-                AESKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
+                //AESKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
 //                AESKeyBuffer = new Uint8Array(AESKey);
-                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", encryptionKey));
+                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
