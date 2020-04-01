@@ -583,7 +583,7 @@ GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                  * be converted to a JSON.stringify output at this point, and
                  * should be encrypted and base64-encoded. */
                 sessionStorage.setItem('ghpaCreds', GitHubToken);
-sessionStorage.setItem('ghpaCredsx', GitHubTokenX);
+sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
             }
 
             /* If we're performing an authentication-only check and we were able
