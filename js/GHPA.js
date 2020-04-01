@@ -423,7 +423,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * the variable for the argument passed to this function, because we
          * might want to reference the login form later in this function. */
 // TO DO: can we simply use the 'creds.querySelector' in this one command instead of having to first save the login and password in separate variables?  We'll still want the login name for messages, but not pwd.
-        GitHubToken = btoa(`${login}:${password}`);
+//        GitHubToken = btoa(`${login}:${password}`);
+        GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
 
     }
 
