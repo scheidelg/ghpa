@@ -604,7 +604,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * is to prevent XSS by only allowing valid characters; it would be
      * self-defeating to then display the invalid characters to the user. */
     } else {
-        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, and cannotb egin or end with a hyphen.";
+        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
     }
 
     /* We're generally calling this from one of two places:
