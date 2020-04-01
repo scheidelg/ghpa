@@ -551,7 +551,8 @@ let bobster = 1;
                 /* Encode the GitHub token (using TextEncoder) into a
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
-                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder.encode(GitHubToken));
+                const encodedText = new TextEncoder.encode(GitHubToken);
+                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, encodedText);
 
                 /* Convert the cipherText into a Uint8Array to work with. */
                 let cipherBuffer = new Uint8Array(cipherText);
