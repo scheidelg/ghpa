@@ -383,6 +383,9 @@ exportedKeyBuffer = new Uint8Array(32)
             let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
+        /* Save the retrieved token in a new variable name. */
+        GitHubToken = creds;
+
         /* Extract the username so that we can use it in messages; at the same
          * time do at least some basic validation that the retrieved token is
          * valid. */
@@ -394,9 +397,6 @@ exportedKeyBuffer = new Uint8Array(32)
             GitHubToken='';
 
         } else {
-            /* Save the retrieved token in a new variable name. */
-            GitHubToken = creds;
-
             login = creds.Slice(0,tempvar-1);
         }
 
