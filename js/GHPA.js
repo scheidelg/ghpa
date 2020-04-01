@@ -365,6 +365,58 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     let fetchResponse=0; // set an initial value of 'no response'
 
 
+    /* If we retrieved credentials from sessionStorage (and incidentally have
+     * some credentials to process), then convert them to a JSON object and
+     * retrieve the username and password / personal access token. */
+    if (retrievedCredsFlag && creds) {
+        /* If we retrieved an AES-256 key string from sessionStorage then
+         * convert it to a usable key and attempt to decrypt the
+         * credentials. */
+        if (credsKey) {
+//                let hexString='';
+//                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
+//                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
+//                }
+const rawKey = window.crypto.getRandomValues(new Uint8Array(32));
+exportedKeyBuffer = new Uint8Array(32)
+            
+            let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+
+        /* Extract the username so that we can use it in messages; at the same
+         * time do at least some basic validation that the retrieved token is
+         * valid. */
+        creds = atob(creds);
+        tempvar=creds.search(":");
+        if (tempvar == -1) {
+            /* A GitHub token is supposed to be 'user:password'.  If we don't
+             * have a ':' character the somethign isn't right. */
+            GitHubToken='';
+
+        } else {
+            /* Save the retrieved token in a new variable name. */
+            GitHubToken = creds;
+
+            login = creds.Slice(0,tempvar-1);
+        }
+
+    /* If we were passed credentials from a form, then extract the username
+     * and password (or personal access token string) and create the GitHub
+     * token. */
+    } else {
+        login = creds.querySelector('#ghpaLogin').value;
+        password = creds.querySelector('#ghpaPassword').value;
+
+
+        /* We're saving the token in a new variable name instead of re-using
+         * the variable for the argument passed to this function, because we
+         * might want to reference the login form later in this function. */
+// TO DO: can we simply use the 'creds.querySelector' in this one command instead of having to first save the login and password in separate variables?  We'll still want the login name for messages, but not pwd.
+        GitHubToken = btoa(`${login}:${password}`);
+    }
+
+
+
     /* Extract the login and password that were passed to this function
      * (either from the authentication form or retrieved from
      * sessionStorage). */
