@@ -282,15 +282,20 @@ creds                         (type varies; see below)
         private repository, and authentication credentials have not yet
         been saved in sessionStorage.
 
-     2. As a string created by:
+------------------------------------------------------------------------------
+     2. A  GitHUB authentication token (string).  The token is formed by
+        is formed by concatenating the username and password (or personal
+        access token string) with a ':' character, and then base64-encoding
+        the string.  For example:
      
-            JSON.stringify({ LOGIN: login, PASSWORD: password });
+            GitHubToken = btoa(`${login}:${password}`);
+
 
         where 'login' and 'password' are variables identifying the user ID
-        and password to use for GitHub authentication.
+        and password (or personal access token string) to use for GitHub
+        authentication.
 
-        This string is retrieved from sessionStorage, and must then be
-        converted back to a JSON object.
+        This string is retrieved from sessionStorage.
 
         This is the method used when the user has already authenticated to
         GitHub, the ghpaSSOFlag option is set, credentials were not able to
@@ -299,7 +304,7 @@ creds                         (type varies; see below)
 
      3. As a string created using the above method, but then encrypted with
         AES-256 and base-64 encoded.  This string is also retrieved from
-        sessionStorage, and must then be converted back to a JSON object.
+        sessionStorage.
 
         This is the method used when the user has already authenticated to
         GitHub, the ghpaSSOFlag option is set, credentials *are* able to
@@ -354,6 +359,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     let login;
     let password;
     let exportedKeyBuffer;
+    let GitHubToken;
+    let tempvar;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -374,17 +381,38 @@ exportedKeyBuffer = new Uint8Array(32)
             
             let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
-        
-        /* Extract the credentials. */
-        creds = JSON.parse(creds);
-        login = creds.login;
-        password = creds.password;
+
+----------------------------------------------------------------------------*/
+        /* Extract the username so that we can use it in messages; at the same
+         * time do at least some basic validation that the retrieved token is
+         * valid. */
+        creds = atob(creds);
+        tempvar=creds.search(":");
+        if (tempvar == -1) {
+            /* A GitHub token is supposed to be 'user:password'.  If we don't
+             * have a ':' character the somethign isn't right. */
+            GitHubToken='';
+
+        } else {
+            /* Save the retrieved token in a new variable name. */
+            GitHubToken = creds;
+
+            login = creds.Slice(0,tempvar-1);
+        }
 
     /* If we were passed credentials from a form, then extract the username
-     * and password / personal access token. */
+     * and password (or personal access token string) and create the GitHub
+     * token. */
     } else {
         login = creds.querySelector('#ghpaLogin').value;
         password = creds.querySelector('#ghpaPassword').value;
+
+
+        /* We're saving the token in a new variable name instead of re-using
+         * the variable for the argument passed to this function, because we
+         * might want to reference the login form later in this function. */
+// TO DO: can we simply use the 'creds.querySelector' in this one command instead of having to first save the login and password in separate variables?  We'll still want the login name for messages, but not pwd.
+        GitHubToken = btoa(`${login}:${password}`);
     }
 
     /* Extract the login and password that were passed to this function
@@ -427,10 +455,6 @@ exportedKeyBuffer = new Uint8Array(32)
         ghpaFilename = ghpaFilename.slice(1)
     }
 
-    /* Create the authentication token using the login and password that were
-     * passed to this function. */
-    const GitHubToken = btoa(`${login}:${password}`);
-    
     // Craft the GitHub GET request to retrieve the specified file.
     const request = new Request(
         `https://api.github.com/repos/${ghpaOrg}/${ghpaRepo}/contents/${ghpaFilename}?ref=${ghpaBranch}`,
