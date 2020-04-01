@@ -42,7 +42,8 @@ Return value: none
 function ghpaClearSSO() {
    sessionStorage.removeItem('ghpaCreds');
    sessionStorage.removeItem('ghpaCredsKey');
-}
+sessionStorage.removeItem('ghpaCredsx');  // <------------------------------------------REMOVE AFTER TESTING
+sessionStorage.removeItem('ghpaCredsX');} // <------------------------------------------REMOVE AFTER TESTING
 
 
 /*============================================================================
