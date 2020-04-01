@@ -358,7 +358,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
     let password;
-    let exportedKeyBuffer;
+    let exportedKey;
+    let exportedKeyBuffer = new Uint8Array(32);
     let GitHubToken;
     let tempvar;
 
@@ -377,8 +378,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 //                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
 //                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
 //                }
-const rawKey = window.crypto.getRandomValues(new Uint8Array(32));
-exportedKeyBuffer = new Uint8Array(32)
+//const rawKey = window.crypto.getRandomValues(new Uint8Array(32));
+//exportedKeyBuffer = new Uint8Array(32);
             
             let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
@@ -490,11 +491,11 @@ exportedKeyBuffer = new Uint8Array(32)
 // TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
 
                 /* export the encryption key */
-                const exportedKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
+                exportedKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
-                exportedKeyBuffer = new Uint8Array(exportedKey);
+                exportedKeyBuffer = Uint8Array(exportedKey);
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
