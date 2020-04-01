@@ -380,7 +380,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
             /* Import the saved key data into a usable encryption key
              * object. */
-            await window.crypto.subtle.importKey("raw", AESKeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+           AESKey = await window.crypto.subtle.importKey("raw", AESKeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
             /* Decrypt the GitHub token. */
 
