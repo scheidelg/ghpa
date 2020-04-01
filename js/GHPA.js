@@ -366,13 +366,16 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     /* If we retrieved a token from sessionStorage, then prepare it for
      * use in authenticating to GitHub. */
     if (retrievedCredsFlag && creds) {
-
         /* If we retrieved a string representation of the AES-256 key and IV
          * from sessionStorage then convert them to a usable key and IV and
          * decrypt the GitHub token. */
         if (credsKey) {
 
-            /* Create a new Uint8Array to hold the AES-256 binary data, and
+
+let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
+
+
+            /* Create a new Uint8Array to hold the AES-256 binary data;
              * convert the saved key data back to binary.
              *
              * Characters 1 through 64 (of the data retrieved from
@@ -383,8 +386,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 AESkeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
             }
             
-            /* Create a new Uint8Array to hold the IV as binary data, and
-             * convert the saved back to binary.
+            /* Create a new Uint8Array to hold the IV as binary data; convert
+             * the saved IV back to binary.
              *
              * Characters 65 through 88 (of the data retrieved from
              * sessionStorage) is a hexadecimal character representation of
@@ -397,6 +400,18 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* Import the saved key data into a usable encryption key
              * object. */
            const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+
+/*--------------------------------------------------------------------------*/
+            /* Create a new Uint8Array to hold the encrypted token as binary
+             * data; convert the saved encrypted token back to binary.
+             *
+             * The encrypted token is saved as hexadecimal characters, where
+             * every two characters represents a byte.  So, the number of
+             * elements in the array = ((# of characters) / 2). */
+            let credsBuffer = new Uint8Array(credsX.length/2);
+            for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
+                credsBuffer[index]=parseInt(credsX.slice((index*2), (index*2)+2), 16);
+            }
 
             /* Decrypt the GitHub token. */
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -540,7 +555,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
 
 //3456789012345678901234567890123456789012345678901234567890123456789012345678
-                /* Encode the GitHub token using TextEncoder, into a
+                /* Encode the GitHub token (using TextEncoder) into a
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
                 let encoder = new TextEncoder();
@@ -551,9 +566,11 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the cipherText. */
-                let GitHubTokenX='';
+//                let GitHubToken='';
+let GitHubTokenX='';
                 for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-                    GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
+//                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
+GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                 }
 
 
@@ -566,6 +583,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * be converted to a JSON.stringify output at this point, and
                  * should be encrypted and base64-encoded. */
                 sessionStorage.setItem('ghpaCreds', GitHubToken);
+sessionStorage.setItem('ghpaCredsx', GitHubTokenX);
             }
 
             /* If we're performing an authentication-only check and we were able
