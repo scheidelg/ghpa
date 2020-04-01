@@ -16,7 +16,7 @@ which you may want to strip out before using on a website.
 ----------------------------------------------------------------------------*/
 
 
-async function exportCryptoKey(key) {
+/*async function exportCryptoKey(key) {
  
   const exported = await window.crypto.subtle.exportKey(
     "raw",
@@ -27,7 +27,7 @@ async function exportCryptoKey(key) {
  
  return tempvar;
 }
-
+*/
 
 /*============================================================================
 function ghpaClearSSO
@@ -357,39 +357,33 @@ false: did *not* receive an HTML response code of 200
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
-    let password;
-    let exportedKey;
-    let exportedKeyBuffer;
+    let AESKey;
+    let AESKeyBuffer;
     let GitHubToken;
     let tempvar;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
 
-    /* If we retrieved credentials from sessionStorage (and incidentally have
-     * some credentials to process), then convert them to a JSON object and
-     * retrieve the username and password / personal access token. */
+    /* If we retrieved a token from sessionStorage, then prepare it for
+     * use in authenticating to GitHub. */
     if (retrievedCredsFlag && creds) {
         /* If we retrieved an AES-256 key string from sessionStorage then
-         * convert it to a usable key and attempt to decrypt the
-         * credentials. */
+         * convert it to a usable key and decrypt the GitHub token. */
         if (credsKey) {
-            /* Create a new Uint8Array to hold the binary data, and conver
-             * convert the saved key data back to binary. */
-            let y;
-         
-            exportedKeyBuffer = new Uint8Array(32);
-            for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-                exportedKeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
+            /* Create a new Uint8Array to hold the binary data, and convert
+             * the saved key data back to binary. */
+            AESKeyBuffer = new Uint8Array(32);
+            for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
+                AESKeyBuffer[index]=parseInt(credsKey.slice(index*2, (index*2)+2), 16);
             }
-//                let hexString='';
-//                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-//                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
-//                }
-//const rawKey = window.crypto.getRandomValues(new Uint8Array(32));
-//exportedKeyBuffer = new Uint8Array(32);
-            
-            let x = 1;    // TO DO <--------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            /* Import the saved key data into a usable encryption key
+             * object. */
+            await window.crypto.subtle.importKey("raw", AESKeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+
+            /* Decrypt the GitHub token. */
+
         }
 
         /* Save the retrieved token in a new variable name. */
@@ -413,6 +407,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * and password (or personal access token string) and create the GitHub
      * token. */
     } else {
+        /* Aside from 'general best practices' dictating that we define
+         * variables within the scope where we need them, declaring 'password'
+         * here has the effect that the variable is only in memory for a very
+         * short period of time.  I know, this has minimal value because the
+         * password is still in base64-encoded format in the GitHubToken
+         * variable and in the form field.  But it doesn't hurt. */
+        let password;
+
         login = creds.querySelector('#ghpaLogin').value;
         password = creds.querySelector('#ghpaPassword').value;
 
@@ -422,15 +424,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * might want to reference the login form later in this function. */
 // TO DO: can we simply use the 'creds.querySelector' in this one command instead of having to first save the login and password in separate variables?  We'll still want the login name for messages, but not pwd.
         GitHubToken = btoa(`${login}:${password}`);
+
     }
 
-
-
-    /* Extract the login and password that were passed to this function
-     * (either from the authentication form or retrieved from
-     * sessionStorage). */
-//    const login = formObject.username || formObject.querySelector('#ghpaLogin').value;
-//    const password = formObject.token || formObject.querySelector('#ghpaPassword').value;
 
     /* The ghpaFilename variable is initially defined in the ghpaConfig.js
      * file, and set to an emptry string.  The calling page can optionally
@@ -499,17 +495,17 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 // TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
 
                 /* export the encryption key */
-                exportedKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
+                AESKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
-                exportedKeyBuffer = new Uint8Array(exportedKey);
+                AESKeyBuffer = new Uint8Array(AESKey);
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
                 credsKey='';
-                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
-                    credsKey += exportedKeyBuffer[index].toString(16).padStart(2, '0');
+                for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
+                    credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
                 }
                 
                 /* save the converted AES-256 key to sessionStorage */
@@ -839,4 +835,4 @@ then set up an event listener on the "Export" button.
 // 
 //    return exportedKeyBuffer;
 //}
-let ghpaExportedKeyBuffer;
+//let ghpaExportedKeyBuffer;
