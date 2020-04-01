@@ -539,12 +539,22 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * sessionStorage */
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
 
-
-
+//3456789012345678901234567890123456789012345678901234567890123456789012345678
+                /* Encode the GitHub token using TextEncoder, into a
+                 * Uint8Array; then encrypt that text using the AES-256 key
+                 * and IV. */
                 let encoder = new TextEncoder();
+                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, encoder.encode(GitHubToken));
 
-                const ciphertext = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, encoder.encode(GitHubToken));
+                /* Convert the cipherText into a Uint8Array to work with. */
+                let cipherBuffer = new Uint8Array(cipherText);
 
+                /* Create a string of hexadecimal text representing the array
+                 * values for the cipherText. */
+                let GitHubTokenX='';
+                for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
+                    GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
+                }
 
 
     // TO DO: encrypt and base64-encode the prepared credentials (already in GitHubToken) <---------------------- TO DO!!!!!!!!!!!!!!
