@@ -479,38 +479,35 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * stored in sessionStorage by other pages on this website. */
 //            let preppedCreds=JSON.stringify({ login: login, password: password });
 // TO DO: IF YOU ALREADY HAVE A KEY LOADED FROM sessionStorage, THEN YOU DON'T NEED TO GENERATE A NEW ONE <--- TO DO!!!!!!!!!!!!!!!!
-            /* Generate an AES-256 encryption key so that we can encrypt the
-             * prepared credentials and save the encryption key in
-             * sessionStorage. */
-            await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
+            /* If we don't already have an AES-256 key, then generate one and
+             * save it to sessionStorage. */
+            if (!AESKey) {
+                await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
+                    /* Save the new key in the AESKey variable so that it's
+                     * available after exiting this '.then' function. */
+                    AESKey = newKey;
+
+                    /* Export the encryption key and convert it to an array of
+                    * 8-bit unsigned integers. */
+                    AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
+
+                    /* Create a string of hexadecimal text representing the array
+                     * values. */
+                    credsKey='';
+                    for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
+                        credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
+                    }
+
+                    /* save the converted AES-256 key to sessionStorage */
+                    sessionStorage.setItem('ghpaCredsKey', credsKey);
+                });
+            }
 
 // TO DO: encrypt and base64-encode the prepared credentials (already in preppedCreds) <---------------------- TO DO!!!!!!!!!!!!!!
 
-                /* export the encryption key */
-                //AESKey = await window.crypto.subtle.exportKey("raw", encryptionKey);
-                AESKey = newKey;
-
-                /* Convert the encryption key to an array of 8-bit unsigned
-                 * integers. */
-//                AESKeyBuffer = new Uint8Array(AESKey);
-                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
-
-                /* Create a string of hexadecimal text representing the array
-                 * values. */
-                credsKey='';
-                for (let index = 0, arrayLength = AESKeyBuffer.length; index < arrayLength; index++) {
-                    credsKey += AESKeyBuffer[index].toString(16).padStart(2, '0');
-                }
-                
-                /* save the converted AES-256 key to sessionStorage */
-                sessionStorage.setItem('ghpaCredsKey', credsKey);
-            });
-
-AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
-
 // TO DO!!!
 //  - generate an AES-256 encryption key
-//  - encrypt the JSON.stringify'd version of the authentication credentials, before saving in sessionStorage
+//  - encrypt the the authentication credentials, possibly need to base64-encode them, before saving in sessionStorage
 //  - convert the encryption key to a format that can be saved in sessionStorage
 //  - save the formatted encryption key to sessionStorage
 
