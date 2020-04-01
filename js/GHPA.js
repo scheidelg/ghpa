@@ -359,7 +359,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     let login;
     let password;
     let exportedKey;
-    let exportedKeyBuffer = new Uint8Array(32);
+    let exportedKeyBuffer;
     let GitHubToken;
     let tempvar;
 
@@ -374,6 +374,12 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * convert it to a usable key and attempt to decrypt the
          * credentials. */
         if (credsKey) {
+            /* Create a new Uint8Array to hold the binary data, and conver
+             * convert the saved key data back to binary. */
+            exportedKeyBuffer = new Uint8Array(32);
+            for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
+                exportedKeyBuffer[index]=parseInt(credskey.slice(index*2, 2), 16);
+            }
 //                let hexString='';
 //                for (let index = 0, arrayLength = exportedKeyBuffer.length; index < arrayLength; index++) {
 //                    hexString += exportedKeyBuffer[index].toString(16).padStart(2, '0');
@@ -495,7 +501,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
-                exportedKeyBuffer = Uint8Array(exportedKey);
+                exportedKeyBuffer = new Uint8Array(exportedKey);
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
