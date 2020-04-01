@@ -541,7 +541,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
 
 
-                const ciphertext = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, GitHubToken);
+                let encoder = new TextEncoder();
+
+                const ciphertext = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, encoder.encode(GitHubToken));
 
 
 
