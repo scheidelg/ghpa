@@ -414,6 +414,7 @@ let credsX = sessionStorage.getItem('ghpaCredsX');    // <----------------------
                 credsBuffer[index]=parseInt(credsX.slice((index*2), (index*2)+2), 16);
             }
 
+let bob = 1;
             /* Decrypt the GitHub token. */
 // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
