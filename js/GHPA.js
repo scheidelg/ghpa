@@ -431,7 +431,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * the point in this filtering is to prevent XSS by only allowing valid
      * characters; it would be self-defeating to then display the invalid
      * characters to the user. */
-----------------------------------------------------------------------------*/
     if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i) {
         let xyzzy=1;
     }
