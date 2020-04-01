@@ -493,7 +493,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 /* Convert the encryption key to an array of 8-bit unsigned
                  * integers. */
 //                AESKeyBuffer = new Uint8Array(AESKey);
-                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", newKey));
+                AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
 
                 /* Create a string of hexadecimal text representing the array
                  * values. */
@@ -505,6 +505,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 /* save the converted AES-256 key to sessionStorage */
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
             });
+
+AESKeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESKey));
 
 // TO DO!!!
 //  - generate an AES-256 encryption key
