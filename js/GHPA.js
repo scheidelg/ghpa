@@ -454,7 +454,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
             /* Decrypt the GitHub token. */
             creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
-let bobster = 1;
         }
 
         /* Save the retrieved token in a new variable name. */
