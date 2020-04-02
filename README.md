@@ -2,7 +2,7 @@
 
 ## GitHub Credential Security
 
-###BLUF
+### BLUF
 
 There are multiple options, from a security perspective, to use GHPA. There are some mitigating factors for even the worst option but here's the bottom line.
 
