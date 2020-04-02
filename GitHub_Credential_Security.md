@@ -1,8 +1,8 @@
-# GitHub Credential Security
+# GitHub Credential Security with GitHub Pages Authorization (GHPA)
 
 ## BLUF
 
-There are multiple options, from a security perspective, to use GHPA. There are some mitigating factors for even the worst option but here's the bottom line.
+There are multiple options, from a security perspective, to use GitHub Pages Authorization (GHPA). There are some mitigating factors for even the worst option but here's the bottom line.
 
  - Use GHPA as a GitHub Application for a secure implementation.
 
