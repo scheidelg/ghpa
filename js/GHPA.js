@@ -400,7 +400,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          
             /* Convert the saved encrypted token back to binary. */
             for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
-                credsBuffer[index]=parseInt(credsX.slice((index*2), (index*2)+2), 16);
+                credsBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
             }
 
             /* Decrypt the GitHub token. */
