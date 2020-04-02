@@ -19,19 +19,18 @@ which you may want to strip out before using on a website.
 /*============================================================================
 function ghpaClearSSO
 ------------------------------------------------------------------------------
-Clear the authentication token data from memory so that subsequent attempts to
+Clear the authentication token from memory so that subsequent attempts to
 access the private GitHub repository require re-authentication.
-
 ------------------------------------------------------------------------------
 Arguments: none
-
 ------------------------------------------------------------------------------
 Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaClearSSO() {
    sessionStorage.removeItem('ghpaCreds');
    sessionStorage.removeItem('ghpaCredsKey');
-}
+sessionStorage.removeItem('ghpaCredsx');  // <------------------------------------------REMOVE AFTER TESTING
+sessionStorage.removeItem('ghpaCredsX');} // <------------------------------------------REMOVE AFTER TESTING
 
 
 /*============================================================================
@@ -71,13 +70,10 @@ Another option is to run the script within - preferably at the bottom of - the
 Declared as an async function because we're retrieving content using fetch()
 and then acting on that content; and need to wait until all of that is done
 before returning from this function.
-
 ------------------------------------------------------------------------------
 Arguments: none
-
 ------------------------------------------------------------------------------
 Return value: none
-
 ------------------------------------------------------------------------------
 Variables
 
@@ -242,7 +238,6 @@ the submit action on a form.  For example:
 Declared as an async function because we're retrieving content using fetch()
 and then acting on that content; and need to wait until all of that is done
 before returning from this function.
-
 ------------------------------------------------------------------------------
 Arguments
 
@@ -294,11 +289,8 @@ creds                         (type varies; see below)
         the credentials have been stored in sessionStorage for later use.
 
      3. As a string created using the above method, but then encrypted with
-        AES-256 and encoded.  This string is also retrieved from
+        AES-256 and base-64 encoded.  This string is also retrieved from
         sessionStorage.
-
-        Encoding is done using the cipherBuffer Uint8Array and the same
-        method as described for the 'credsKey' variable.
 
         This is the method used when the user has already authenticated to
         GitHub, the ghpaSSOFlag option is set, credentials *are* able to
@@ -307,66 +299,25 @@ creds                         (type varies; see below)
         
         This is preferred over method #2 and will automatically be attemped.
 
-        Note that the *ONLY* benefit of the AES encryption is so that casual
-        browsing of the sessionStorage space doesn't reveal the plaintext
-        or base64-encoded representation of the GitHub user ID and password
-        (or personal access token string).  This does *NOT* protect the
-        authentication credentials from someone who also retrieves the AES key
-        and IV from memory, and decrypts the authentication credentials.
-
 credsKey                      string; optional
 
     An optional string argument containing an encoded representation of an
-    AES-256 encryption key and initialization vector (IV); which can be used
-    to decrypt the 'creds' argument contents.  Retrieved from and saved to
-    sessionStorage.
+    AES-256 encryption key, which can be used to decrypt the 'creds'
+    argument contents.
 
-    When the key is exported as raw data, it's represented as a 32-byte
-    Uint8Array.  The IV is reprsented as a 12-byte UintArray.  Encoding to
-    save in sessionStorage is simply a concatenation of the hexadecimal
-    representation of each element in both arrays.  For example, if the
-    arrays had elements:
+    When the key is exported as raw data, it's represented as Uint8Array
+    containing 32 values.  Encoding is simply a concatenation of the
+    hexadecimal representation of each element.  For example, if the array
+    had elements:
 
-        AESkeyB[0]=190   AESkeyB[8]=57     AESkeyB[16]=212   AESkeyB[24]=91
-        AESkeyB[1]=184   AESkeyB[9]=116    AESkeyB[17]=169   AESkeyB[25]=202
-        AESkeyB[2]=133   AESkeyB[10]=2     AESkeyB[18]=37    AESkeyB[26]=26
-        AESkeyB[3]=240   AESkeyB[11]=53    AESkeyB[19]=20    AESkeyB[27]=209
-        AESkeyB[4]=102   AESkeyB[12]=138   AESkeyB[20]=214   AESkeyB[28]=229
-        AESkeyB[5]=40    AESkeyB[13]=7     AESkeyB[21]=36    AESkeyB[29]=254
-        AESkeyB[6]=131   AESkeyB[14]=9     AESkeyB[22]=208   AESkeyB[30]=19
-        AESkeyB[7]=251   AESkeyB[15]=205   AESkeyB[23]=233   AESkeyB[31]=88
+        array[0]=127
+        array[1]=59
+        array[2]=12
+        array[3]=241
 
-        AESiv[0]=116     AESiv[3]=17       AESiv[6]=123      AESiv[9]=144
-        AESiv[1]=239     AESiv[4]=240      AESiv[7]=46       AESiv[10]=29
-        AESiv[2]=61      AESiv[5]=14       AESiv[8]=16       AESiv[11]=104
-
-    Then the encoded string would be:
-
-        beb885f0662883fb397402358a0709cdd4a92514d624d0e95bca1ad1e5fe135874ef3d11f00e7b2e10901d68
-
+    Then the encoded string would be: 7f3b0cf1
 ------------------------------------------------------------------------------
 Variables
-
-AESkey                        CryptoKey
-
-    Key to use for the AES encryption/decription of the GitHub token.
-
-    See: https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
-
-AESiv                         Uint8Array[12]
-
-    Initialization vector (IV) used for the AES encryption/decryption of the
-    GitHub token.
-
-AESkeyBuffer                  Uint8Array[32]
-
-    Array to hold the binary representation of the exported AES key.  Used
-    when exporting the key before saving in sessionStorage; and when reading
-    data from sessionStorage so that the key can be imported. 
-
-cipherBUffer                  Uint8Array[variable length]
-
-    Array to hold the binary representation of the encrypted GitHub token.
 
 fetchResponse                 integer
 
@@ -375,20 +326,12 @@ fetchResponse                 integer
     overall function, and so can set the variable and use it to determine the
     return value from the overall function.
 
-GitHubToken                  string
+encryptionKey                 (TO DO!!! - UPDATE AFTER CODING THIS)
 
-    The base64-encoded authentication token to pass to GitHub.  The unencoded
-    text is formatted as:
+    An AES-256 encryption key to use when encrypting GitHub authentication
+    credentials before storing them in sessionStorage.
 
-        login_name:password_or_PAT_string
-
-    where 'login_name' and 'password_or_PAT_string' are replaced by actual
-    values to use for authentication.
-
-login                         string
-
-    Hold the login name so that it can be displayed in status/error messages.
-
+TO DO!!! 'token' and other variables that are declared throughout the function<---------!!!!!!!!!!!!!!!!!!
 ------------------------------------------------------------------------------
 Return Value
 
@@ -401,6 +344,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
     let GitHubToken;
+    let credsIV;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -446,15 +390,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * The encrypted token is saved as hexadecimal characters, where
              * every two characters represents a byte.  So, the number of
              * elements in the array = ((# of characters) / 2). */
-            let cipherBuffer = new Uint8Array(creds.length/2);
+            let credsBuffer = new Uint8Array(creds.length/2);
          
             /* Convert the saved encrypted token back to binary. */
-            for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-                cipherBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
+            for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
+                credsBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
             }
 
             /* Decrypt the GitHub token. */
-            creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
+            creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
         }
 
         /* Save the retrieved token in a new variable name.  This allows us
@@ -472,7 +416,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * minimizes the instances of the unencoded password in memory.  Yes,
          * it's an extremely marginal benefit (the user ID and password are
          * already in memory base64-encoded). */
-        const delimiterPosition=atob(creds).search(":");
+        let delimiterPosition=atob(creds).search(":");
         if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
