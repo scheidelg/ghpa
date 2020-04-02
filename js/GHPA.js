@@ -799,4 +799,4 @@ let ghpaFilename = '';
 
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
-let ghpaTokensOnlyFlag = false;
+let ghpaTokensOnlyFlag = true;
