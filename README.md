@@ -90,10 +90,10 @@ There are some additional actions - some related to the points listed above - th
 
  1. Windows.sessionstorage
 
-   https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+    https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 
  2. GitHub Deprecation of API Password Authentication
 
-   https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
+    https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
 
 (add Windows.crypto reference, other reference to crypto, original ghpa basis reference)
