@@ -288,6 +288,13 @@ AESkeyBuffer                  Uint8Array[32]
     when exporting the key before saving in sessionStorage; and when reading
     data from sessionStorage so that the key can be imported. 
 
+authMessage                   string
+
+    Used to place a message on the calling page.  If this variable is
+    non-empty at the end of the function, then set:
+
+        document.getElementById("ghpaAuthMessage").innerHTML
+
 cipherBUffer                  Uint8Array[variable length]
 
     Array to hold the binary representation of the encrypted GitHub token.
@@ -328,9 +335,10 @@ false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
-    let tokenDelimiterPosition;
+    let authMessage = '';
     let GitHubToken;
     let login;
+    let tokenDelimiterPosition;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -613,11 +621,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * appropriate error message. */
             } else if (response.status != 200) {
                 
-                /* Define a variable to build the message to display.  We'll
-                 * have just one instance in this section where we actually
-                 * set the message. */
-                let authMessage = '';
-
                 /* Updating document.getElementById("ghpaAuthMessage").innerHTML
                  * instead of document.body.innerHTML to avoid a Javascript error
                  * if the content wasn't successfully retrieved. */
@@ -638,8 +641,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 } else {
                     authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
                 }
-
-                document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "<br><small>(" + (new Date().localBigEndianFull()) + ")</small>";
             }
 
             /* Save response.status so that we can check the response status
@@ -649,6 +650,10 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         });
     }
 
+    if (authMessage) {
+        document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "<br><small>(" + (new Date().localBigEndianFull()) + ")</small>";
+    }
+    
     /* We're generally calling this from one of two places:
      *
      *  (a) On submission of an HTML form where we've prevented the default
