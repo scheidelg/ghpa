@@ -570,7 +570,7 @@ let bobster = 1;
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
 //                let encoder = new TextEncoder();
-                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder.encode(GitHubToken));
+                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder().encode(GitHubToken));
 
                 /* Convert the cipherText into a Uint8Array to work with. */
                 let cipherBuffer = new Uint8Array(cipherText);
