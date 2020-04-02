@@ -409,9 +409,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             login = atob(GitHubToken).slice(0, tokenDelimiterPosition);
         }
 
-let test = atob(GitHubToken).slice(tokenDelimiterPosition + 1);
-let test2 = 1;
-
     /* If we were passed credentials from a form, then extract the username
      * and password (or personal access token string) and create the GitHub
      * token. */
@@ -453,6 +450,12 @@ let test2 = 1;
          * invalid characters to the user. */
         document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
 
+
+
+
+    } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
+//let test = atob(GitHubToken).slice(tokenDelimiterPosition + 1);
+let test2 = 1;
     } else {
 
         /* The ghpaFilename variable is initially defined in the JavaScript
@@ -796,4 +799,4 @@ let ghpaFilename = '';
 
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
-let ghpaTokensOnlyFlag = true;
+let ghpaTokensOnlyFlag = false;
