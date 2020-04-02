@@ -418,10 +418,15 @@ let bobster = 1;
 
         /* Extract the username so that we can use it in messages; at the same
          * time do at least some basic validation that the retrieved token is
-         * valid. */
-//        creds = atob(creds);
-//        let delimiterPosition=atob(creds).search(":");
-        if (atob(creds).search(":") == -1) {
+         * valid.
+         *
+         * Yes, we're calling atob() twice when instead we could be saving the
+         * results in a variable and referencing the variable.   This
+         * minimizes the instances of the unencoded password in memory.  Yes,
+         * it's an extremely marginal benefit (the user ID and password are
+         * already in memory base64-encoded). */
+        let delimiterPosition=atob(creds).search(":");
+        if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken = '';
