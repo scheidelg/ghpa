@@ -424,7 +424,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         /* Save the position of the ':' character in the base64-decoded
          * GitHub authentication token, just to make some of the other code
          * slightly simpler. */
-        tokenDelimiterPosition = login.length + 1;
+        tokenDelimiterPosition = login.length;
 
         /* We're saving the token in a new variable name instead of re-using
          * the variable for the argument passed to this function; because we
