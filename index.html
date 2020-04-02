@@ -2,11 +2,6 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="/localstyle.css">
-        <script>
-            Date.prototype.localBigEndianFull = function () {
-                return this.getFullYear() + "-" + (this.getMonth()+1 < 10 ? "0" : "") + (this.getMonth()+1) + "-" + (this.getDate() < 10 ? "0" : "") + this.getDate() + " " + (this.getHours() < 10 ? "0" : "") + this.getHours() + ":" + (this.getMinutes() < 10 ? "0" : "") + this.getMinutes() + ":" +  (this.getSeconds() < 10 ? "0" : "") + this.getSeconds() + " UTC" + (this.getTimezoneOffset() >=0 ? "+" : "") + (Math.floor(this.getTimezoneOffset() / 60) < 10 ? "0" : "") + Math.floor(this.getTimezoneOffset() / 60) + ":" + (this.getTimezoneOffset() % 60 < 10 ? "0" : "") + (this.getTimezoneOffset() % 60);
-            }
-        </script>
     </head>
     <body>
         <noscript><p>
@@ -60,10 +55,5 @@
                 <p>Clear cached credentials so that you have to authenticate again to access content from the private repository.</p>
             </li>
         </ul>
-        <p id="demo"></p>
-        <script>
-            let myDate = new Date().localBigEndianFull()
-            document.getElementById("demo").innerHTML = myDate;
-        </script>
     </body>
 </html>
