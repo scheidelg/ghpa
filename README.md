@@ -32,7 +32,7 @@ There are multiple options, from a security perspective, to use GHPA. There are 
 
     - *In the event of compromised credentials, the attacker will be able to act as the user on GitHub including everything that the user would be able to do by logging directly into GitHub.*
 
-###The Details
+### The Details
 
 In the absence of operating as a GitHub application, GHPA operates by prompting the user for their GitHub authentication credentials and using those credentials in GitHub API requests. The intent is that GHPA will only *read* the *requested* files from the *specified* private repository. However, the user has to trust that GHPA isn't going to do anything else with the credentials - either intentionally or through a compromise of the GHPA-enabled web site.
 
