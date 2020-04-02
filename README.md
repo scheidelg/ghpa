@@ -50,7 +50,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    This also means that a user accessing a GHPA-enabled website must authenticate once per browser window.
 
- - GHPA encrypts the GitHub credentials before being saved to sessionStorage.
+ - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[3\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[\[4\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
 
     This protects against casual browsing of sessionStorage to see the user ID and password (or personal access token string) in plaintext or base64-encoded text.
 
@@ -62,7 +62,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
- - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[3\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
+ - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[6\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
 
  - GitHub accounts that have multifactor authentication (MFA) enabled won't be able to use their regular password to authenticate through GHPA.
 
@@ -92,12 +92,29 @@ There are some additional actions - some related to the points listed above - th
 
     https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 
- 3. GitHub Deprecation of API Password Authentication
-
-    https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
-
  2. Same-origin Policy
 
     https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+
+ 3. Web Crypto API
+
+    https://developer.mozilla.org/en-US/docs/Web/API/Crypto
+
+ 4. Web Crypto API Examples
+ 
+    https://mdn.github.io/dom-examples/web-crypto/
+
+ 5. GitHub Gist: crypto-aes.gcm.js by Chris Veness
+ 
+    "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
+ 
+    I didn't use this directly did find this to be an excellent and succinct set of examples.
+    
+    https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
+
+ 6. GitHub Deprecation of API Password Authentication
+
+    https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
+
 
 (add Windows.crypto reference, other reference to crypto, original ghpa basis reference)
