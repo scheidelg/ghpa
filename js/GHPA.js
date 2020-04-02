@@ -453,7 +453,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
 
 
-    } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
+    } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition).match(/^[a-f0-9]{40}$/i)) {
 //let test = atob(GitHubToken).slice(tokenDelimiterPosition + 1);
 let test2 = 1;
     } else {
