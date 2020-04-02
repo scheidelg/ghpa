@@ -432,12 +432,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * function. */
         GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
-
-let matchThis = atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i);
-let plainText = atob(GitHubToken);
-let plainTextSlice = plainText.slice(tokenDelimiterPosition + 1);
-let plainTestSliceMatch = plainTextSlice.match(/^[a-f0-9]{40}$/i);
-    
     
     /* According to github.com/join, GitHub usernames:
      *
