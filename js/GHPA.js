@@ -181,9 +181,7 @@ async function ghpaLoadPage() {
     /* If SSO is enabled and we have existing authentication credentials to
      * use, then attempt to retrieve content from the private GitHub
      * repository. */
-// TO DO: adjust code so that if the credsKey is retrieved then DON'T bother generating a new key and saving it to sessionStorage; just re-use the existing key <--- TO DO!!!!!!!!!!!
     if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds, retrievedCredsKey))) {
-//    if (!(ghpaSSOFlag && retrievedCreds && ghpaRetrieve(true, retrievedCreds))) {  // <----------- TO DO: Intentionally not passing retrievedCredsKey until after we have the encrypt/decrypt code written
         /* If any of:
          *  - SSO isn't enabled;
          *
@@ -360,7 +358,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         if (credsKey) {
 
 
-let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
+//let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
 
 
             /* Create a new Uint8Array to hold the AES-256 binary data. */
@@ -391,27 +389,21 @@ let credsX = sessionStorage.getItem('ghpaCredsX');    // <----------------------
              * object. */
            const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
-/*--------------------------------------------------------------------------*/
             /* Create a new Uint8Array to hold the encrypted token as binary
              * data.
              *
              * The encrypted token is saved as hexadecimal characters, where
              * every two characters represents a byte.  So, the number of
              * elements in the array = ((# of characters) / 2). */
-            let credsBuffer = new Uint8Array(credsX.length/2);
+            let credsBuffer = new Uint8Array(creds.length/2);
          
             /* Convert the saved encrypted token back to binary. */
             for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
-                credsBuffer[index]=parseInt(credsX.slice((index*2), (index*2)+2), 16);
+                credsBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
             }
 
             /* Decrypt the GitHub token. */
-//            let bobbo = await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer);
-//
-//            const plaintext = new TextDecoder().decode(bobbo);
-
-            GitHubToken = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
-         // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
 let bobster = 1;
         }
 
@@ -420,17 +412,21 @@ let bobster = 1;
 
         /* Extract the username so that we can use it in messages; at the same
          * time do at least some basic validation that the retrieved token is
-         * valid. */
-        creds = atob(creds);
-        let delimiterPosition=creds.search(":");
+         * valid.
+         *
+         * Yes, we're calling atob() twice when instead we could be saving the
+         * results in a variable and referencing the variable.   This
+         * minimizes the instances of the unencoded password in memory.  Yes,
+         * it's an extremely marginal benefit (the user ID and password are
+         * already in memory base64-encoded). */
+        const delimiterPosition=atob(GitHubToken).search(":");
         if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken = '';
             login = '';
-
         } else {
-            login = creds.slice(0, delimiterPosition);
+            login = atob(creds).slice(0, delimiterPosition);
         }
 
     /* If we were passed credentials from a form, then extract the username
@@ -564,11 +560,11 @@ let bobster = 1;
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the cipherText. */
-//                let GitHubToken='';
-let GitHubTokenX='';
+                GitHubToken='';
+//let GitHubTokenX='';
                 for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-//                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
-GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
+                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
+//GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                 }
 
 
@@ -581,7 +577,7 @@ GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                  * be converted to a JSON.stringify output at this point, and
                  * should be encrypted and base64-encoded. */
                 sessionStorage.setItem('ghpaCreds', GitHubToken);
-sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
+//sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
             }
 
             /* If we're performing an authentication-only check and we were able
