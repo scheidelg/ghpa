@@ -396,7 +396,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * The encrypted token is saved as hexadecimal characters, where
              * every two characters represents a byte.  So, the number of
              * elements in the array = ((# of characters) / 2). */
-            let credsBuffer = new Uint8Array(credsX.length/2);
+            let credsBuffer = new Uint8Array(creds.length/2);
          
             /* Convert the saved encrypted token back to binary. */
             for (let index = 0, arrayLength = credsBuffer.length; index < arrayLength; index++) {
