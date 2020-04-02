@@ -313,6 +313,11 @@ login                         string
 
     Hold the login name so that it can be displayed in status/error messages.
 
+tokenDelimiterPosition        string
+
+    The character position of the ':' delimiter in the base64-decoded GitHub
+    authentication token.
+
 ------------------------------------------------------------------------------
 Return Value
 
@@ -323,8 +328,9 @@ false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
-    let login;
+    let tokenDelimiterPosition;
     let GitHubToken;
+    let login;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -393,15 +399,17 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * minimizes the instances of the unencoded password in memory.  Yes,
          * it's an extremely marginal benefit (the user ID and password are
          * already in memory base64-encoded). */
-        const delimiterPosition=atob(GitHubToken).search(":");
-        if (delimiterPosition == -1) {
+        tokenDelimiterPosition=atob(GitHubToken).search(":");
+        if (tokenDelimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken = '';
             login = '';
         } else {
-            login = atob(creds).slice(0, delimiterPosition);
+            login = atob(GitHubToken).slice(0, tokenDelimiterPosition);
         }
+
+let test = atob(GitHubToken).slice(tokenDelimiterPosition + 1);
 
     /* If we were passed credentials from a form, then extract the username
      * and password (or personal access token string) and create the GitHub
@@ -414,6 +422,11 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * to put a base64-encoded version in a variable; still, minimize
          * exposure whereever it's reasonable). */
         login = creds.querySelector('#ghpaLogin').value;
+
+        /* Save the position of the ':' character in the base64-decoded
+         * GitHub authentication token, just to make some of the other code
+         * slightly simpler. */
+        tokenDelimiterPosition = login.length + 1;
 
         /* We're saving the token in a new variable name instead of re-using
          * the variable for the argument passed to this function; because we
