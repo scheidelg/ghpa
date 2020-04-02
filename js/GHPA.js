@@ -419,8 +419,8 @@ let bobster = 1;
         /* Extract the username so that we can use it in messages; at the same
          * time do at least some basic validation that the retrieved token is
          * valid. */
-        creds = atob(creds);
-        let delimiterPosition=creds.search(":");
+//        creds = atob(creds);
+        let delimiterPosition=atob(creds).search(":");
         if (delimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
@@ -428,7 +428,7 @@ let bobster = 1;
             login = '';
 
         } else {
-            login = creds.slice(0, delimiterPosition);
+            login = atob(creds).slice(0, delimiterPosition);
         }
 
     /* If we were passed credentials from a form, then extract the username
