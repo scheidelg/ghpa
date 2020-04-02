@@ -86,7 +86,7 @@ There are some additional actions - some related to the points listed above - th
 
    Unfortunately, the minimum scope required to read content from a private GitHub repository is *repo*. This scope grants 'full control of private repositories' which also includes full control of public repositories. *In the event of compromised credentials, the attacker will be able to read all public and private repositories to which the user has access*.
 
-##References
+## References
 
  1. Windows.sessionstorage
 
