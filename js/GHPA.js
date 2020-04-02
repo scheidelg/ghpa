@@ -639,7 +639,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
                 }
 
-                document.getElementById("ghpaAuthMessage").innerHTML = authMessage;
+                document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "(" + (new Date().localBigEndianFull()) + ")";
             }
 
             /* Save response.status so that we can check the response status
@@ -667,6 +667,22 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      *      login form.
      */
     return (fetchResponse == 200);
+}
+
+
+/*============================================================================
+Update the Date.prottype to generate a date/time stamp formatted as:
+
+    yyyy-mm-dd hh:mm:ss UTC[+-]hh:mm
+
+Why?  Because I like to have date/time formatted big endian.
+
+Call with code similar to:
+
+    let myDate = new Date().localBigEndianFull()
+----------------------------------------------------------------------------*/
+Date.prototype.localBigEndianFull = function () {
+    return this.getFullYear() + "-" + (this.getMonth()+1 < 10 ? "0" : "") + (this.getMonth()+1) + "-" + (this.getDate() < 10 ? "0" : "") + this.getDate() + " " + (this.getHours() < 10 ? "0" : "") + this.getHours() + ":" + (this.getMinutes() < 10 ? "0" : "") + this.getMinutes() + ":" +  (this.getSeconds() < 10 ? "0" : "") + this.getSeconds() + " UTC" + (this.getTimezoneOffset() >=0 ? "+" : "") + (Math.floor(this.getTimezoneOffset() / 60) < 10 ? "0" : "") + Math.floor(this.getTimezoneOffset() / 60) + ":" + (this.getTimezoneOffset() % 60 < 10 ? "0" : "") + (this.getTimezoneOffset() % 60);
 }
 
 
