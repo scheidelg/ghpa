@@ -1,4 +1,4 @@
-# GitHuba Pages Authentication (GHP-Authentication or GHPA)
+# GitHub Pages Authentication (GHP-Authentication or GHPA)
 
 ## GitHub Credential Security
 
