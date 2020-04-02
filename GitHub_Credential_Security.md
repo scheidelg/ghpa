@@ -1,4 +1,4 @@
-# GitHub Credential Security with GitHub Pages Authorization (GHPA)
+# GitHub Credential Security with GHPA
 
 ## BLUF
 
