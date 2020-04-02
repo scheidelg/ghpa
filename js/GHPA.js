@@ -269,6 +269,7 @@ creds                         (type varies; see below)
         private repository, and authentication credentials have not yet
         been saved in sessionStorage.
 
+------------------------------------------------------------------------------
      2. A  GitHUB authentication token (string).  The token is formed by
         is formed by concatenating the username and password (or personal
         access token string) with a ':' character, and then base64-encoding
@@ -399,6 +400,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
             /* Decrypt the GitHub token. */
             creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
+let bobster = 1;
         }
 
         /* Save the retrieved token in a new variable name.  This allows us
@@ -454,14 +456,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * The username and password fields on the login form should be marked as
      * 'required' but users are crazy.  This will also serve as a (minor)
      * check against a problem with data retrieved from sessionStorage. */
-    if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
-        /* Don't display the bogus user name.  Part of the point of this filtering
-         * is to prevent XSS by only allowing valid characters; it would be
-         * self-defeating to then display the invalid characters to the user. */
-        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
-
-    /* The login name is OK; continue. */
-    } else {
+    if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
         /* The ghpaFilename variable is initially defined in the JavaScript
          * header, and set to an emptry string.  The calling page can optionally
@@ -561,18 +556,19 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 let cipherBuffer = new Uint8Array(cipherText);
 
                 /* Create a string of hexadecimal text representing the array
-                 * values for the cipherText.
-                 *
-                 * We can reuse 'GitHubToken' at this point because we're done
-                 * with GitHub authentication. */
+                 * values for the cipherText. */
                 GitHubToken='';
+//let GitHubTokenX='';
                 for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
                     GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
+//GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                 }
 
                 /* Save the encrypted and encoded credentials to
                  * sessionStorage. */
-                sessionStorage.setItem('ghpaCreds', GitHubToken);
+                sessionStorage.setItem('ghpaCreds', GitHubToken);    // <---------- THIS IS ULTIMATELY THE FINAL CODE, AFTER SWITCHING OFF OF GitHubTokenX (with the 'X')
+//sessionStorage.setItem('ghpaCreds', GitHubTokenX);
+//sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
             }
 
             /* If we're performing an authentication-only check and we were able
@@ -604,9 +600,10 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * an authentication-only check, then display the retrieved
              * content. */
             } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
-                response.json().then(function (json) {
+                response.json().then(function (json) { // 5
                     const content = json.encoding === 'base64' ? atob(json.content) : json.content;
 
+                    // 6
                     const startIdx = content.indexOf('<body');
                     document.body.innerHTML = content.substring(
                         content.indexOf('>', startIdx) + 1,
@@ -652,6 +649,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * setting a return value for this entire function. */
             fetchResponse=response.status;
         });
+
+    /* The login name presented isn't valid.
+     *
+     * Don't display the bogus user name.  Part of the point in this filtering
+     * is to prevent XSS by only allowing valid characters; it would be
+     * self-defeating to then display the invalid characters to the user. */
+    } else {
+        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
     }
 
     /* We're generally calling this from one of two places:
