@@ -29,8 +29,7 @@ Return value: none
 function ghpaClearSSO() {
    sessionStorage.removeItem('ghpaCreds');
    sessionStorage.removeItem('ghpaCredsKey');
-sessionStorage.removeItem('ghpaCredsx');  // <------------------------------------------REMOVE AFTER TESTING
-sessionStorage.removeItem('ghpaCredsX');} // <------------------------------------------REMOVE AFTER TESTING
+}
 
 
 /*============================================================================
@@ -72,24 +71,29 @@ and then acting on that content; and need to wait until all of that is done
 before returning from this function.
 ------------------------------------------------------------------------------
 Arguments: none
+
 ------------------------------------------------------------------------------
 Return value: none
+
 ------------------------------------------------------------------------------
 Variables
 
-retrievedCreds                JavaScript Object
+retrievedCreds                string
 
-    Credentials, if any, retrieved from sessionStorage and converted to a JSON
-    object.  If present, use this to attempt initial authentication to GitHub
-    by calling with arguments of the retrievedCreds and the retrievedCredsnKey;
-    vs. the call from the form inside the element ghpaLoginForm which just
-    passes in the form element.
+    Credentials, if any, retrieved from sessionStorage.  If present, pass to
+    ghpaRetrieve() to attempt initial authentication to GitHub (instead of the
+    call to ghpaRetrieve() from the form inside the element ghpaLoginForm,
+    which retrieves credentials from the form element).
 
-retrievedCredsKey             (TO DO... DEFINE AFTER YOU FIGURE OUT CODING!!!)
+    See ghpaRetrieve() comments for details.
 
-    AES-256 enryption key, if any, retrieved from sessionStorage.  If
-    retrieved, this will be the key that can be used to decrypt the
-    retrievedCred content.
+retrievedCredsKey             string
+
+    An optional string argument containing an encoded representation of an
+    AES-256 encryption key and initialization vector (IV); which can be used
+    to decrypt the 'creds' argument contents.
+
+    See ghpaRetrieve() comments for details.
 ----------------------------------------------------------------------------*/
 async function ghpaLoadPage() {
     /* As an aside: Using sessionStorage and localStorage is insecure because
