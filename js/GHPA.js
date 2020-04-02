@@ -383,7 +383,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
             /* Import the saved key data into a usable encryption key
              * object. */
-           const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+            const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]).catch(e => {
+                console.log(e);
+            });
 
             /* Create a new Uint8Array to hold the encrypted token as binary
              * data.
