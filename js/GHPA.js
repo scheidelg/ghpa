@@ -420,13 +420,12 @@ let bobster = 1;
          * time do at least some basic validation that the retrieved token is
          * valid. */
 //        creds = atob(creds);
-        let delimiterPosition=atob(creds).search(":");
-        if (delimiterPosition == -1) {
+//        let delimiterPosition=atob(creds).search(":");
+        if (atob(creds).search(":") == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken = '';
             login = '';
-
         } else {
             login = atob(creds).slice(0, delimiterPosition);
         }
