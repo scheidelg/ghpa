@@ -357,10 +357,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * decrypt the GitHub token. */
         if (credsKey) {
 
-
-//let credsX = sessionStorage.getItem('ghpaCredsX');    // <--------------------------------------REMOVE AFTER TESTING; change refs to 'credsX' to 'creds'
-
-
             /* Create a new Uint8Array to hold the AES-256 binary data. */
             let AESkeyBuffer = new Uint8Array(32);
 
@@ -389,7 +385,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * object. */
            const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
-/*--------------------------------------------------------------------------*/
             /* Create a new Uint8Array to hold the encrypted token as binary
              * data.
              *
@@ -404,16 +399,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             }
 
             /* Decrypt the GitHub token. */
-//            let bobbo = await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer);
-//
-//            const plaintext = new TextDecoder().decode(bobbo);
-
             creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
-         // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 let bobster = 1;
         }
 
-        /* Save the retrieved token in a new variable name. */
+        /* Save the retrieved token in a new variable name.  This allows us
+         * to, in the case where 'creds' is a reference to the login form,
+         * keep that reference in case we want to use it later in this
+         * function. */
         GitHubToken = creds;
 
         /* Extract the username so that we can use it in messages; at the same
@@ -554,11 +547,9 @@ let bobster = 1;
                  * sessionStorage */
                 sessionStorage.setItem('ghpaCredsKey', credsKey);
 
-//3456789012345678901234567890123456789012345678901234567890123456789012345678
                 /* Encode the GitHub token (using TextEncoder) into a
                  * Uint8Array; then encrypt that text using the AES-256 key
                  * and IV. */
-//                let encoder = new TextEncoder();
                 const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder().encode(GitHubToken));
 
                 /* Convert the cipherText into a Uint8Array to work with. */
