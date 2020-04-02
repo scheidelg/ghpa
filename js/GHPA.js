@@ -410,6 +410,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         }
 
 let test = atob(GitHubToken).slice(tokenDelimiterPosition + 1);
+let test2 = 1;
 
     /* If we were passed credentials from a form, then extract the username
      * and password (or personal access token string) and create the GitHub
