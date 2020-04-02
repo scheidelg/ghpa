@@ -506,7 +506,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * The username and password fields on the login form should be marked as
      * 'required' but users are crazy.  This will also serve as a (minor)
      * check against a problem with data retrieved from sessionStorage. */
-    if (login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
+    if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
+
+        /* Don't display the bogus user name as part of an error message.  Part
+         * of the point in this filtering is to prevent XSS by only allowing
+         * valid characters; it would be self-defeating to then display the
+         * invalid characters to the user. */
+        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
+
+    } else {
 
         /* The ghpaFilename variable is initially defined in the JavaScript
          * header, and set to an emptry string.  The calling page can optionally
@@ -696,14 +704,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * setting a return value for this entire function. */
             fetchResponse=response.status;
         });
-
-    /* The login name presented isn't valid.
-     *
-     * Don't display the bogus user name.  Part of the point in this filtering
-     * is to prevent XSS by only allowing valid characters; it would be
-     * self-defeating to then display the invalid characters to the user. */
-    } else {
-        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
     }
 
     /* We're generally calling this from one of two places:
