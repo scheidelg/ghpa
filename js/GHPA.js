@@ -335,7 +335,7 @@ false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
-    let authMessage = '';
+    let authMessage;
     let GitHubToken;
     let login;
     let tokenDelimiterPosition;
@@ -456,14 +456,14 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * of the point in this filtering is to prevent XSS by only allowing
          * valid characters; it would be self-defeating to then display the
          * invalid characters to the user. */
-        document.getElementById("ghpaAuthMessage").innerHTML = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
+        authMessage = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
 
     /* If ghpaTokensOnlyFlag is enabled, require passwords that match the
      * format of a GitHub personal access token string: 40 hexadecimal
      * characters. */
     } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
         /* Display an error message on the web page. */
-        document.getElementById("ghpaAuthMessage").innerHTML = "Use of GitHub personal access tokens is required for authentication, and the password entered doesn't appear to be a token string.";
+        authMessage = "Use of GitHub personal access tokens is required for authentication, and the password entered doesn't appear to be a token string.";
 
     } else {
 
