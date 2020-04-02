@@ -20,7 +20,7 @@ However, we can implement secure web access to a private repository files by cre
 
       - Client-side JavaScript leverages GitHub's API to access the private repository, using authentication credentials submitted by the user.
       
-> Note: Technically this doesn't need to be a public repository; it can be a private repository with GitHub Pages enbled. For clarity in these notes, I'll continue to refer to this as the 'public' repository.
+   > Note: Technically this doesn't need to be a public repository; it can be a private repository with GitHub Pages enbled. For clarity in these notes, I'll continue to refer to this as the 'public' repository.
 
 This is certainly not as robust or full-featured as a web-application firewall (WAF) but it suits my needs:
 
