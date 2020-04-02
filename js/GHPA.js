@@ -651,7 +651,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     }
 
     if (authMessage) {
-        document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "<br><small>(" + (new Date().localBigEndianFull()) + ")</small>";
+        document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "<br><small>[" + (new Date().localBigEndianFull()) + "]</small>";
     }
     
     /* We're generally calling this from one of two places:
