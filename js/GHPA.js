@@ -557,17 +557,17 @@ let bobster = 1;
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the cipherText. */
-//                let GitHubToken='';
-let GitHubTokenX='';
+                GitHubToken='';
+//let GitHubTokenX='';
                 for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-//                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
-GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
+                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
+//GitHubTokenX += cipherBuffer[index].toString(16).padStart(2, '0');
                 }
 
                 /* Save the encrypted and encoded credentials to
                  * sessionStorage. */
-//                sessionStorage.setItem('ghpaCreds', GitHubToken);    <---------- THIS IS ULTIMATELY THE FINAL CODE, AFTER SWITCHING OFF OF GitHubTokenX (with the 'X')
-sessionStorage.setItem('ghpaCreds', GitHubTokenX);
+                sessionStorage.setItem('ghpaCreds', GitHubToken);    // <---------- THIS IS ULTIMATELY THE FINAL CODE, AFTER SWITCHING OFF OF GitHubTokenX (with the 'X')
+//sessionStorage.setItem('ghpaCreds', GitHubTokenX);
 //sessionStorage.setItem('ghpaCredsX', GitHubTokenX);
             }
 
