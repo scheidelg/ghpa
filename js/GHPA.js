@@ -639,7 +639,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
                 }
 
-                document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "(" + (new Date().localBigEndianFull()) + ")";
+                document.getElementById("ghpaAuthMessage").innerHTML = authMessage + "<br><small>(" + (new Date().localBigEndianFull()) + ")</small>";
             }
 
             /* Save response.status so that we can check the response status
