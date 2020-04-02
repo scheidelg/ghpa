@@ -342,8 +342,30 @@ credsKey                      string; optional
     Then the encoded string would be:
 
         beb885f0662883fb397402358a0709cdd4a92514d624d0e95bca1ad1e5fe135874ef3d11f00e7b2e10901d68
+
 ------------------------------------------------------------------------------
 Variables
+
+AESkey                        CryptoKey
+
+    Key to use for the AES encryption/decription of the GitHub token.
+
+    See: https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
+
+AESiv                         Uint8Array[12]
+
+    Initialization vector (IV) used for the AES encryption/decryption of the
+    GitHub token.
+
+AESkeyBuffer                  Uint8Array[32]
+
+    Array to hold the binary representation of the exported AES key.  Used
+    when exporting the key before saving in sessionStorage; and when reading
+    data from sessionStorage so that the key can be imported. 
+
+cipherBUffer                  Uint8Array[variable length]
+
+    Array to hold the binary representation of the encrypted GitHub token.
 
 fetchResponse                 integer
 
@@ -352,12 +374,20 @@ fetchResponse                 integer
     overall function, and so can set the variable and use it to determine the
     return value from the overall function.
 
-encryptionKey                 (TO DO!!! - UPDATE AFTER CODING THIS)
+GitHubToken                  string
 
-    An AES-256 encryption key to use when encrypting GitHub authentication
-    credentials before storing them in sessionStorage.
+    The base64-encoded authentication token to pass to GitHub.  The unencoded
+    text is formatted as:
 
-TO DO!!! 'token' and other variables that are declared throughout the function<---------!!!!!!!!!!!!!!!!!!
+        login_name:password_or_PAT_string
+
+    where 'login_name' and 'password_or_PAT_string' are replaced by actual
+    values to use for authentication.
+
+login                         string
+
+    Hold the login name so that it can be displayed in status/error messages.
+
 ------------------------------------------------------------------------------
 Return Value
 
