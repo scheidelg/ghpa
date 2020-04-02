@@ -408,7 +408,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 //
 //            const plaintext = new TextDecoder().decode(bobbo);
 
-            GitHubToken = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
+            creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, credsBuffer));
          // TO DO <--------------------------------------------------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 let bobster = 1;
         }
