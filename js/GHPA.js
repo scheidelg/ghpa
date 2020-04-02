@@ -433,9 +433,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
         GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
 
-let matchThis = atob(GitHubToken).slice(tokenDelimiterPosition).match(/^[a-f0-9]{40}$/i);
+let matchThis = atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i);
 let plainText = atob(GitHubToken);
-let plainTextSlice = plainText.slice(tokenDelimiterPosition);
+let plainTextSlice = plainText.slice(tokenDelimiterPosition + 1);
 let plainTestSliceMatch = plainTextSlice.match(/^[a-f0-9]{40}$/i);
     
     
@@ -459,7 +459,7 @@ let plainTestSliceMatch = plainTextSlice.match(/^[a-f0-9]{40}$/i);
     /* If ghpaTokensOnlyFlag is enabled, require passwords that match the
      * format of a GitHub personal access token string: 40 hexadecimal
      * characters. */
-    } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition).match(/^[a-f0-9]{40}$/i)) {
+    } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
         /* Display an error message on the web page. */
         document.getElementById("ghpaAuthMessage").innerHTML = "Use of GitHub personal access tokens is required for authentication, and the password entered doesn't appear to be a token string.";
 
