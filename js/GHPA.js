@@ -245,16 +245,6 @@ before returning from this function.
 ------------------------------------------------------------------------------
 Arguments
 
-retrievedCredsFlag            boolean
-
-    Identifies whether this call is being made after retrieving SSO
-    credentials from sessionStorage, vs. from a form where the username and
-    password (or personal access token) have been entered.
-
-    True:  SSO credentials are passwed in the creds and credsKey arguments
-    False: SSO credentials are not available; the creds argument contains a
-           reference to a form element
-
 creds                         (type varies; see below)
 
     Credentials can be passed in one of three forms:
@@ -343,6 +333,16 @@ credsKey                      string; optional
 
         beb885f0662883fb397402358a0709cdd4a92514d624d0e95bca1ad1e5fe135874ef3d11f00e7b2e10901d68
 
+retrievedCredsFlag            boolean
+
+    Identifies whether this call is being made after retrieving SSO
+    credentials from sessionStorage, vs. from a form where the username and
+    password (or personal access token) have been entered.
+
+    True:  SSO credentials are passwed in the creds and credsKey arguments
+    False: SSO credentials are not available; the creds argument contains a
+           reference to a form element
+
 ------------------------------------------------------------------------------
 Variables
 
@@ -400,7 +400,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
     let login;
     let GitHubToken;
-    let credsIV;
 
     let fetchResponse=0; // set an initial value of 'no response'
 
@@ -415,7 +414,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* Create a new Uint8Array to hold the AES-256 binary data. */
             let AESkeyBuffer = new Uint8Array(32);
 
-            /* Convert the saved key data back to binary.
+            /* Convert the retrieved key data back to binary.
              *
              * Characters 1 through 64 (of the data retrieved from
              * sessionStorage) is a hexadecimal character representation of
@@ -427,7 +426,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             /* Create a new Uint8Array to hold the IV as binary data. */
             let AESiv = new Uint8Array(12);
 
-            /* Convert the saved IV back to binary.
+            /* Convert the retrieved IV data back to binary.
              *
              * Characters 65 through 88 (of the data retrieved from
              * sessionStorage) is a hexadecimal character representation of
@@ -436,7 +435,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 AESiv[index]=parseInt(credsKey.slice((index*2)+64, (index*2)+66), 16);
             }
 
-            /* Import the saved key data into a usable encryption key
+            /* Import the retrieved key data into a usable encryption key
              * object. */
            const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
 
@@ -448,7 +447,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * elements in the array = ((# of characters) / 2). */
             let cipherBuffer = new Uint8Array(creds.length/2);
          
-            /* Convert the saved encrypted token back to binary. */
+            /* Convert the retrieved encrypted token back to binary. */
             for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
                 cipherBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
             }
