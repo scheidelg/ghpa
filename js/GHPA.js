@@ -535,21 +535,19 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     console.error(errObject);
                 });
 
-                /* Generate a new initialization vector (IV). */
-                const AESiv = await window.crypto.getRandomValues(new Uint8Array(12))
-                .catch(function(errObject){
-                    console.error(errObject);
-                });
-
                 /* Export the encryption key and convert it to an array of
                 * 8-bit unsigned integers.  The only reason we're doing this
                 * is so that we can save the key for use when another web
                 * page (during this session) attempts to retrieve and reuse
                 * the GitHub credentails. */
-                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey))
+                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("rawbob", AESkey))
                 .catch(function(errObject){
                     console.error(errObject);
                 });
+
+                /* Generate a new initialization vector (IV). */
+// implement try {} catch {} around this one
+                const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the key and IV. */
