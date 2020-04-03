@@ -469,7 +469,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * characters. */
     } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
         /* Display an error message on the web page. */
-        authMessage = "Use of GitHub personal access tokens is required for authentication, and the password entered doesn't appear to be a token string.";
+        authMessage = "Use of GitHub personal access tokens is required for authentication, and the passcode entered doesn't appear to be a token string.";
 
     } else {
 
@@ -530,7 +530,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
                 /* generate a new AES-256 key */
-                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 252}, true, ["encrypt", "decrypt"])
                 .catch(function(errObject){
                     console.error(errObject);
                 });
