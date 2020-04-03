@@ -533,7 +533,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 //                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
 
                 await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
-                .then(function(AESkey) {
+                .then(async function(AESkey) {
 
                     /* Export the encryption key and convert it to an array of
                     * 8-bit unsigned integers.  The only reason we're doing this
