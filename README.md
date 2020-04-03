@@ -120,6 +120,8 @@ I created three repositories to host the GHPA content and illustrate using GHPA:
 
 The latest version of GHPA is version 0.5 (2020.04.03). A full change history is available [here](Change_History.md).
 
+GHPA is [licensed](LICENSE) under the GNU General Public License v3.0.
+
 Twitter handle: @Greg_Scheidel
 
 ### Credit
