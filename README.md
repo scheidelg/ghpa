@@ -4,13 +4,13 @@ Authenticated access to GitHub private repository content via a GitHub Pages web
 _____
 GitHub Pages is a simple way to create a website to publish content from a public or private GitHub repository. Unfortunately, GitHub Pages doesn't provide any authentication controls. This means that once GitHub Pages is enabled for a private GitHub repository, all repository content is publicly accessible via the website.
 
-However, it is possible to implement secure web access to a private repository files.  We can create two separate repositories:
+However, it is possible to implement secure web access to private repository files.  We can create two separate repositories:
 
  1. A private repository.
 
      - Contains content that we want to publish on a website, but not to the public.
 
-     - GitHub Pages is **not** enabled on the private repository.
+     - GitHub Pages is not enabled on the private repository.
 
      - Access is managed using GitHub's built-in authentication controls.
 
@@ -18,7 +18,7 @@ However, it is possible to implement secure web access to a private repository f
 
       - Contains front-end content that is accessible by the public.
 
-      - GitHub Pages **is** enabled on the public repository.
+      - GitHub Pages is enabled on the public repository.
 
       - Client-side JavaScript leverages GitHub's API to access the private repository, using authentication credentials submitted by the user.
       
