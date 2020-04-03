@@ -136,14 +136,28 @@ async function ghpaLoadPage() {
         /* If ghpaLoginFormFile is set to '-', then don't replace the element
          * ghpaLoginForm. */
         if (ghpaLoginFormFile != '-') {
-            /* Load the login form and replace the HTML of the element
-             * ghpaLoginForm. */
-            await fetch(ghpaLoginFormFile).then(function (response) {
+            /* Retrieve the login form. */
+            await fetch(ghpaLoginFormFile)
+            
+            /* An HTTP 404, 500 and other failures won't generate an error;
+             * need to check response.ok or response.status. */
+            .then(function (response) {
+                if (response.status != 200) {
+                    /* throw an error to the catch clause */
+                    throw new error(`${response.status} HTTP response`);
+                }
+
+                /* Provide response.text for processing by the next action in
+                 * the chain. */
                 return response.text();
             })
-            .then(function (data) {
-                document.getElementById('ghpaLoginForm').innerHTML = data;
+
+            /* Process the retrieved HTML code. */
+            .then(function (HTMLcode) {
+                document.getElementById('ghpaLoginForm').innerHTML = HTMLcode;
             })
+
+            /* On an error, pop up an error message. */
             .catch(function(errObject) {
                 window.alert('ghpaLoadPage() error attempting to load login form: ' + errObject);
                 console.error(errObject);
