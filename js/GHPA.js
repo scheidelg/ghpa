@@ -142,9 +142,11 @@ async function ghpaLoadPage() {
             /* An HTTP 404, 500 and other failures won't generate an error;
              * need to check response.ok or response.status. */
             .then(function (response) {
-                if (response.status != 200) {
+//                if (response.status != 200) {
+                if (true) {
                     /* throw an error to the catch clause */
-                    throw new error(`${response.status} HTTP response`);
+//                    throw new error(`${response.status} HTTP response`);
+                    throw new error(`xxx HTTP response`);
                 }
 
                 /* Provide response.text for processing by the next action in
