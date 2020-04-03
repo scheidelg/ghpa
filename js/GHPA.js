@@ -382,23 +382,29 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
             /* Import the retrieved key data into a usable encryption key
              * object. */
-           const AESkey = await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+            await window.crypto.subtle.importKey("raw", AESkeyBuffer, "AES-GCM", true, ["encrypt", "decrypt"]);
+            .then(async function(AESkey) {
 
-            /* Create a new Uint8Array to hold the encrypted token as binary
-             * data.
-             *
-             * The encrypted token is saved as hexadecimal characters, where
-             * every two characters represents a byte.  So, the number of
-             * elements in the array = ((# of characters) / 2). */
-            let cipherBuffer = new Uint8Array(creds.length/2);
-         
-            /* Convert the retrieved encrypted token back to binary. */
-            for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-                cipherBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
-            }
+                /* Create a new Uint8Array to hold the encrypted token as binary
+                 * data.
+                 *
+                 * The encrypted token is saved as hexadecimal characters, where
+                 * every two characters represents a byte.  So, the number of
+                 * elements in the array = ((# of characters) / 2). */
+                let cipherBuffer = new Uint8Array(creds.length/2);
 
-            /* Decrypt the GitHub token. */
-            creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
+                /* Convert the retrieved encrypted token back to binary. */
+                for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
+                    cipherBuffer[index]=parseInt(creds.slice((index*2), (index*2)+2), 16);
+                }
+
+                /* Decrypt the GitHub token. */
+                creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
+                
+            })
+            .catch(function(errObject) {
+                console.error(errObject);
+            });
         }
 
         /* Save the retrieved token in a new variable name. */
