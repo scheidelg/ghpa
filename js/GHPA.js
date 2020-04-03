@@ -147,7 +147,7 @@ async function ghpaLoadPage() {
 let testNumber=444;
                     /* throw an error to the catch clause */
 //                    throw new error(`${response.status} HTTP response`);
-                    throw new error('xxx HTTP response');
+                    throw new Error('xxx HTTP response');
                 }
 
                 /* Provide response.text for processing by the next action in
