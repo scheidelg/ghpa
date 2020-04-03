@@ -58,7 +58,7 @@ Configuration of GHPA is controlled by setting JavaScript global variables. Curr
 
  - Enabling/disabling a password filter to only accept passwords that match the format of a GitHub personal access token string.
 
-   Enabling this option encourages use of GitHub personal access tokens for authentication - and discourage the use of a user's regular GitHub password. This reduces the exposure of GitHub user passwords.
+   Enabling this option encourages use of GitHub personal access tokens<sup>[\[1\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup> for authentication - and discourage the use of a user's regular GitHub password. This reduces the exposure of GitHub user passwords.
 
  - Identifying whether content loaded from the private repository should replace the entire web page, or just the body (i.e., inside the '\<body\>/\<body\>' tags) of the existing web page.
 
@@ -108,7 +108,7 @@ I created three repositories to host the GHPA content and illustrate using GHPA:
 
 ## Credit
 
-I created GHPA because I wanted to authenticated access controls for content published via GitHub Pages but couldn't find a suitable tool or GitHub Pages feature. While looking for that feature, I came across a web page [Github Pages and authentication, we are not that far](https://rmannibucau.metawerx.net/post/github-pages-authentication) by Romain Manni-Bucau<sup>[\[1\]](https://rmannibucau.metawerx.net/post/github-pages-authentication)</sup>. That web page presented the basic concept of combining a public GitHub Pages website with authenticated access to a private repository; that concept was the kernel that grew into GHPA.
+I created GHPA because I wanted to authenticated access controls for content published via GitHub Pages but couldn't find a suitable tool or GitHub Pages feature. While looking for that feature, I came across a web page [Github Pages and authentication, we are not that far](https://rmannibucau.metawerx.net/post/github-pages-authentication) by Romain Manni-Bucau<sup>[\[2\]](https://rmannibucau.metawerx.net/post/github-pages-authentication)</sup>. That web page presented the basic concept of combining a public GitHub Pages website with authenticated access to a private repository; that concept was the kernel that grew into GHPA.
 
 ## Additional GHPA Documents
 
@@ -120,7 +120,11 @@ I created GHPA because I wanted to authenticated access controls for content pub
 
 ## References
 
- 1. 'Github Pages and authentication, we are not that far' by Romain Manni-Bucau, 2019.12.11
+ 1. 'Creating a personal access token for the command line' on GitHub.com
+
+    https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+
+ 2. 'Github Pages and authentication, we are not that far' by Romain Manni-Bucau, 2019.12.11
  
     https://rmannibucau.metawerx.net/post/github-pages-authentication
 
