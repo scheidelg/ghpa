@@ -54,7 +54,11 @@ Configuration of GHPA is controlled by setting JavaScript global variables. Curr
 
  - Identifying a standard login form that can be modified once and rendered on multiple pages of the GitHub Pages website.
 
- - Enabling or disabling single sign-on (SSO) (see the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document).
+ - Enabling/disabling single sign-on (SSO) (see the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document).
+
+ - Enabling/disabling a password filter to only accept passwords that match the format of a GitHub personal access token string.
+
+   Enabling this option encourages use of GitHub personal access tokens for authentication - and discourage the use of a user's regular GitHub password. This reduces the exposure of GitHub user passwords.
 
  - Identifying whether content loaded from the private repository should replace the entire web page, or just the body (i.e., inside the '\<body\>/\<body\>' tags) of the existing web page.
 
