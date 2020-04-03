@@ -142,13 +142,9 @@ async function ghpaLoadPage() {
             /* An HTTP 404, 500 and other failures won't generate an error;
              * need to check response.ok or response.status. */
             .then(function (response) {
-//                if (response.status != 200) {
-                if (true) {
-let testNumber=444;
+                if (response.status != 200) {
                     /* throw an error to the catch clause */
-//                    throw new Error(`${response.status} HTTP response`);
-                    throw new Error(`${testNumber} HTTP response`);
-//                    throw new Error('xxx HTTP response');
+                    throw new Error(`${response.status} HTTP response`);
                 }
 
                 /* Provide response.text for processing by the next action in
@@ -423,9 +419,10 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Decrypt the GitHub token. */
                 creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
-                
+
             })
             .catch(function(errObject) {
+                window.alert('ghpaRetrieve() error attempting to decrypt GitHub token: ' + errObject.message);
                 console.error(errObject);
             });
         }
@@ -643,9 +640,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                         sessionStorage.removeItem('ghpaCreds');
                         sessionStorage.removeItem('ghpaCredsKey');
                     }
-
                 })
                 .catch(function(errObject) {
+                    window.alert('ghpaRetrieve() error attempting to encrypt GitHub token: ' + errObject.message);
                     console.error(errObject);
                 });
             }
