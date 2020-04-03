@@ -60,7 +60,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    This also means that a user accessing a GHPA-enabled website must authenticate once per browser window.
 
- - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[4\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[\[5\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
+ - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[4](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[5\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
 
     This protects against casual browsing of sessionStorage to see the user ID and password (or personal access token string) in plaintext or base64-encoded text.
 
