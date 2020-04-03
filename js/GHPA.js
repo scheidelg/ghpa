@@ -542,8 +542,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     * the GitHub credentails. */
     //                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
 
-                    const AESkeyExport = await window.crypto.subtle.exportKey("rawbob", AESkey);
-                    const AESkeyBuffer = new Uint8Array(AESkeyExport);
+//                    const AESkeyExport = await window.crypto.subtle.exportKey("rawbob", AESkey);
+                    const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("rawbob", AESkey));
 
 
                     const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
