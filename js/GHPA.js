@@ -12,8 +12,12 @@ For details on GHPA see:
    https://github.com/scheidelg/ghpa/blob/master/README.md>README.md
 
 The GHPA JavaScript and example HTML contain a large amount of comments and
-are formatted for readability.  You may want to strip out the comments from
-both and 'minify' the JavaScript before using on a website.
+are formatted for readability.  You may want to use the 'minified' version of
+GHPA.
+----------------------------------------------------------------------------
+Copyright (c) Greg Scheidel.
+
+GHPA is licensed under the GNU General Public License v3.0.
 ----------------------------------------------------------------------------*/
 
 
