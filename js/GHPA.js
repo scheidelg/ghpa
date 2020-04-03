@@ -529,8 +529,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * later use. */
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
-                /* generate a new AES-256 key */
-                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 252}, true, ["encrypt", "decrypt"])
+                /* generate a new AES-256 key and execute dependent code */
+                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
                 .catch(function(errObject){
                     console.error(errObject);
                 });
@@ -543,7 +543,10 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 * is so that we can save the key for use when another web
                 * page (during this session) attempts to retrieve and reuse
                 * the GitHub credentails. */
-                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
+                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("rawbobster", AESkey))
+                .catch(function(errObject){
+                    console.error(errObject);
+                });
 
                 /* Create a string of hexadecimal text representing the array
                  * values for the key and IV. */
