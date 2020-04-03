@@ -525,31 +525,51 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * finish before continuing. */
         await fetch(request).then(async function (response) {
             /* If we received a response code that indicates successful
-             * authentication, and we're using SSO, then store credentials for
-             * later use. */
+             * authentication, and we're using SSO, then store GitHub
+             * authentication token for later use.
+             *
+             * The only reason we're doing this is so that we can save the key
+             * for use when another web page (during this session) attempts to
+             * retrieve and reuse the GitHub credentails. */             
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
-                /* generate a new AES-256 key and execute dependent code */
-//                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
-
+                /* The actions required to store the token for later use:
+                 *
+                 *  - generate a new AES-256 key
+                 *  - generate an initialization vector (IV)
+                 *  - export the AES key so that we can easily save it as
+                 *    persistent data
+                 *  - encrypt the GitHub token
+                 *  - convert the AES key and IV to data that can be easily
+                 *    saved in sessionStorage
+                 *  - save the encrypted GitHub token in sessionStorage
+                 *  - save the AES key and IV in sessionStorage
+                 *
+                 * Our first action is generating the AES key.  We execute
+                 * with a Promise where the remainder of the actions only run
+                 * if the AES key generation is successful; and error-trapping
+                 * all of the steps with a 'catch'.
+                 *
+                 * So: Unless all of the prior required steps are successful,
+                 * the encrypted token, AES key, and IV don't get saved to
+                 * sessionStorage. */
                 await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
                 .then(async function(AESkey) {
 
-                    /* Export the encryption key and convert it to an array of
-                    * 8-bit unsigned integers.  The only reason we're doing this
-                    * is so that we can save the key for use when another web
-                    * page (during this session) attempts to retrieve and reuse
-                    * the GitHub credentails. */
-    //                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
+                   /* Export the AES key and convert it to an array of 8-bit
+                    * unsigned integers.  This isn't necessary for the
+                    * encryption of the GitHub token; it's just facilitates
+                    * saving the AES key in sessionStorage. */
+                    const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
 
-//                    const AESkeyExport = await window.crypto.subtle.exportKey("rawbob", AESkey);
-                    const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("rawbob", AESkey));
-
-
+                    /* Generate the IV; this variable is used directly in the
+                     * encryption step and then converted to data we can
+                     * readily save in sessionStorage. */
                     const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
 
-                    /* Create a string of hexadecimal text representing the array
-                     * values for the key and IV. */
+                    /* Create a string of hexadecimal text representing the
+                     * array values for the key and IV; this is what we'll
+                     * save to sessionStorage. */
                     credsKey='';
                     for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
                         credsKey += AESkeyBuffer[index].toString(16).padStart(2, '0');
@@ -559,15 +579,16 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     }
 
                     /* Encode the GitHub token (using TextEncoder) into a
-                     * Uint8Array; then encrypt that text using the AES-256 key
-                     * and IV. */
+                     * Uint8Array; then encrypt that using the AES key and
+                     * IV. */
                     const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder().encode(GitHubToken));
 
                     /* Convert the cipherText into a Uint8Array to work with. */
                     let cipherBuffer = new Uint8Array(cipherText);
 
                     /* Create a string of hexadecimal text representing the array
-                     * values for the cipherText. */
+                     * values for the cipherText; this is what we'll save to
+                     * sessionStorage. */
                     GitHubToken='';
                     for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
                         GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
@@ -582,19 +603,19 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                      * should be encrypted and base64-encoded. */
                     sessionStorage.setItem('ghpaCreds', GitHubToken);
 
+//3456789012345678901234567890123456789012345678901234567890123456789012345678
+                    /* sessionStorage.setItem doesn't have a return value to
+                     * tell us whether the action was successful.  So let's
+                     * retrieve the data that we just set to see if both
+                     * values were successfully saved.  And if they weren't,
+                     * then clear both values - one doesn't do us any good
+                     * without the other. */
 
 
-
-let fritz=1;
                 })
                 .catch(function(errObject) {
                     console.error(errObject);
                 });
-
-                    /* Generate a new initialization vector (IV). */
-    // implement try {} catch {} around this one
-//                    const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
-
             }
 
             /* If we're performing an authentication-only check and we were able
