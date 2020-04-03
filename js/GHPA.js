@@ -603,14 +603,17 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                      * should be encrypted and base64-encoded. */
                     sessionStorage.setItem('ghpaCreds', GitHubToken);
 
-//3456789012345678901234567890123456789012345678901234567890123456789012345678
-                    /* sessionStorage.setItem doesn't have a return value to
+                    /* sessionStorage.setItem() doesn't have a return value to
                      * tell us whether the action was successful.  So let's
                      * retrieve the data that we just set to see if both
                      * values were successfully saved.  And if they weren't,
-                     * then clear both values - one doesn't do us any good
-                     * without the other. */
-
+                     * then clear both values - in cases where the GitHub
+                     * toke is encrypted, we need both the ciphertext and the
+                     * decryption key/IV. */
+                    if (sessionStorage.getItem('ghpaCreds') != GitHubToken || sessionStorage.getItem('ghpaCredsKey' != credsKey) {
+                        sessionStorage.removeItem('ghpaCreds');
+                        sessionStorage.removeItem('ghpaCredsKey');
+                    }
 
                 })
                 .catch(function(errObject) {
