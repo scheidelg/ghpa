@@ -12,11 +12,11 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
     - The machine account will have read-only access to just a specific private GitHub repository; it will not have access to the user's regular GitHub account.
  
- - Next best, use GHPA with GitHub private access tokens.
+ - Next best, use GHPA with GitHub personal access tokens<sup>[\[1\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup>
 
     - Users can use their regular GitHub user ID.
  
-    - Each user will need to create a private access token with a limited scope.
+    - Each user will need to create a personal access token with a limited scope.
 
     - The minimum scope required to read content from a private GitHub repository is *repo*. This scope grants 'full control of private repositories' which also includes full control of public repositories. *In the event of compromised credentials, the attacker will be able to read all public and private repositories to which the user has access*.
 
@@ -32,11 +32,11 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
 In the absence of operating as a GitHub application, GHPA operates by prompting the user for their GitHub authentication credentials and using those credentials in GitHub API requests. The intent is that GHPA will only *read* the *requested* files from the *specified* private repository. However, the user has to trust that GHPA isn't going to do anything else with the credentials - either intentionally or through a compromise of the GHPA-enabled web site.
 
-Additionally, GHPA implements single sign-on (SSO) functionality so that the user doesn't have to re-enter their credentials every time they refresh or access a new webpage. This is implemented by storing the authentication credentials in sessionStorage<sup>[\[1\]](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)</sup>. This means that if the GHPA-enabled web site were compromised such that an attacker could run arbitrary JavaScript on the user's worksation (e.g., through cross-site scripting \[XSS\]), then the attacker could potentially browse the contents of sessionStorage and retrieve the GitHub credentials. At that point, the attacker take any action permitted to those credentials.
+Additionally, GHPA implements single sign-on (SSO) functionality so that the user doesn't have to re-enter their credentials every time they refresh or access a new webpage. This is implemented by storing the authentication credentials in sessionStorage<sup>[\[2\]](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)</sup>. This means that if the GHPA-enabled web site were compromised such that an attacker could run arbitrary JavaScript on the user's worksation (e.g., through cross-site scripting \[XSS\]), then the attacker could potentially browse the contents of sessionStorage and retrieve the GitHub credentials. At that point, the attacker take any action permitted to those credentials.
 
 There are a few (minor) mitigating factors already built into the web browser DOM, GitHub and GiHut Pages, and GHPA:
 
- - sessionStorage is subject to "same-origin policy."<sup>[\[2\]](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)</sup>
+ - sessionStorage is subject to "same-origin policy."<sup>[\[3\]](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)</sup>
 
    This means there's a separate storage area for each origin (combination of website domain, protocol, and port). A successful XSS attack that runs malicious JavaScript will only be able to access that page's sessionStorage.
 
@@ -46,7 +46,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    This also means that a user accessing a GHPA-enabled website must authenticate once per browser window.
 
- - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[3\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[\[4\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
+ - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[4\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[\[5\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
 
     This protects against casual browsing of sessionStorage to see the user ID and password (or personal access token string) in plaintext or base64-encoded text.
 
@@ -58,7 +58,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
- - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[6\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
+ - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[7\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
 
  - GitHub accounts that have multifactor authentication (MFA) enabled won't be able to use their regular password to authenticate through GHPA.
 
@@ -84,23 +84,27 @@ There are some additional actions - some related to the points listed above - th
 
 ## References
 
- 1. Windows.sessionstorage
+ 1. 'Creating a personal access token for the command line' on GitHub.com
+
+    https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+
+ 2. Windows.sessionstorage
 
     https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 
- 2. Same-origin Policy
+ 3. Same-origin Policy
 
     https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
 
- 3. Web Crypto API
+ 4. Web Crypto API
 
     https://developer.mozilla.org/en-US/docs/Web/API/Crypto
 
- 4. Web Crypto API Examples
+ 5. Web Crypto API Examples
  
     https://mdn.github.io/dom-examples/web-crypto/
 
- 5. GitHub Gist: crypto-aes.gcm.js by Chris Veness
+ 6. GitHub Gist: crypto-aes.gcm.js by Chris Veness
  
     "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
@@ -108,6 +112,6 @@ There are some additional actions - some related to the points listed above - th
     
     https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
- 6. GitHub Deprecation of API Password Authentication
+ 7. GitHub Deprecation of API Password Authentication
 
     https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
