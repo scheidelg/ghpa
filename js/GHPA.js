@@ -620,31 +620,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                      * the retrieved content? */
                     if (ghpaRenderRetrievedBodyOnlyFlag) {
                         
-                        /* Find the first instance of '<body'.  Not looking
-                         * for '<body>' because we have to allow for the
-                         * possibility that there might be attributes in the
-                         * tag. */
-  const startIndex = contentRetrieved.indexOf('<body');
-
-                        /* Find the ending '>' to mark the start of content to
-                         * render. */
-  const startRetrievalIndex = contentRetrieved.indexOf('>', startIndex) + 1;
-
-                        /* Find the next closing '</body>' to mark the end of
-                         * content to render. */
-  const endIndex = contentRetrieved.indexOf('</body>', startRetrievalIndex);
-  
-                        /* If either startIndex or endIndex are -1, then we
-                         * didn't find the markers.  Replace webpage content
-                         * with a null string. */
-                        if (startIndex == -1 || endIndex == -1) {
-                            document.body.innerHTML = '';
-
-                        /* If we found the markers, then render the marked
-                         * content. */
-                        } else {
-                            document.body.innerHTML = contentRetrieved.slice(startRetrievalIndex, endIndex);
-                        }
+let x=1;
 
                     /* Render all the retrieved content? */
                     } else
