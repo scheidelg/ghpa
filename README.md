@@ -118,7 +118,7 @@ I created three repositories to host the GHPA content and illustrate using GHPA:
 
 ## Miscellaneous
 
-The latest version of GHPA is version 0.5 / 2020.04.03. A full change history is available [here](Change_History.md).
+The latest version of GHPA is version 0.5 (2020.04.03). A full change history is available [here](Change_History.md).
 
 Twitter handle: @Greg_Scheidel
 
