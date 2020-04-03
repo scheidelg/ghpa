@@ -827,7 +827,7 @@ ghpaTokensOnlyFlag            boolean
     False: allow any password
 ----------------------------------------------------------------------------*/
 let ghpaOrg = 'scheidelg';
-let ghpaRepo = 'ghpa-private';
+let ghpaRepo = 'ghpa-private-1';
 let ghpaBranch = 'master';
 
 let ghpaDefaultHTMLfile = 'index.html';
