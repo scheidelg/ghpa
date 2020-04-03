@@ -144,9 +144,10 @@ async function ghpaLoadPage() {
             .then(function (response) {
 //                if (response.status != 200) {
                 if (true) {
+let testNumber=444;
                     /* throw an error to the catch clause */
 //                    throw new error(`${response.status} HTTP response`);
-                    throw new error(`xxx HTTP response`);
+                    throw new error('xxx HTTP response');
                 }
 
                 /* Provide response.text for processing by the next action in
