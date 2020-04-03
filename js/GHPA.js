@@ -529,15 +529,11 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * later use. */
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
-                let AESkey;
-
                 /* generate a new AES-256 key */
-//                await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]).then( async (newKey) => {
-//                    /* Save the new key in the AESkey variable so that it's
-//                     * available after exiting this '.then' function. */
-//                    AESkey = newKey;
-//                });
-                AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
+                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+                .catch(function(errObject){
+                    console.error(errObject);
+                });
                 
                 /* Generate a new initialization vector (IV). */
                 const AESiv = window.crypto.getRandomValues(new Uint8Array(12));
