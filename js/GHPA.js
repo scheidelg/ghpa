@@ -615,10 +615,18 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 response.json().then(function (json) {
                     const contentRetrieved = json.encoding === 'base64' ? atob(json.content) : json.content;
 
-                    const startIdx = contentRetrieved.indexOf('<body');
-                    document.body.innerHTML = contentRetrieved.substring(
-                        contentRetrieved.indexOf('>', startIdx) + 1,
-                        contentRetrieved.indexOf('</body>'));
+                    /* Render just the content inside <body></body> tags from
+                     * the retrieved content? */
+                    if (ghpaRenderRetrievedBodyOnlyFlag) {
+                         const startIdx = contentRetrieved.indexOf('<body');
+                         document.body.innerHTML = contentRetrieved.substring(
+                             contentRetrieved.indexOf('>', startIdx) + 1,
+                             contentRetrieved.indexOf('</body>'));
+
+                    /* Render all the retrieved content? */
+                    } else
+                        document.body.innerHTML = contentRetrieved;
+                    }
                 });
 
             /* If we didn't successfully retrieve the content, then display an
