@@ -40,7 +40,7 @@ This is certainly not as robust or full-featured as a web-application firewall (
 
 Step-by-step instructions are in the [GHPA Step-by-Step Instructions](GHPA-Step-by-Step.md) document.
 
-There *are* **absolutely** security considerations that you should keep in mind. See the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document.
+There **are absolutely** security considerations that you should keep in mind. See the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document.
 
 ## Configuration and Features
 
@@ -70,7 +70,7 @@ Also of note:
 
  - A custom 404 page can be created on the GitHub Pages website and used to load and render files from the private repository.
 
-   This means that you don't have to create a 'stub file' on the GitHub Pages website for every file in the private repository; just create the custom 404 page.
+   This means that you don't have to create a 'stub file' on the GitHub Pages website for every file in the private repository.
 
 ## Examples
 
