@@ -746,6 +746,12 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * outside of the response function (i.e., at the end when we're
              * setting a return value for this entire function. */
             fetchResponse=response.status;
+        })
+
+        /* On an error, pop up an error message. */
+        .catch(function(errObject) {
+            authMessage = 'ghpaRetrieve() error attempting to retrieve private content: ' + errObject.message;
+            console.error(errObject);
         });
     }
 
