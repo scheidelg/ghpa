@@ -83,7 +83,7 @@ Return value: none
 ------------------------------------------------------------------------------
 Variables
 
-retrievedCreds                string
+retrievedCreds                      string
 
     Credentials, if any, retrieved from sessionStorage.  If present, pass to
     ghpaRetrieve() to attempt initial authentication to GitHub (instead of the
@@ -92,7 +92,7 @@ retrievedCreds                string
 
     See ghpaRetrieve() comments for details.
 
-retrievedCredsKey             string
+retrievedCredsKey                   string
 
     An optional string argument containing an encoded representation of an
     AES-256 encryption key and initialization vector (IV); which can be used
@@ -175,7 +175,7 @@ before returning from this function.
 ------------------------------------------------------------------------------
 Arguments
 
-creds                         (type varies; see below)
+creds                               (type varies; see below)
 
     Credentials can be passed in one of three forms:
     
@@ -233,7 +233,7 @@ creds                         (type varies; see below)
         authentication credentials from someone who also retrieves the AES key
         and IV from memory, and decrypts the authentication credentials.
 
-credsKey                      string; optional
+credsKey                            string; optional
 
     An optional string argument containing an encoded representation of an
     AES-256 encryption key and initialization vector (IV); which can be used
@@ -263,7 +263,7 @@ credsKey                      string; optional
 
         beb885f0662883fb397402358a0709cdd4a92514d624d0e95bca1ad1e5fe135874ef3d11f00e7b2e10901d68
 
-retrievedCredsFlag            boolean
+retrievedCredsFlag                  boolean
 
     Identifies whether this call is being made after retrieving SSO
     credentials from sessionStorage, vs. from a form where the username and
@@ -276,42 +276,42 @@ retrievedCredsFlag            boolean
 ------------------------------------------------------------------------------
 Variables
 
-AESkey                        CryptoKey
+AESkey                              CryptoKey
 
     Key to use for the AES encryption/decription of the GitHub token.
 
     See: https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
 
-AESiv                         Uint8Array[12]
+AESiv                               Uint8Array[12]
 
     Initialization vector (IV) used for the AES encryption/decryption of the
     GitHub token.
 
-AESkeyBuffer                  Uint8Array[32]
+AESkeyBuffer                        Uint8Array[32]
 
     Array to hold the binary representation of the exported AES key.  Used
     when exporting the key before saving in sessionStorage; and when reading
     data from sessionStorage so that the key can be imported. 
 
-authMessage                   string
+authMessage                         string
 
     Used to place a message on the calling page.  If this variable is
     non-empty at the end of the function, then set:
 
         document.getElementById("ghpaAuthMessage").innerHTML
 
-cipherBUffer                  Uint8Array[variable length]
+cipherBUffer                        Uint8Array[variable length]
 
     Array to hold the binary representation of the encrypted GitHub token.
 
-fetchResponse                 integer
+fetchResponse                       integer
 
     Holds the response of the HTTPS query to retrieve content from GitHub.
     The only reason we need this is so that we have a variable scoped to the
     overall function, and so can set the variable and use it to determine the
     return value from the overall function.
 
-GitHubToken                  string
+GitHubToken                         string
 
     The base64-encoded authentication token to pass to GitHub.  The unencoded
     text is formatted as:
@@ -321,11 +321,11 @@ GitHubToken                  string
     where 'login_name' and 'password_or_PAT_string' are replaced by actual
     values to use for authentication.
 
-login                         string
+login                               string
 
     Hold the login name so that it can be displayed in status/error messages.
 
-tokenDelimiterPosition        string
+tokenDelimiterPosition              string
 
     The character position of the ':' delimiter in the base64-decoded GitHub
     authentication token.
@@ -350,6 +350,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     /* If we retrieved a token from sessionStorage, then prepare it for
      * use in authenticating to GitHub. */
     if (retrievedCredsFlag && creds) {
+        
         /* If we retrieved a string representation of the AES-256 key and IV
          * from sessionStorage then convert them to a usable key and IV and
          * decrypt the GitHub token. */
@@ -607,19 +608,48 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * them by still presenting a login form. */
                 document.getElementById("ghpaLoginForm").style.display = "none";
 
-            /* If we successfully retrieved the contents and we are not performing
-             * an authentication-only check, then display the retrieved
-             * content. */
+            /* If we successfully retrieved the contents and we are not
+             * performing an authentication-only check, then display the
+             * retrieved content. */
             } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
                 response.json().then(function (json) {
+                    /* Retrieve the content. */
                     const contentRetrieved = json.encoding === 'base64' ? atob(json.content) : json.content;
-/*
-                    const startIdx = contentRetrieved.indexOf('<body');
-                    document.body.innerHTML = contentRetrieved.substring(
-                        contentRetrieved.indexOf('>', startIdx) + 1,
-                        contentRetrieved.indexOf('</body>'));
-*/
-                    document.body.innerHTML = contentRetrieved;
+
+                    /* Render just the content inside <body></body> tags from
+                     * the retrieved content? */
+                    if (ghpaRenderRetrievedBodyOnlyFlag) {
+                        
+                        /* Find the first instance of '<body'.  Not looking
+                         * for '<body>' because we have to allow for the
+                         * possibility that there might be attributes in the
+                         * tag. */
+  const startIndex = contentRetrieved.indexOf('<body');
+
+                        /* Find the ending '>' to mark the start of content to
+                         * render. */
+  const startRetrievalIndex = contentRetrieved.indexOf('>', startIndex) + 1;
+
+                        /* Find the next closing '</body>' to mark the end of
+                         * content to render. */
+  const endIndex = contentRetrieved.indexOf('</body>', startRetrievalIndex);
+  
+                        /* If either startIndex or endIndex are -1, then we
+                         * didn't find the markers.  Replace webpage content
+                         * with a null string. */
+                        if (startIndex == -1 || endIndex == -1) {
+                            document.body.innerHTML = '';
+
+                        /* If we found the markers, then render the marked
+                         * content. */
+                        } else {
+                            document.body.innerHTML = contentRetrieved.slice(startRetrievalIndex, endIndex);
+                        }
+
+                    /* Render all the retrieved content? */
+                    } else
+                        document.body.innerHTML = contentRetrieved;
+                    }
                 });
 
             /* If we didn't successfully retrieve the content, then display an
@@ -709,7 +739,7 @@ Global variables are named starting with 'ghpa'.  Local variables aren't.
 Any of the variables that aren't declared as 'const' can be overridden on a
 specific web page by the values in the <head> of the web page.
 
-ghpaAuthOnlyFlag              boolean
+ghpaAuthOnlyFlag                    boolean
 
     Flag whether a web page that calls ghpaRetrieve() should just perform an
     authentication check (e.g., authentication-only) or should load a page
@@ -724,7 +754,7 @@ ghpaAuthOnlyFlag              boolean
     False: load a page from the private GitHub repository (recommended global
            value)
 
-ghpaBranch                    string
+ghpaBranch                          string
 
     Name of the repository branch to use when accessing the private GitHub
     repository.
@@ -734,7 +764,7 @@ ghpaBranch                    string
 
         <head><script>ghpaBranch='master';</script></head>
 
-ghpaDefaultHTMLfile           string
+ghpaDefaultHTMLfile                 string
 
     Name of the file to load if ghpaRetrieve() is called with ghpaFileName
     set to a directory name or from a web page that has a
@@ -748,7 +778,7 @@ ghpaDefaultHTMLfile           string
 
     Typically set to 'index.html'.
 
-ghpaFilename                  string
+ghpaFilename                        string
 
     The filename to retrieve from the private GitHub repository.  This can
     optionally be set in the calling web page to specify that a specific
@@ -759,7 +789,7 @@ ghpaFilename                  string
 
     This is generally *not* set.
 
-ghpaLoginFormFile             string
+ghpaLoginFormFile                   string
 
     Name of the file to load HTML from to replace the HTML element ID
     ghpaLoginForm.  This can be an absolute or relative path.
@@ -776,7 +806,7 @@ ghpaLoginFormFile             string
     then the element ghpaLoginForm isn't replaced at all.
 
 
-ghpaOrg                       string
+ghpaOrg                             string
 
     Name of the organization to use when accessing the private GitHub
     repository.
@@ -786,7 +816,15 @@ ghpaOrg                       string
 
         <head><script>ghpaOrg='scheidelg';</script></head>
 
-ghpaRepo                      string
+ghpaRenderRetrievedBodyOnlyFlag     string
+
+    Flag whether all the retrieved content should be used, or only the content
+    inside of <body></body> tags.
+
+    True:  Only retrieved render content inside of <body>/<body> tags.
+    False: Render all the retrieved content.
+
+ghpaRepo                            string
 
     Name of the repository to use when accessing the private GitHub
     repository.
@@ -796,7 +834,7 @@ ghpaRepo                      string
 
         <head><script>ghpaRepo='ghpa-private';</script></head>
 
-ghpaSSOFlag                   boolean
+ghpaSSOFlag                         boolean
 
     Flag whether a web page that calls ghpaRetrieve() should just use and save
     credentials to be used for single sign-on (SSO).  When SSO is used:
@@ -816,7 +854,7 @@ ghpaSSOFlag                   boolean
     True:  SSO is in use (recommended global value)
     False: SSO is not in use
 
-ghpaTokensOnlyFlag            boolean
+ghpaTokensOnlyFlag                  boolean
 
     Flag whether the user should be required to use a password that matches
     the format of a GitHub personal access token string: 40 hexadecimal
@@ -839,6 +877,7 @@ let ghpaDefaultHTMLfile = 'index.html';
 let ghpaLoginFormFile ='/examples/loginform.html';
 let ghpaFilename = '';
 
+const ghpaTokensOnlyFlag = true;
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
-const ghpaTokensOnlyFlag = true;
+let ghpaRenderRetrievedBodyOnlyFlag = false;
