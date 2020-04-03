@@ -28,7 +28,7 @@ Whenever a web page is accessed on the GitHub Pages website, GHPA can automatica
 
 This is certainly not as robust or full-featured as a web-application firewall (WAF). But it suits my needs:
 
- - Quick stand-up leveraging GitHub and GitHub Pages.
+ - Quick stand-up of a new site.
  
    All that's required is to stand-up the two GitHub repositories, include the GHPA.js on the GitHub Pages website, and create the files on the private GitHub repository.
 
