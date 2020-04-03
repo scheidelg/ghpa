@@ -60,7 +60,9 @@ Configuration of GHPA is controlled by setting JavaScript global variables. Curr
 
    Enabling this option encourages use of GitHub personal access tokens<sup>[\[1\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup> for authentication - and discourage the use of a user's regular GitHub password. This reduces the exposure of GitHub user passwords.
 
- - Identifying whether content loaded from the private repository should replace the entire web page, or just the body (i.e., inside the '\<body\>/\<body\>' tags) of the existing web page.
+ - Enabling/disabling whether content loaded from the private repository should replace the entire web page, or just the body (i.e., inside the '\<body\>/\<body\>' tags) of the existing web page.
+
+ - Enabling/disabling whether the content loaded from the private repository must have '\<body\>/\<body\>' tags.
 
 Configuration options that can be set for individual GitHub Pages web pages include:
 
@@ -70,7 +72,7 @@ Configuration options that can be set for individual GitHub Pages web pages incl
 
  - A specific private repository file can be loaded (instead of one that matches the name of the GitHub Pages web page).
 
- - Overriding the configured option to replace the entire web page vs. just the web page's body with the content loaded from the private repository.
+ - Overriding the configured options for replace the entire web page vs. just the web page's body; and whether the content loaded from the private repository must have '\<body\>/\<body\>' tags.
 
 See [GHPA Configuration Options](GHPA-Configuration.md) for details.
 
