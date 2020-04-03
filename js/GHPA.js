@@ -534,9 +534,12 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 .catch(function(errObject){
                     console.error(errObject);
                 });
-                
+
                 /* Generate a new initialization vector (IV). */
-                const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
+                const AESiv = await window.crypto.getRandomValues(new Uint8Array(12))
+                .catch(function(errObject){
+                    console.error(errObject);
+                });
 
                 /* Export the encryption key and convert it to an array of
                 * 8-bit unsigned integers.  The only reason we're doing this
