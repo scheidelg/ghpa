@@ -610,7 +610,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                      * then clear both values - in cases where the GitHub
                      * toke is encrypted, we need both the ciphertext and the
                      * decryption key/IV. */
-                    if (sessionStorage.getItem('ghpaCreds') != GitHubToken || sessionStorage.getItem('ghpaCredsKey' != credsKey) {
+                    if (sessionStorage.getItem('ghpaCreds') != GitHubToken || sessionStorage.getItem('ghpaCredsKey') != credsKey) {
                         sessionStorage.removeItem('ghpaCreds');
                         sessionStorage.removeItem('ghpaCredsKey');
                     }
