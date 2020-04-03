@@ -162,7 +162,7 @@ let testNumber=444;
 
             /* On an error, pop up an error message. */
             .catch(function(errObject) {
-                window.alert('ghpaLoadPage() error attempting to load login form: ', errObject);
+                window.alert('ghpaLoadPage() error attempting to load login form: ' + errObject.message);
                 console.error(errObject);
             });
         }
