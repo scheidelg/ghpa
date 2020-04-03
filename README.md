@@ -106,10 +106,6 @@ I created three repositories to host the GHPA content and illustrate using GHPA:
    https://scheidelg.github.io/ghpa<br>
    https://ghpa.scheidel.net/
 
-## Credit
-
-I created GHPA because I wanted to authenticated access controls for content published via GitHub Pages but couldn't find a suitable tool or GitHub Pages feature. While looking for that feature, I came across a web page [Github Pages and authentication, we are not that far](https://rmannibucau.metawerx.net/post/github-pages-authentication) by Romain Manni-Bucau<sup>[\[2\]](https://rmannibucau.metawerx.net/post/github-pages-authentication)</sup>. That web page presented the basic concept of combining a public GitHub Pages website with authenticated access to a private repository; that concept was the kernel that grew into GHPA.
-
 ## Additional GHPA Documents
 
  - [GHPA Step-by-Step Instructions](GHPA-Step-by-Step.md)
@@ -117,6 +113,18 @@ I created GHPA because I wanted to authenticated access controls for content pub
  - [GitHub Credential Security with GHPA](GitHub-Credential-Security.md)
 
  - [GHPA Configuration Options](GHPA-Configuration.md)
+
+ - [Change History](Change_History.md)
+
+## Miscellaneous
+
+The latest version of GHPA is version 0.5 / 2020.04.03. A full change history is available [here](Change_History.md).
+
+Twitter handle: @Greg_Scheidel
+
+### Credit
+
+I created GHPA because I wanted to authenticated access controls for content published via GitHub Pages but couldn't find a suitable tool or GitHub Pages feature. While looking for that feature, I came across a web page [Github Pages and authentication, we are not that far](https://rmannibucau.metawerx.net/post/github-pages-authentication) by Romain Manni-Bucau<sup>[\[2\]](https://rmannibucau.metawerx.net/post/github-pages-authentication)</sup>. That web page presented the basic concept of combining a public GitHub Pages website with authenticated access to a private repository; that concept was the kernel that grew into GHPA.
 
 ## References
 
