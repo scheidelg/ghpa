@@ -8,7 +8,7 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
     - You'll need to create a machine account for each user that will access the private Github repository via the GHPA-enabled website.
 
-    - The machine account will be separate from the user's standard GitHub account, increasing the number of credentials the user has to manage.
+    - <span style="color:red">Since the machine account will be separate from the user's standard GitHub account, this will increase the number of credentials the user has to manage. \[bad\]</span>
 
     - The machine account will have read-only access to just a specific private GitHub repository; it will not have access to the user's regular GitHub account.
  
@@ -42,7 +42,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
  - sessionStorage is cleared when the page session ends.
 
-   This means if you close the browser window (or tab), sessionStorage is automatically cleared. Data in sessionStorage is not available across browser sessions.
+   This means if you close the browser window, sessionStorage is automatically cleared. Data in sessionStorage is not available across browser tabs, windows, or sessions.
 
    This also means that a user accessing a GHPA-enabled website must authenticate once per browser window.
 
@@ -54,13 +54,13 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
  - GHPA's default configuration discourages use of a user's regular GitHub password, through 'ghpaTokensOnlyFlag' option.
 
-   This is implemented through a basic check of whether the presented 'password' matches the format for a GitHub personal access token string, which is to say a string of 40 hexadecimal characters; and if not refusing to authenticate to GitHub.
+   This is implemented through a basic check of whether the presented 'password' matches the format for a GitHub personal access token string; and if not refusing to authenticate to GitHub.
 
-   A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
+   Personall access token strings are 40 hexadecimal characters. A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
  - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[7\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
 
- - GitHub accounts that have multifactor authentication (MFA) enabled won't be able to use their regular password to authenticate through GHPA.
+ - GitHub accounts that have multifactor authentication (MFA) enabled - hopefully, all of them - won't be able to use their regular password to authenticate through GHPA.
 
  - GHPA doesn't save the GitHub credentials to sessionStorage until after successful authentication.
 
