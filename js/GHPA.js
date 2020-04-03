@@ -544,7 +544,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                     const AESkeyExport = await window.crypto.subtle.exportKey("rawbob", AESkey);
                     const AESkeyBuffer = new Uint8Array(AESkeyExport);
-const fritz=1;
+fritz=1;
                 })
                 .catch(function(errObject) {
                     console.error(errObject);
