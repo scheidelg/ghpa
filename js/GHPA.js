@@ -131,7 +131,7 @@ async function ghpaLoadPage() {
         /* Enable display of the element ghpaPrompt.  In JavaScript, we can
          * set an elements 'style.display' property back to it's default by
          * setting it to a null string. */
-        document.getElementById("ghpaPrompt").style.display = "";
+        document.getElementById('ghpaPrompt').style.display = '';
 
         /* If ghpaLoginFormFile is set to '-', then don't replace the element
          * ghpaLoginForm. */
@@ -140,8 +140,13 @@ async function ghpaLoadPage() {
              * ghpaLoginForm. */
             await fetch(ghpaLoginFormFile).then(function (response) {
                 return response.text();
-            }).then(function (data) {
-                document.getElementById("ghpaLoginForm").innerHTML = data;
+            })
+            .then(function (data) {
+                document.getElementById('ghpaLoginForm').innerHTML = data;
+            })
+            .catch(function(errObject) {
+                window.alert('ghpaLoadPage() error attempting to load login form: ' + errObject);
+                console.error(errObject);
             });
         }
     }
