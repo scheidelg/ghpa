@@ -542,7 +542,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     * the GitHub credentails. */
     //                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
 
-                    return (window.crypto.subtle.exportKey("rawbob", AESkey));
+                    return (window.crypto.subtle.exportKey("raw", AESkey));
                 })
                 .then(function(AESkeyExport) {
                     return (new Uint8Array(AESkeyExport));
