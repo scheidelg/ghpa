@@ -532,7 +532,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 /* generate a new AES-256 key and execute dependent code */
 //                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
 
-                const AESkeyBuffer = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+                const AESkeyBuffer = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 252}, true, ["encrypt", "decrypt"])
                 .then(function(AESkey) {
 
                     /* Export the encryption key and convert it to an array of
