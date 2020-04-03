@@ -1,7 +1,7 @@
 # GitHub Pages Authentication (GHP-Authentication or GHPA)
 
 Authenticated access to GitHub private repository content via a GitHub Pages website.
------
+_____
 GitHub Pages is a simple way to create a website to publish content from a public or private GitHub repository. However, GitHub Pages doesn't provide any authentication controls. This means that once GitHub Pages is enabled for a private GitHub repository, all repository content is publicly accessible via the website.
 
 However, it is possible to implement secure web access to a private repository files.  We can creaset two separate repositories:
