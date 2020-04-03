@@ -32,8 +32,6 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
       **\[bad - better than full user access but still not awesome\]**
 
-    - Make sure the GHPA 'ghpaTokensOnlyFlag' is enabled to discourage the use of regular GitHub passwords.
-
  - Next best (and the worst), use GHPA with the user's regular user ID and password.
 
     - Users can use their regular GitHub user ID.
