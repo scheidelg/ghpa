@@ -535,16 +535,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                     console.error(errObject);
                 });
 
-let fritz;
                 /* Export the encryption key and convert it to an array of
                 * 8-bit unsigned integers.  The only reason we're doing this
                 * is so that we can save the key for use when another web
                 * page (during this session) attempts to retrieve and reuse
                 * the GitHub credentails. */
-                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", fritz))
-                .catch(function(errObject){
-                    console.error(errObject);
-                });
+//                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
+                
+                const AESkeyExport = await window.crypto.subtle.exportKey("raw", AESkey);
+                const AESkeyBuffer = new Uint8Array(AESkeyExport);
 
                 /* Generate a new initialization vector (IV). */
 // implement try {} catch {} around this one
