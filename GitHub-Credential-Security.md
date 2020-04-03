@@ -6,7 +6,7 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
  - Next best, use GHPA with machine accounts.
 
-    - You'll need to create a machine account for each user that will access the private Github repository via the GHPA-enabled website.
+    - You'll need to create a machine account for each user that will access the private Github repository via the GHPA-enabled website. **\[bad - worse admin UX\]**
 
     - Since the machine account will be separate from the user's standard GitHub account, this will increase the number of credentials the user has to manage. **\[bad - worse UX\]**
 
