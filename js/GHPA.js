@@ -530,62 +530,65 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             if (ghpaSSOFlag && (response.status == 200 || response.status == 404)) {
 
                 /* generate a new AES-256 key and execute dependent code */
-                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
-                .catch(function(errObject){
+//                const AESkey = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
+
+                const AESkeyBuffer = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+                .then(function(AESkey) {
+
+                    /* Export the encryption key and convert it to an array of
+                    * 8-bit unsigned integers.  The only reason we're doing this
+                    * is so that we can save the key for use when another web
+                    * page (during this session) attempts to retrieve and reuse
+                    * the GitHub credentails. */
+    //                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
+
+                    return (window.crypto.subtle.exportKey("raw", AESkey));
+                })
+                .then(function(AESkeyExport) {
+                    return (new Uint8Array(AESkeyExport));
+                });
+                .catch(function(errObject) {
                     console.error(errObject);
                 });
 
-                /* Export the encryption key and convert it to an array of
-                * 8-bit unsigned integers.  The only reason we're doing this
-                * is so that we can save the key for use when another web
-                * page (during this session) attempts to retrieve and reuse
-                * the GitHub credentails. */
-//                const AESkeyBuffer = new Uint8Array(await window.crypto.subtle.exportKey("raw", AESkey));
-                
-                const AESkeyExport = await window.crypto.subtle.exportKey("rawbob", AESkey)
-                .catch(function(errObject){
-                    console.error(errObject);
-                });
+                    /* Generate a new initialization vector (IV). */
+    // implement try {} catch {} around this one
+                    const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
 
-                const AESkeyBuffer = new Uint8Array(AESkeyExport);
+                    /* Create a string of hexadecimal text representing the array
+                     * values for the key and IV. */
+                    credsKey='';
+                    for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
+                        credsKey += AESkeyBuffer[index].toString(16).padStart(2, '0');
+                    }
+                    for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
+                        credsKey += AESiv[index].toString(16).padStart(2, '0');
+                    }
 
-                /* Generate a new initialization vector (IV). */
-// implement try {} catch {} around this one
-                const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
+                    /* Save the text representation of the AES-256 key and IV to
+                     * sessionStorage */
+                    sessionStorage.setItem('ghpaCredsKey', credsKey);
 
-                /* Create a string of hexadecimal text representing the array
-                 * values for the key and IV. */
-                credsKey='';
-                for (let index = 0, arrayLength = AESkeyBuffer.length; index < arrayLength; index++) {
-                    credsKey += AESkeyBuffer[index].toString(16).padStart(2, '0');
-                }
-                for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
-                    credsKey += AESiv[index].toString(16).padStart(2, '0');
-                }
+                    /* Encode the GitHub token (using TextEncoder) into a
+                     * Uint8Array; then encrypt that text using the AES-256 key
+                     * and IV. */
+                    const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder().encode(GitHubToken));
 
-                /* Save the text representation of the AES-256 key and IV to
-                 * sessionStorage */
-                sessionStorage.setItem('ghpaCredsKey', credsKey);
+                    /* Convert the cipherText into a Uint8Array to work with. */
+                    let cipherBuffer = new Uint8Array(cipherText);
 
-                /* Encode the GitHub token (using TextEncoder) into a
-                 * Uint8Array; then encrypt that text using the AES-256 key
-                 * and IV. */
-                const cipherText = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: AESiv}, AESkey, new TextEncoder().encode(GitHubToken));
+                    /* Create a string of hexadecimal text representing the array
+                     * values for the cipherText. */
+                    GitHubToken='';
+                    for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
+                        GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
+                    }
 
-                /* Convert the cipherText into a Uint8Array to work with. */
-                let cipherBuffer = new Uint8Array(cipherText);
+                    /* Save the credentials to sessionStorage.  They will definitely
+                     * be converted to a JSON.stringify output at this point, and
+                     * should be encrypted and base64-encoded. */
+                    sessionStorage.setItem('ghpaCreds', GitHubToken);
 
-                /* Create a string of hexadecimal text representing the array
-                 * values for the cipherText. */
-                GitHubToken='';
-                for (let index = 0, arrayLength = cipherBuffer.length; index < arrayLength; index++) {
-                    GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
-                }
-
-                /* Save the credentials to sessionStorage.  They will definitely
-                 * be converted to a JSON.stringify output at this point, and
-                 * should be encrypted and base64-encoded. */
-                sessionStorage.setItem('ghpaCreds', GitHubToken);
             }
 
             /* If we're performing an authentication-only check and we were able
