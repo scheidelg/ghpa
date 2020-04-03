@@ -613,12 +613,13 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
                 response.json().then(function (json) {
                     const contentRetrieved = json.encoding === 'base64' ? atob(json.content) : json.content;
-
+/*
                     const startIdx = contentRetrieved.indexOf('<body');
                     document.body.innerHTML = contentRetrieved.substring(
                         contentRetrieved.indexOf('>', startIdx) + 1,
                         contentRetrieved.indexOf('</body>'));
-
+*/
+                    document.body.innerHTML = contentRetrieved;
                 });
 
             /* If we didn't successfully retrieve the content, then display an
