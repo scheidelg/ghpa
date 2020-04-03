@@ -22,7 +22,7 @@ However, it is possible to implement secure web access to a private repository f
 
       - Client-side JavaScript leverages GitHub's API to access the private repository, using authentication credentials submitted by the user.
       
-    > Note: Technically this doesn't need to be a public repository; it can be a private repository with GitHub Pages enbled. For clarity in these notes, I'll continue to refer to this as the 'public' repository.
+> Note: Technically the second repository doesn't need to be a public repository; it can be a private repository with GitHub Pages enbled. For clarity in these notes, I'll continue to refer to this as the 'public' repository.
 
 Whenever a web page is accessed on the GitHub Pages website, GHPA can automatically attempt to load and render a corresponding page from the private repository. The first time the private repository is accessed the user can be presented with a form to provide authentication credentials; if desired, subsequent attempts to retrieve content from the private repository (or private repositories) can reuse those credentials to achive a single sign-on (SSO) effect.
 
