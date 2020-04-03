@@ -836,4 +836,4 @@ let ghpaFilename = '';
 
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
-let ghpaTokensOnlyFlag = true;
+const ghpaTokensOnlyFlag = true;
