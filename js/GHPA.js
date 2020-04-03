@@ -624,15 +624,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                          * for '<body>' because we have to allow for the
                          * possibility that there might be attributes in the
                          * tag. */
-  const startIndex = contentRetrieved.indexOf('<body');
+                        const startIndex = contentRetrieved.indexOf('<body');
 
                         /* Find the ending '>' to mark the start of content to
                          * render. */
-  const startRetrievalIndex = contentRetrieved.indexOf('>', startIndex) + 1;
+                        const startRetrievalIndex = contentRetrieved.indexOf('>', startIndex) + 1;
 
                         /* Find the next closing '</body>' to mark the end of
                          * content to render. */
-  const endIndex = contentRetrieved.indexOf('</body>', startRetrievalIndex);
+                        const endIndex = contentRetrieved.indexOf('</body>', startRetrievalIndex);
   
                         /* If either startIndex or endIndex are -1, then we
                          * didn't find the markers.  Replace webpage content
