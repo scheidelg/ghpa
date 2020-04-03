@@ -160,7 +160,7 @@ error message.
 
 This function is called either from ghpaLoadPage() or directly from a web page
 For the latter case, the most common use would be to call as part of the
-the submit action on a form.  For example:
+submit action on a form.  For example:
 
     <form onsubmit="event.preventDefault(); ghpaRetrieve(false, this);">
 
@@ -184,14 +184,14 @@ creds                         (type varies; see below)
 
          b. An  id of 'ghpaPassword' to hold the user's password.
 
-        This is the method used when first accessing content from the
-        private repository, and authentication credentials have not yet
-        been saved in sessionStorage.
+        This is the method used when first accessing content from the private
+        repository, and authentication credentials have not yet been saved in
+        sessionStorage.
 
      2. A  GitHUB authentication token (string).  The token is formed by
-        is formed by concatenating the username and password (or personal
-        access token string) with a ':' character, and then base64-encoding
-        the string.  For example:
+        concatenating the username and password (or personal access token
+        string) with a ':' character, and then base64-encoding the string.
+        For example:
      
             GitHubToken = btoa(`${login}:${password}`);
 
@@ -215,16 +215,16 @@ creds                         (type varies; see below)
         method as described for the 'credsKey' variable.
 
         This is the method used when the user has already authenticated to
-        GitHub, the ghpaSSOFlag option is set, credentials *are* able to
-        be encrypted with AES-256 (see the next method, below), and
-        the credentials have been stored in sessionStorage for later use.
+        GitHub, the ghpaSSOFlag option is set, credentials *are* able to be
+        encrypted with AES-256 (see the next method, below), and the
+        credentials have been stored in sessionStorage for later use.
         
         This is preferred over method #2 and will automatically be attemped.
 
         Note that the *ONLY* benefit of the AES encryption is so that casual
-        browsing of the sessionStorage space doesn't reveal the plaintext
-        or base64-encoded representation of the GitHub user ID and password
-        (or personal access token string).  This does *NOT* protect the
+        browsing of the sessionStorage space doesn't reveal the plaintext or
+        base64-encoded representation of the GitHub user ID and password (or
+        personal access token string).  This does *NOT* protect the
         authentication credentials from someone who also retrieves the AES key
         and IV from memory, and decrypts the authentication credentials.
 
@@ -238,8 +238,8 @@ credsKey                      string; optional
     When the key is exported as raw data, it's represented as a 32-byte
     Uint8Array.  The IV is reprsented as a 12-byte UintArray.  Encoding to
     save in sessionStorage is simply a concatenation of the hexadecimal
-    representation of each element in both arrays.  For example, if the
-    arrays had elements:
+    representation of each element in both arrays.  For example, if the arrays
+    had elements:
 
         AESkeyB[0]=190   AESkeyB[8]=57     AESkeyB[16]=212   AESkeyB[24]=91
         AESkeyB[1]=184   AESkeyB[9]=116    AESkeyB[17]=169   AESkeyB[25]=202
