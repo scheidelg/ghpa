@@ -613,19 +613,42 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * retrieved content. */
             } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
                 response.json().then(function (json) {
+                    /* Retrieve the content. */
                     const contentRetrieved = json.encoding === 'base64' ? atob(json.content) : json.content;
 
                     /* Render just the content inside <body></body> tags from
                      * the retrieved content? */
                     if (ghpaRenderRetrievedBodyOnlyFlag) {
-                         const startIdx = contentRetrieved.indexOf('<body');
-                         document.body.innerHTML = contentRetrieved.substring(
-                             contentRetrieved.indexOf('>', startIdx) + 1,
-                             contentRetrieved.indexOf('</body>'));
+
+                        /* Find the first instance of '<body'.  Not looking
+                         * for '<body>' because we have to allow for the
+                         * possibility that there might be attributes in the
+                         * tag. */
+  const startIndex = contentRetrieved.indexOf('<body');
+
+                        /* Find the ending '>' to mark the start of content to
+                         * render. */
+  const startRetrievalIndex = contentRetrieved.indexOf('>', startIndex) + 1;
+
+                        /* Find the next closing '</body>' to mark the end of
+                         * content to render. */
+  const endIndex = contentRetrieved.indexOf('</body>', startRetrievalIndex);
+  
+                        /* If either startIndex or endIndex are -1, then we
+                         * didn't find the markers.  Replace webpage content
+                         * with a null string. */
+                        if (startIndex == -1 || endIndex == -1) {
+                            document.body.innerHTML = '';
+
+                        /* If we found the markers, then render the marked
+                         * content. */
+                        } else {
+                            document.body.innerHTML = contentRetrieved.slice(startRetrievalIndex, endIndex);
+                        }
 
                     /* Render all the retrieved content? */
-//                    } else
-//                        document.body.innerHTML = contentRetrieved;
+                    } else {
+                        document.body.innerHTML = contentRetrieved;
                     }
                 });
 
