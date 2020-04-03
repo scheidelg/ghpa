@@ -124,7 +124,7 @@ GHPA is [licensed](LICENSE) under the GNU General Public License v3.0.
 
 Twitter handle: @Greg_Scheidel
 
-### Credit
+## Credit
 
 I created GHPA because I wanted to authenticated access controls for content published via GitHub Pages but couldn't find a suitable tool or GitHub Pages feature. While looking for that feature, I came across a web page [Github Pages and authentication, we are not that far](https://rmannibucau.metawerx.net/post/github-pages-authentication) by Romain Manni-Bucau<sup>[\[2\]](https://rmannibucau.metawerx.net/post/github-pages-authentication)</sup>. That web page presented the basic concept of combining a public GitHub Pages website with authenticated access to a private repository; that concept was the kernel that grew into GHPA.
 
