@@ -161,7 +161,7 @@ async function ghpaLoadPage() {
 
             /* On an error, pop up an error message. */
             .catch(function(errObject) {
-                window.alert('ghpaLoadPage() error attempting to load login form: ' + errObject);
+                window.alert('ghpaLoadPage() error attempting to load login form: ', errObject);
                 console.error(errObject);
             });
         }
