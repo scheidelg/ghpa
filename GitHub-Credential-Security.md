@@ -8,25 +8,25 @@ There are multiple options, from a security perspective, to use GitHub Pages Aut
 
     - You'll need to create a machine account for each user that will access the private Github repository via the GHPA-enabled website.
 
-    - <span style="color:red">Since the machine account will be separate from the user's standard GitHub account, this will increase the number of credentials the user has to manage. \[bad\]</span>
+    - Since the machine account will be separate from the user's standard GitHub account, this will increase the number of credentials the user has to manage. **\[bad - worse UX\]**
 
-    - The machine account will have read-only access to just a specific private GitHub repository; it will not have access to the user's regular GitHub account.
+    - The machine account will have read-only access to just a specific private GitHub repository; it will not have access to the user's regular GitHub account. **\[good - better security\]**
  
  - Next best, use GHPA with GitHub personal access tokens<sup>[\[1\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup>
 
-    - Users can use their regular GitHub user ID.
+    - Users can use their regular GitHub user ID. **\[good - better UX\]**
  
-    - Each user will need to create a personal access token with a limited scope.
+    - Each user will need to create a personal access token with a limited scope. **\[bad - worse UX\]**
 
-    - The minimum scope required to read content from a private GitHub repository is *repo*. This scope grants 'full control of private repositories' which also includes full control of public repositories. *In the event of compromised credentials, the attacker will be able to read all public and private repositories to which the user has access*.
+    - The minimum scope required to read content from a private GitHub repository is *repo*. This scope grants 'full control of private repositories' which also includes full control of public repositories. *In the event of compromised credentials, the attacker will be able to read all public and private repositories to which the user has access*. **\[bad - better than full user access but still not awesome\]**
 
     - Make sure the GHPA 'ghpaTokensOnlyFlag' is enabled to discourage the use of regular GitHub passwords.
 
  - Next best (and the worst), use GHPA with the user's regular user ID and password.
 
-    - Users can use their regular GitHub user ID.
+    - Users can use their regular GitHub user ID. **\[good - better UX\]**
 
-    - *In the event of compromised credentials, the attacker will be able to act as the user on GitHub including everything that the user would be able to do by logging directly into GitHub.*
+    - *In the event of compromised credentials, the attacker will be able to act as the user on GitHub including everything that the user would be able to do by logging directly into GitHub.* **\[bad - worse than personal access tokens\]**
 
 ## The Details
 
