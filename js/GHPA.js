@@ -544,14 +544,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                     const AESkeyExport = await window.crypto.subtle.exportKey("raw", AESkey);
                     const AESkeyBuffer = new Uint8Array(AESkeyExport);
-throw new Error('something went wrong');
-                })
-                .catch(function(errObject) {
-                    console.error(errObject);
-                });
 
-                    /* Generate a new initialization vector (IV). */
-    // implement try {} catch {} around this one
+
                     const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
 
                     /* Create a string of hexadecimal text representing the array
@@ -563,10 +557,6 @@ throw new Error('something went wrong');
                     for (let index = 0, arrayLength = AESiv.length; index < arrayLength; index++) {
                         credsKey += AESiv[index].toString(16).padStart(2, '0');
                     }
-
-                    /* Save the text representation of the AES-256 key and IV to
-                     * sessionStorage */
-                    sessionStorage.setItem('ghpaCredsKey', credsKey);
 
                     /* Encode the GitHub token (using TextEncoder) into a
                      * Uint8Array; then encrypt that text using the AES-256 key
@@ -583,10 +573,27 @@ throw new Error('something went wrong');
                         GitHubToken += cipherBuffer[index].toString(16).padStart(2, '0');
                     }
 
+                    /* Save the text representation of the AES-256 key and IV to
+                     * sessionStorage */
+                    sessionStorage.setItem('ghpaCredsKey', credsKey);
+
                     /* Save the credentials to sessionStorage.  They will definitely
                      * be converted to a JSON.stringify output at this point, and
                      * should be encrypted and base64-encoded. */
                     sessionStorage.setItem('ghpaCreds', GitHubToken);
+
+
+
+
+let fritz=1;
+                })
+                .catch(function(errObject) {
+                    console.error(errObject);
+                });
+
+                    /* Generate a new initialization vector (IV). */
+    // implement try {} catch {} around this one
+//                    const AESiv = await window.crypto.getRandomValues(new Uint8Array(12));
 
             }
 
