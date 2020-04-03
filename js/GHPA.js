@@ -546,7 +546,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                 })
                 .then(function(AESkeyExport) {
                     return (new Uint8Array(AESkeyExport));
-                });
+                })
                 .catch(function(errObject) {
                     console.error(errObject);
                 });
