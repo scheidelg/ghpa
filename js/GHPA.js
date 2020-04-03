@@ -613,19 +613,12 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * retrieved content. */
             } else if (response.status == 200 && ! ghpaAuthOnlyFlag) {        
                 response.json().then(function (json) {
-                    /* Retrieve the content. */
                     const contentRetrieved = json.encoding === 'base64' ? atob(json.content) : json.content;
 
-                    /* Render just the content inside <body></body> tags from
-                     * the retrieved content? */
-                    if (ghpaRenderRetrievedBodyOnlyFlag) {
-                        
-let x=1;
-
-                    /* Render all the retrieved content? */
-                    } else
-                        document.body.innerHTML = contentRetrieved;
-                    }
+                    const startIdx = contentRetrieved.indexOf('<body');
+                    document.body.innerHTML = contentRetrieved.substring(
+                        contentRetrieved.indexOf('>', startIdx) + 1,
+                        contentRetrieved.indexOf('</body>'));
                 });
 
             /* If we didn't successfully retrieve the content, then display an
