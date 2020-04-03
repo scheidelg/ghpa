@@ -32,7 +32,7 @@ This is certainly not as robust or full-featured as a web-application firewall (
  
    All that's required is to stand-up the two GitHub repositories, include the GHPA.js on the GitHub Pages website, and create the files on the private GitHub repository.
 
- - Secure-enough for my needs (see the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document).
+ - Secure enough for my needs (see the [GitHub Credential Security with GHPA](GitHub-Credential-Security.md) document).
 
  - Low-cost (free aside from the time invested in creating GHPA).
 
