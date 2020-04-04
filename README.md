@@ -1,4 +1,4 @@
-# GitHub Pages Authentication (GHP-Authentication or GHPA)
+# GitHub Pages Authentication (GHPA)
 
 Authenticated access to GitHub private repository content via a GitHub Pages website.
 _____
