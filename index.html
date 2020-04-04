@@ -21,7 +21,7 @@
 
         <table>
             <tr>
-                <th colspan="4" style="font-style: italic;">These are the global GHPA configuration options and variables.</th>
+                <th colspan="4" style="font-style: italic;">These are the currently configured global GHPA configuration options and variables.</th>
             <tr>
             <tr>
                 <th>Description</th>
@@ -72,7 +72,7 @@
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.</p>
                 </td>
                 <td>ghpaLoginFormfile</td>
-                <td><script>if (ghpaDefaultHTMLfile) { document.write(ghpaDefaultHTMLfile); } else { document.write('(empty)'); }</script></td>
+                <td><script>if (ghpaLoginFormfile) { document.write(ghpaLoginFormfile); } else { document.write('(empty)'); }</script></td>
                 <td>Y</td>
             </tr>
             <tr>
