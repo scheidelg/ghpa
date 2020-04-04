@@ -4,6 +4,7 @@ p { margin-bottom: 8px; margin-bottom: 8px; }
 
 table {
   font-family: arial, sans-serif;
+  font-size: 10pt;
   border-collapse: collapse;
   width: 100%;
 }
