@@ -534,17 +534,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * everything looks OK with that data.  If not, kick out some error
      * messages.  If so, then attempt to authenticate to GitHub. */
 
-    if (retrievedCredsFlag) {
-        /* If we were passed retrieved credentials but weren't able to extract
-         * a login name, then something is wrong. */
-        if (! login) {
-            ghpaAuthMessage("SSO GitHub token couldn't be parsed. Try logging out and logging in again.");
-
-        /* If the login name extracted from the GitHub token doesn't match the
-         * name already saved in ghpaUserID, then something is wrong. */
-        } else if (login != ghpaUserID) {
-            ghpaAuthMessage("Currently logged in user ID and user ID from SSO GitHub token don't match. Try logging out and logging in again.");
-        }
 
     /* According to github.com/join, GitHub usernames:
      *
@@ -555,7 +544,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * The username and password fields on the login form should be marked as
      * 'required' but users are crazy.  This will also serve as a (minor)
      * check against a problem with data retrieved from sessionStorage. */
-    } else if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
+    if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
         /* Don't display the bogus user name as part of an error message.  Part
          * of the point of this filter is to prevent XSS by only allowing valid
