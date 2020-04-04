@@ -3,18 +3,19 @@ li { margin-top: 16px; }
 p { margin-bottom: 8px; margin-bottom: 8px; }
 
 table {
-  font-family: arial, sans-serif;
-  font-size: 10pt;
-  border-collapse: collapse;
-  width: 100%;
+    font-family: arial, sans-serif;
+    font-size: 10pt;
+    border-collapse: collapse;
+    margin-top: 16px;
+    width: 100%;
 }
 
 td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+    background-color: #dddddd;
 }
