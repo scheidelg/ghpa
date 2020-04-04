@@ -84,7 +84,7 @@
                 <td>Y</td>
             </tr>
             <tr>
-                <td>Flag: GitHub Tokens Only</td>
+                <td>Flag: GitHub Tokens Only
                     <p>Should the password be required to match the format of a GitHub personal access token string?<p>
                 </td>
                 <td>ghpaTokensOnlyFlag</td>
@@ -92,7 +92,7 @@
                 <td>N</td>
             </tr>
             <tr>
-                <td>Flag: Single Sign-on (SSO)</td>
+                <td>Flag: Single Sign-on (SSO)
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
                 <td>ghpaSSOFlag</td>
@@ -100,7 +100,7 @@
                 <td>Y</td>
             </tr>
             <tr>
-                <td>Flag: Authentication Only</td>
+                <td>Flag: Authentication Only
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
@@ -108,8 +108,8 @@
                 <td>Y</td>
             </tr>
             <tr>
-                <td>Flag: Only Render Retreived Body</td>
-                <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
+                <td>Flag: Only Render Retreived Body
+                    <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
                 <td><script>if (ghpaRenderRetrievedBodyOnlyFlag) { document.write(ghpaRenderRetrievedBodyOnlyFlag); } else { document.write('(empty)'); }</script></td>
@@ -149,7 +149,7 @@
             </tr>
             <tr>
                 <td><a href="examples/file2.html">Public stub file, corresponding private file, no SSO</a>
-                    <p>The stub file 'file2.html' exists in the private repository and a corresponding private file exists in the private repository. However, the public stub file explicitly includes a flag to <b>not</b>use or cache credentials.</p>
+                    <p>The stub file 'file2.html' exists in the private repository and a corresponding private file exists in the private repository. However, the public stub file explicitly includes a flag to <b>not</b> use or cache credentials.</p>
                 </td>
                 <td>j</td>
                 <td>k</td>
