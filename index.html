@@ -21,22 +21,99 @@
 
         <table>
             <tr>
-                <th colspan="3" style="font-style: italic;">These are the global GHPA configuration options and variables.</th>
+                <th colspan="4" style="font-style: italic;">These are the global GHPA configuration options and variables.</th>
             <tr>
             <tr>
                 <th>Description</th>
                 <th>Variable</th>
                 <th>Value</th>
+                <th>Can be Overridden?</th>
             </tr>
             <tr>
-                <td>Description</th>
-                <td>ghpaUserID</th>
-                <td><script>if (ghpaUserID) { document.write(ghpaUserID); } else { document.write('(not currently logged in)'); }</script></th>
+                <td>Current GitHub and GHPA SSO user ID</td>
+                <td>ghpaUserID</td>
+                <td><script>if (ghpaUserID) { document.write(ghpaUserID); } else { document.write('(not currently logged in)'); }</script></td>
+                <td>Y</td>
             </tr>
             <tr>
-                <td>Description</th>
-                <td>ghpaUserID</th>
-                <td><script>if (ghpaUserID) { document.write(ghpaUserID); } else { document.write('(not currently logged in)'); }</script></th>
+                <td>GitHub Organization
+                    <p>The GitHub organization that will be used unless overridden on a specific web page.</p>
+                </td>
+                <td>ghpaOrg</td>
+                <td><script>if (ghpaOrg) { document.write(ghpaOrg); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>GitHub Repository
+                    <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
+                </td>
+                <td>ghpaRepo</td>
+                <td><script>if (ghpaRepo) { document.write(ghpaRepo); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>GitHub Branch
+                    <p>The GitHub branch that will be used unless overridden on a specific web page.</p>
+                </td>
+                <td>ghpaBranch</td>
+                <td><script>if (ghpaBranch) { document.write(ghpaBranch); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>Default HTML File
+                    <p>The HTML file to retrieve from the private GitHub repository if the browsing a GitHub Pages directory.</p>
+                </td>
+                <td>ghpaDefaultHTMLfile</td>
+                <td><script>if (ghpaDefaultHTMLfile) { document.write(ghpaDefaultHTMLfile); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>Login File
+                    <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.</p>
+                </td>
+                <td>ghpaLoginFormfile</td>
+                <td><script>if (ghpaDefaultHTMLfile) { document.write(ghpaDefaultHTMLfile); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>File to Retrieve 
+                    <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.<p>
+                </td>
+                <td>ghpaFilename</td>
+                <td><script>if (ghpaFilename) { document.write(ghpaFilename); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>Flag: GitHub Tokens Only</td>
+                    <p>Should the password be required to match the format of a GitHub personal access token string?<p>
+                </td>
+                <td>ghpaTokensOnlyFlag</td>
+                <td><script>if (ghpaTokensOnlyFlag) { document.write(ghpaTokensOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td>N</td>
+            </tr>
+            <tr>
+                <td>Flag: Single Sign-on (SSO)</td>
+                    <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
+                </td>
+                <td>ghpaSSOFlag</td>
+                <td><script>if (ghpaSSOFlag) { document.write(ghpaSSOFlag); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>Flag: Authentication Only</td>
+                    <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
+                </td>
+                <td>ghpaAuthOnlyFlag</td>
+                <td><script>if (ghpaAuthOnlyFlag) { document.write(ghpaAuthOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
+            </tr>
+            <tr>
+                <td>Flag: Only Render Retreived Body</td>
+                <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
+                </td>
+                <td>ghpaRenderRetrievedBodyOnlyFlag</td>
+                <td><script>if (ghpaRenderRetrievedBodyOnlyFlag) { document.write(ghpaRenderRetrievedBodyOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td>Y</td>
             </tr>
         <table>
 
