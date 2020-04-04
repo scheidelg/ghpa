@@ -74,10 +74,11 @@ Arguments: none
 Return value: none
 ----------------------------------------------------------------------------*/
 function ghpaClearSSO() {
+    sessionStorage.removeItem('ghpaUserID');
     sessionStorage.removeItem('ghpaCreds');
     sessionStorage.removeItem('ghpaCredsKey');
 
-    ghpaAuthMessage('Cleared SSO authentication credentials.');
+ //   ghpaAuthMessage('Cleared SSO authentication credentials.');
 }
 
 
