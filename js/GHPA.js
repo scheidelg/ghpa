@@ -477,7 +477,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                 /* Decrypt the GitHub token. */
                 creds = new TextDecoder().decode(await window.crypto.subtle.decrypt({name: "AES-GCM", iv: AESiv}, AESkey, cipherBuffer));
-
             })
             .catch(function(errObject) {
                 window.alert('ghpaRetrieve() error attempting to decrypt GitHub token: ' + errObject.message);
@@ -485,26 +484,26 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             });
         }
 
-        /* Save the retrieved token in a new variable name. */
-        GitHubToken = creds;
-
-        /* Extract the username so that we can use it in messages; at the same
-         * time do at least some basic validation that the retrieved token is
-         * valid.
+        /* Extract the username so that we can use it in messages, and save
+         * the GitHub token in a separate variable for later reference.  Also
+         * perform some basic validation that the retrieved token is valid.
          *
          * Yes, we're calling atob() twice when instead we could be saving the
          * results in a variable and referencing the variable.   This
          * minimizes the instances of the unencoded password in memory.  Yes,
          * it's an extremely marginal benefit (the user ID and password are
-         * already in memory base64-encoded). */
-        tokenDelimiterPosition=atob(GitHubToken).search(":");
+         * already in memory as base64-encoded) text. */
+        tokenDelimiterPosition=atob(creds).search(":");
         if (tokenDelimiterPosition == -1) {
             /* A GitHub token is supposed to be 'user:password'.  If we don't
              * have a ':' character then something isn't right. */
             GitHubToken = '';
             login = '';
         } else {
-            login = atob(GitHubToken).slice(0, tokenDelimiterPosition);
+            login = atob(creds).slice(0, tokenDelimiterPosition);
+
+            /* Save the retrieved token in a new variable name. */
+            GitHubToken = creds;
         }
 
     /* If we were passed credentials from a form, then extract the username
@@ -530,7 +529,23 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * function. */
         GitHubToken = btoa(`${login}:` + creds.querySelector('#ghpaPassword').value);
     }
-    
+
+    /* At this point we should have the login and GitHubToken.  Validate that
+     * everything looks OK with that data.  If not, kick out some error
+     * messages.  If so, then attempt to authenticate to GitHub. */
+
+    if (retrievedCredsFlag) {
+        /* If we were passed retrieved credentials but weren't able to extract
+         * a login name, then something is wrong. */
+        if (! login) {
+            ghpaAuthMessage("SSO GitHub token couldn't be parsed. Try logging out and logging in again.");
+
+        /* If the login name extracted from the GitHub token doesn't match the
+         * name already saved in ghpaUserID, then something is wrong. */
+        } else if (login != ghpaUserID) {
+            ghpaAuthMessage("Currently logged in user ID and user ID from SSO GitHub token don't match. Try logging out and logging in again.");
+        }
+
     /* According to github.com/join, GitHub usernames:
      *
      *  - can contain alpahnumeric characters or single hyphens
@@ -540,7 +555,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * The username and password fields on the login form should be marked as
      * 'required' but users are crazy.  This will also serve as a (minor)
      * check against a problem with data retrieved from sessionStorage. */
-    if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
+    } else if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
         /* Don't display the bogus user name as part of an error message.  Part
          * of the point of this filter is to prevent XSS by only allowing valid
@@ -688,16 +703,24 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                      * should be encrypted and base64-encoded. */
                     sessionStorage.setItem('ghpaCreds', GitHubToken);
 
+                    /* Save the currently logged in user ID to sessionStorage. */
+                    sessionStorage.setItem('ghpaUserID', login);
+
                     /* sessionStorage.setItem() doesn't have a return value to
                      * tell us whether the action was successful.  So let's
-                     * retrieve the data that we just set to see if both
+                     * retrieve the data that we just set to see if all
                      * values were successfully saved.  And if they weren't,
-                     * then clear both values - in cases where the GitHub
-                     * toke is encrypted, we need both the ciphertext and the
-                     * decryption key/IV. */
-                    if (sessionStorage.getItem('ghpaCreds') != GitHubToken || sessionStorage.getItem('ghpaCredsKey') != credsKey) {
+                     * then clear all values; in cases where the GitHub token
+                     * is encrypted, we need both the ciphertext and the
+                     * decryption key/IV, and we want the saved user ID to be
+                     * correct. */
+                    if (sessionStorage.getItem('ghpaCreds')    != GitHubToken ||
+                        sessionStorage.getItem('ghpaCredsKey') != credsKey ||
+                        sessionStorage.getItem('ghpaUserID')   != login) {
+                        
                         sessionStorage.removeItem('ghpaCreds');
                         sessionStorage.removeItem('ghpaCredsKey');
+                        sessionStorage.removeItem('ghpaUserID');
                     }
                 })
                 .catch(function(errObject) {
@@ -980,6 +1003,9 @@ let ghpaBranch = 'master';
 let ghpaDefaultHTMLfile = 'index.html';
 let ghpaLoginFormFile ='/examples/loginform.html';
 let ghpaFilename = '';
+
+// TO DO: document this in variable definitions above <------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+let ghpaUserID = sessionStorage.getItem('ghpaUserID');
 
 const ghpaTokensOnlyFlag = true;
 let ghpaSSOFlag = true;
