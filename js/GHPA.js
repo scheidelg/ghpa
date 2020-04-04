@@ -78,6 +78,7 @@ function ghpaClearSSO() {
     sessionStorage.removeItem('ghpaCreds');
     sessionStorage.removeItem('ghpaCredsKey');
 
+//TO DO!!!! check whether items are cleared, and return false if we can't confirm <--------!!!!!!!!!!!!!!!!!
  //   ghpaAuthMessage('Cleared SSO authentication credentials.');
     return (true);
 }
