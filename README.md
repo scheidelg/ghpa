@@ -84,6 +84,8 @@ Also of note:
 
    This means that you don't have to create a 'stub file' on the GitHub Pages website for every file in the private repository.
 
+ - When using SSO, the currently authenticated user name is available in a global variable that can be referenced by web pages and scripts.
+
 ## Examples
 
 I created three repositories to host the GHPA content and illustrate using GHPA:
