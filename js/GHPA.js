@@ -79,6 +79,7 @@ function ghpaClearSSO() {
     sessionStorage.removeItem('ghpaCredsKey');
 
  //   ghpaAuthMessage('Cleared SSO authentication credentials.');
+    return (true);
 }
 
 
