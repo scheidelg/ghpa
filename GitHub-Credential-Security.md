@@ -72,7 +72,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    Personall access token strings are 40 hexadecimal characters. A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
- - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[7\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
+ - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[8\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
 
  - GitHub accounts that have multifactor authentication (MFA) enabled - hopefully, all of them - won't be able to use their regular password to authenticate through GHPA.
 
@@ -122,10 +122,15 @@ There are some additional actions - some related to the points listed above - th
  
     "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
-    I didn't use this directly did find this to be an excellent and succinct set of examples.
+    An excellent and succinct set of examples.
     
     https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
- 7. GitHub Deprecation of API Password Authentication
+ 7. Web Cryptography API Examples by Daniel Roesler
+
+    Another good set of examples for using the Web Crtypography API.
+
+    https://github.com/diafygi/webcrypto-examples
+ 8. GitHub Deprecation of API Password Authentication
 
     https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
