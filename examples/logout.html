@@ -5,15 +5,30 @@
 
         <!-- Load the GHPA functions and initial configuration. -->
         <script src="/js/GHPA.js"></script>
+
+        <!-- Local script to present a slightly nicer interface. -->
+        <script>
+            function pageMessage() {
+//pause 2 seconds here
+                if (ghpaClearSSO()) {
+                    document.getElementById('pageMessage').innerHTML ="SSO credentials cleared.  Click here to login again."
+                } else {
+                    document.getElementById('pageMessage').innerHTML ="Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
+                }
+            }
+        </script>
     </head>
-    <body>
+
+    <!-- After loading the <body> of the page, call the JavaScript function
+          that clears the saved authentication token - if any - from
+          sessionStorage. -->
+    <body onload="pageMessage();">
         <noscript><p>
             GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
         <p></noscript>
 
-         <!-- Call the JavaScript function that clears the saved
-              authentication token - if any - from sessionStorage. -->
-        <script>ghpaClearSSO();</script>
-        Cleared SSO authentication credentials.
+        <div id="pageMessage">
+            <p>Logging out of GitHub by clearing SSO authentication credentials...</p>
+        </div>
     </body>
 </html>
