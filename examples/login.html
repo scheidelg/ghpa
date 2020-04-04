@@ -21,13 +21,15 @@
             GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
         <p></noscript>
 
+123456789012345678901234567890123456789012345678901234567890123456789012345678
         <!-- In each stub file, we can have an element with an id of
-             'ghpaPrompt'.  Optionally, set a style property of
-             'display: none' to minimize rendering of the element.  The code
-             in ghpaLoadPage.js attempts - if SSO is enabled - to load content
-             from the private repository.  If that fails, then the ghpaPrompt
-             element is made visible. -->
-        <div id="ghpaPrompt" style="display: none;">
+             'ghpaPrompt'.  For this page specifically, do *not* set the style
+             propertyof 'display: none' because this page has
+             'ghpaAuthOnlyFlag' set so that a private repository file isn't
+             loaded after successful authentication; and we want to keep the
+             page prompt on screen even after successful, including if the
+             users is already authenticated and accesses this page. -->
+        <div id="ghpaPrompt">
             <h1>Login to private repository</h1>
             <p>Access the login page to authenticate to GitHub without actually loading a private file, and cache credentials. This is useful only to establish authentication for SSO.</p>
             <ul>
