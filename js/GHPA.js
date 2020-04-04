@@ -54,7 +54,7 @@ function ghpaAuthMessage(authMessage) {
     /* If the element exists and isn't hidden, then set the HTML of that
      * element. */
     if ((authMessageElement = document.getElementById('ghpaAuthMessage')) && authMessageElement.style.display != 'none') {
-        authMessageElement.innerHTML = authMessage + '<small>[' + (new Date().localBigEndianFull()) + ']</small>';
+        authMessageElement.innerHTML = authMessage + '<small> [' + (new Date().localBigEndianFull()) + ']</small>';
 
     /* Otherwise, use a popup. */
     } else {
@@ -719,7 +719,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * without setting ghpaAuthOnlyFlag. */
             if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
                 /* Display the 'success' message. */
-                 ghpaAutheMessage(`Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : ""));
+                 ghpaAuthMessage(`Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : ""));
 
                 /* Hide the login form (if it's currently displayed).  Once
                  * the user successfully logs in, we don't want to confuse
