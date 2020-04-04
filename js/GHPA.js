@@ -49,13 +49,11 @@ Return Value: none
 function ghpaAuthMessage(authMessage) {
     /* Get a reference to the web page element with id of
      * 'ghpaAuthMessage'. */
-    const authMessageElement = document.getElementById('ghpaAuthMessage');
-
-let xyzzy = document.getElementById('fritzandgeorge').style.display;
+//    const authMessageElement = document.getElementById('ghpaAuthMessage');
 
     /* If the element exists and isn't hidden, then set the HTML of that
      * element. */
-    if (! authMessageElement || authMessageElement.style.display != 'none') {
+    if ((authMessageElement = document.getElementById('ghpaAuthMessage')) && authMessageElement.style.display != 'none') {
         authMessageElement.innerHTML = authMessage + '<small>[' + (new Date().localBigEndianFull()) + ']</small>';
 
     /* Otherwise, use a popup. */
