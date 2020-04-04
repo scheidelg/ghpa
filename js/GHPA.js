@@ -22,6 +22,48 @@ GHPA is licensed under the GNU General Public License v3.0.
 
 
 /*============================================================================
+function ghpaAuthMessage(authMessage)
+------------------------------------------------------------------------------
+Display a message to the user.  First try to display a message by setting the
+HTML of an element with id of 'ghpaAuthMessage' on the current web page;
+append the current date/time to the message.  If no such element exists or
+that element is hidden, then use a pop-up; don't append the current date/time.
+
+------------------------------------------------------------------------------
+Arguments
+
+authMessage                         string
+
+    The message to display.
+
+------------------------------------------------------------------------------
+Variables
+
+authMessageElement                  object
+
+    Reference to the web page element with id of 'ghpaAuthMessage'.
+
+------------------------------------------------------------------------------
+Return Value: none
+----------------------------------------------------------------------------*/
+function ghpaAuthMessage(authMessage) {
+    /* Get a reference to the web page element with id of
+     * 'ghpaAuthMessage'. */
+    const authMessageElement = document.getElementById('ghpaAuthMessage');
+
+    /* If the element exists and isn't hidden, then set the HTML of that
+     * element. */
+    if (! authMessageElement || authMessageElement.style.display != 'none') {
+        authMessageElement.innerHTML = authMessage + '<small>[' + (new Date().localBigEndianFull()) + ']</small>';
+
+    /* Otherwise, use a popup. */
+    } else {
+        window.alert(authMessage);
+    }
+}
+
+
+/*============================================================================
 function ghpaClearSSO
 ------------------------------------------------------------------------------
 Clear the authentication token from memory so that subsequent attempts to
@@ -138,12 +180,14 @@ async function ghpaLoadPage() {
         if (ghpaLoginFormFile != '-') {
             /* Retrieve the login form. */
             await fetch(ghpaLoginFormFile)
-            
-            /* An HTTP 404, 500 and other failures won't generate an error;
-             * need to check response.ok or response.status. */
+
             .then(function (response) {
+
+                /* A response from the website indicating a failure to
+                 * retrieve the page is still a valid response that fulfills
+                 * the fetch() promise; check the HTTP response code and throw
+                 * an error on anything except a 200 HTTP response. */
                 if (response.status != 200) {
-                    /* throw an error to the catch clause */
                     throw new Error(`${response.status} HTTP response`);
                 }
 
@@ -157,9 +201,10 @@ async function ghpaLoadPage() {
                 document.getElementById('ghpaLoginForm').innerHTML = HTMLcode;
             })
 
-            /* On an error, pop up an error message. */
+            /* On an error, display an error message and then write an error
+             * to the console. */
             .catch(function(errObject) {
-                window.alert('ghpaLoadPage() error attempting to load login form: ' + errObject.message);
+                ghpaAuthMesssage('ghpaLoadPage() error attempting to load login form: ' + errObject.message);
                 console.error(errObject);
             });
         }
@@ -312,13 +357,6 @@ AESkeyBuffer                        Uint8Array[32]
     when exporting the key before saving in sessionStorage; and when reading
     data from sessionStorage so that the key can be imported. 
 
-authMessage                         string
-
-    Used to place a message on the calling page.  If this variable is
-    non-empty at the end of the function, then set:
-
-        document.getElementById("ghpaAuthMessage").innerHTML
-
 cipherBUffer                        Uint8Array[variable length]
 
     Array to hold the binary representation of the encrypted GitHub token.
@@ -352,6 +390,22 @@ tokenDelimiterPosition              string
 ------------------------------------------------------------------------------
 Return Value
 
+We're generally calling this function from one of two places:
+
+ (a) On submission of an HTML form where we've prevented the default form
+     action from firing.
+
+     In this case it doesn't really matter what we return from this
+     function... but we should return *something.*
+
+ (b) From ghpaLoadPage.js when both SSO is enabled and authentication
+     credentials are in sessionStorage.
+
+     In this case we want to return true/false to identify whether content was
+     successfully loaded.  That way the loading script code can determine
+     whether any additional action needs to be taken such as displaying a
+     prompt and/or an error message, or presenting the login form.
+
 true:  received an HTML response code of 200 when retrieving the content
        from the private GitHub repository
 
@@ -359,7 +413,6 @@ false: did *not* receive an HTML response code of 200
 ----------------------------------------------------------------------------*/
 async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
-    let authMessage;
     let GitHubToken;
     let login;
     let tokenDelimiterPosition;
@@ -485,17 +538,18 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
         /* Don't display the bogus user name as part of an error message.  Part
-         * of the point in this filtering is to prevent XSS by only allowing
-         * valid characters; it would be self-defeating to then display the
-         * invalid characters to the user. */
-        authMessage = "GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.";
+         * of the point of this filter is to prevent XSS by only allowing valid
+         * characters; it would be self-defeating to then display the invalid
+         * characters to the user in an error message. */
+        ghpaAuthMessage("GitHub usernames may only contain alphanumeric charcters or single hypens, cannot begin or end with a hyphen, and must not be empty.");
 
     /* If ghpaTokensOnlyFlag is enabled, require passwords that match the
      * format of a GitHub personal access token string: 40 hexadecimal
      * characters. */
     } else if (ghpaTokensOnlyFlag && ! atob(GitHubToken).slice(tokenDelimiterPosition + 1).match(/^[a-f0-9]{40}$/i)) {
+
         /* Display an error message on the web page. */
-        authMessage = "Use of GitHub personal access tokens is required for authentication, and the passcode entered doesn't appear to be a token string.";
+        ghpaAuthMessage("Use of GitHub personal access tokens is required for authentication, and the passcode entered doesn't appear to be a token string.");
 
     } else {
 
@@ -662,15 +716,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * to display after a successful login, then just retrieve that
              * without setting ghpaAuthOnlyFlag. */
             if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
-                /* Updating document.getElementById("ghpaAuthMessage").innerHTML
+                /* Updating document.getElementById('ghpaAuthMessage').innerHTML
                  * instead of document.body.innerHTML to avoid a Javascript error
                  * if the content wasn't successfully retrieved. */
-                 document.getElementById("ghpaAuthMessage").innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
+                 document.getElementById('ghpaAuthMessage').innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
 
                 /* Hide the login form (if it's currently displayed).  Once
                  * the user successfully logs in, we don't want to confuse
                  * them by still presenting a login form. */
-                document.getElementById("ghpaLoginForm").style.display = "none";
+                document.getElementById('ghpaLoginForm').style.display = "none";
 
             /* If we successfully retrieved the contents and we are not
              * performing an authentication-only check, then display the
@@ -720,7 +774,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * appropriate error message. */
             } else if (response.status != 200) {
                 
-                /* Updating document.getElementById("ghpaAuthMessage").innerHTML
+                /* Updating document.getElementById('ghpaAuthMessage').innerHTML
                  * instead of document.body.innerHTML to avoid a Javascript error
                  * if the content wasn't successfully retrieved. */
 
@@ -728,7 +782,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * was *not* 404 (file not found), then display an error message
                  * specific to 'authentication failed. */
                 if (ghpaAuthOnlyFlag && response.status != 404) {
-                    authMessage = `Failed to authenticate to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login} (status: ${response.status}).`;
+                    ghpaAuthMessage(`Failed to authenticate to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login} (status: ${response.status}).`);
 
                 /* If this was an attempt to actually retrieve content (i.e., not
                  * an authentication-only check), then display a generic error
@@ -738,7 +792,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * desired; either inside this 'else' or through a series of
                  * additional 'else if' statements. */
                 } else {
-                    authMessage = `Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`;
+                    ghpaAuthMessage(`Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`);
                 }
             }
 
@@ -748,34 +802,15 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
             fetchResponse=response.status;
         })
 
-        /* On an error, pop up an error message. */
+        /* On an error fetching private repositoriy file, display an error
+         * message. */
         .catch(function(errObject) {
-            authMessage = 'ghpaRetrieve() error attempting to retrieve private content: ' + errObject.message;
+            ghpaAuthMessage('ghpaRetrieve() error attempting to retrieve private content: ' + errObject.message);
             console.error(errObject);
         });
     }
 
-    if (authMessage) {
-        document.getElementById("ghpaAuthMessage").innerHTML = authMessage + '<small>[' + (new Date().localBigEndianFull()) + ']</small>';
-    }
-    
-    /* We're generally calling this from one of two places:
-     *
-     *  (a) On submission of an HTML form where we've prevented the default
-     *      form action from firing.
-     *
-     *      In this case it doesn't really matter what we return from this
-     *      function... but we should return *something.*
-     *
-     *  (b) From ghpaLoadPage.js when both SSO is enabled and authentication
-     *      credentials are in sessionStorage.
-     *
-     *      In this case we want to return true/false to identify whether
-     *      content was successfully loaded.  That way the loading script code
-     *      can determine whether any additional action needs to be taken such
-     *      as displaying a prompt and/or an error message, or presenting the
-     *      login form.
-     */
+    /* Return to flag whether we successfully retrieved content. */
     return (fetchResponse == 200);
 }
 
