@@ -9,7 +9,7 @@
         <!-- Local script to present a slightly nicer interface. -->
         <script>
             function pageMessage() {
-//pause 2 (or 3) seconds here
+                // Use setTimeout() for a brief delay on the UI
                 setTimeout(
                     function() {
                         if (ghpaClearSSO()) {
@@ -17,7 +17,7 @@
                         } else {
                             document.getElementById('pageMessage').innerHTML ="Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
                         }
-                    }, 3000);
+                    }, 2000);
             }
         </script>
     </head>
