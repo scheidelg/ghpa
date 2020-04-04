@@ -13,9 +13,9 @@
                 setTimeout(
                     function() {
                         if (ghpaClearSSO()) {
-                            document.getElementById('pageMessage').innerHTML += "SSO credentials cleared.  Click here to login again."
+                            document.getElementById('pageMessage').innerHTML = "SSO credentials cleared.  Click here to login again."
                         } else {
-                            document.getElementById('pageMessage').innerHTML += "Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
+                            document.getElementById('pageMessage').innerHTML = "Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
                         }
                     }, 2000);
             }
@@ -30,8 +30,7 @@
             GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
         <p></noscript>
 
-        <div id="pageMessage">
-            <p>Logging out of GitHub by clearing SSO authentication credentials...</p>
-        </div>
+        
+        <p>Logging out of GitHub by clearing SSO authentication credentials... <div id="pageMessage"></div></p>
     </body>
 </html>
