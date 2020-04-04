@@ -544,7 +544,9 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
      * The username and password fields on the login form should be marked as
      * 'required' but users are crazy.  This will also serve as a (minor)
      * check against a problem with data retrieved from sessionStorage. */
-    if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
+    if (retrievedCredsFlag) {
+        let x=1;
+    } else if (! login.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d]))+$/i)) {
 
         /* Don't display the bogus user name as part of an error message.  Part
          * of the point of this filter is to prevent XSS by only allowing valid
