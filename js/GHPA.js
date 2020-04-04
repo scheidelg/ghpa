@@ -51,6 +51,8 @@ function ghpaAuthMessage(authMessage) {
      * 'ghpaAuthMessage'. */
     const authMessageElement = document.getElementById('ghpaAuthMessage');
 
+let xyzzy = document.getElementById('fritzandgeorge').style.display;
+
     /* If the element exists and isn't hidden, then set the HTML of that
      * element. */
     if (! authMessageElement || authMessageElement.style.display != 'none') {
