@@ -9,12 +9,15 @@
         <!-- Local script to present a slightly nicer interface. -->
         <script>
             function pageMessage() {
-//pause 2 seconds here
-                if (ghpaClearSSO()) {
-                    document.getElementById('pageMessage').innerHTML ="SSO credentials cleared.  Click here to login again."
-                } else {
-                    document.getElementById('pageMessage').innerHTML ="Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
-                }
+//pause 2 (or 3) seconds here
+                setTimeout(
+                    function() {
+                        if (ghpaClearSSO()) {
+                            document.getElementById('pageMessage').innerHTML ="SSO credentials cleared.  Click here to login again."
+                        } else {
+                            document.getElementById('pageMessage').innerHTML ="Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
+                        }
+                    }, 3000);
             }
         </script>
     </head>
@@ -22,7 +25,7 @@
     <!-- After loading the <body> of the page, call the JavaScript function
           that clears the saved authentication token - if any - from
           sessionStorage. -->
-    <body onload="setTimeout(pageMessage(), 3000);">
+    <body onload="pageMessage();">
         <noscript><p>
             GHPA requires client-side JavaScript to be enabled. Please enable JavaScript and reload the page.
         <p></noscript>
