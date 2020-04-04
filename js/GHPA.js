@@ -716,10 +716,8 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * to display after a successful login, then just retrieve that
              * without setting ghpaAuthOnlyFlag. */
             if (ghpaAuthOnlyFlag && (response.status == 200 || response.status == 404)) {
-                /* Updating document.getElementById('ghpaAuthMessage').innerHTML
-                 * instead of document.body.innerHTML to avoid a Javascript error
-                 * if the content wasn't successfully retrieved. */
-                 document.getElementById('ghpaAuthMessage').innerHTML = `Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : "");
+                /* Display the 'success' message. */
+                 ghpaAutheMessage(`Confirmed GitHub authentication as ${login}.` + (ghpaSSOFlag ? " Credentials saved for SSO." : ""));
 
                 /* Hide the login form (if it's currently displayed).  Once
                  * the user successfully logs in, we don't want to confuse
@@ -774,10 +772,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * appropriate error message. */
             } else if (response.status != 200) {
                 
-                /* Updating document.getElementById('ghpaAuthMessage').innerHTML
-                 * instead of document.body.innerHTML to avoid a Javascript error
-                 * if the content wasn't successfully retrieved. */
-
                 /* If this is an authentication-only check and the response code
                  * was *not* 404 (file not found), then display an error message
                  * specific to 'authentication failed. */
