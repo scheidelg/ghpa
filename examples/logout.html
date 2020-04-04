@@ -13,7 +13,7 @@
                 setTimeout(
                     function() {
                         if (ghpaClearSSO()) {
-                            document.getElementById('pageMessage').innerHTML = "<p>SSO credentials cleared.  Click here to login again.</p>"
+                            document.getElementById('pageMessage').innerHTML = "<p>SSO credentials cleared.  Click <a href='login.html'>here</a>to login again.</p>"
                         } else {
                             document.getElementById('pageMessage').innerHTML = "<p>Unable to confirm clearing SSO credentials. Close the browser window to clear credentials.</p>"
                         }
