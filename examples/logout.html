@@ -9,15 +9,16 @@
         <!-- Local script to present a slightly nicer interface. -->
         <script>
             function pageMessage() {
-                // Use setTimeout() for a brief delay on the UI
-                setTimeout(
-                    function() {
+//                // Use setTimeout() for a brief delay on the UI
+//                setTimeout(
+//                    function() {
                         if (ghpaClearSSO()) {
                             document.getElementById('pageMessage').innerHTML = "SSO credentials cleared.  Click here to login again."
                         } else {
                             document.getElementById('pageMessage').innerHTML = "Unable to confirm clearing SSO credentials. Close the browser window to clear credentials."
                         }
-                    }, 2000);
+  //                  }, 2000);
+                document.getElementById('pageMessage').delay(2000).fadeIn();
             }
         </script>
     </head>
@@ -31,6 +32,7 @@
         <p></noscript>
 
         
-        <p>Logging out of GitHub by clearing SSO authentication credentials... <div id="pageMessage"></div></p>
+        <p>Logging out of GitHub by clearing SSO authentication credentials...</p>
+        <p><div id="pageMessage" style="display: none;"></div></p>
     </body>
 </html>
