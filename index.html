@@ -8,7 +8,7 @@
 
         <!-- Quick script to make an element flash on screen -->
         <script>
-            async function ghpaRenderRetrievedBodyOnlyFlag () {
+            async function flashElement () {
                 return (true);
             }
         </script>
@@ -33,12 +33,12 @@
             <tr>
                 <th>Description</a></th>
                 <th>Public File</a></th>
-                <th><a href="#ghpaRepo" onclick="flashElement('ghpaRepo');">Private Repo</a></th>
-                <th><a href="#ghpaFileName" onclick="flashElement('ghpaFileName');">Private File</a></th>
-                <th><a href="#ghpaLoginFormFile" onclick="flashElement('ghpaLoginFormFile');">Login Form</a></th>
-                <th><a href="#ghpaSSOFlag" onclick="flashElement('ghpaSSOFlag');">SSO?</a></th>
-                <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement('ghpaAuthOnlyFlag');">Auth Only?</a></th>
-                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement('ghpaRenderRetrievedBodyOnlyFlag');">Retrieve Only &lt;body&gt;?</a></th>
+                <th><a href="#ghpaRepo" onclick="flashElement(document.getElementById('ghpaRepo'));">Private Repo</a></th>
+                <th><a href="#ghpaFileName" onclick="flashElement(document.getElementById('ghpaFileName'));">Private File</a></th>
+                <th><a href="#ghpaLoginFormFile" onclick="flashElement(document.getElementById('ghpaLoginFormFile'));">Login Form</a></th>
+                <th><a href="#ghpaSSOFlag" onclick="flashElement(document.getElementById('ghpaSSOFlag'));">SSO?</a></th>
+                <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag'));">Auth Only?</a></th>
+                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag'));">Retrieve Only &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
