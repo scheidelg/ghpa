@@ -11,18 +11,19 @@
             async function flashElement(elementReference) {
 
                 let flashCount;
-                const secondsNewStyle = 500
-                const secondsOldStyle = 200
+                const secondsNewStyle = 900
+                const secondsOldStyle = 300
                 //const startTime = new Date();
                 const oldStyle=elementReference.style
 
                 elementReference.style.color = 'blue';
+                elementReference.style.fontWeight = 'bolder';
 
                 for (flashCount = 0; flashCount < 5; flashCount++) {
 
                     setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
 
-                    setTimeout(function(){ elementReference.style.color = 'blue'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+                    setTimeout(function(){ elementReference.style.color = 'blue'; elementReference.style.fontWeight = 'bolder'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
 
                 }
 
