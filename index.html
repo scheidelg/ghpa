@@ -13,19 +13,19 @@
                 let flashCount;
                 const secondsHidden = 200
                 const secondsDisplayed = 500
-                const startTime = new Date();
+                //const startTime = new Date();
 
                 flashElement.display = 'none';
 
                 for (flashCount = 0; flashCount < 2; flashCount++) {
 
-                    setTimeout(function(){ flashElement.display =''; }, (startTime + (flashCount * (secondsHidden + secondsDisplayed)) + secondsHidden));
+                    setTimeout(function(){ flashElement.display =''; }, ((flashCount * (secondsHidden + secondsDisplayed)) + secondsHidden));
 
-                    setTimeout(function(){ flashElement.display ='none'; }, (startTime + (flashCount * (secondsHidden + secondsDisplayed)) + (secondsHidden + secondsDisplayed)));
+                    setTimeout(function(){ flashElement.display ='none'; }, ((flashCount * (secondsHidden + secondsDisplayed)) + (secondsHidden + secondsDisplayed)));
 
                 }
 
-                setTimeout(function(){ flashElement.display =''; }, (startTime + (flashCount * (secondsHidden + secondsDisplayed)) + secondsHidden));
+                setTimeout(function(){ flashElement.display =''; }, ((flashCount * (secondsHidden + secondsDisplayed)) + secondsHidden));
 
                 return (true);
             }
