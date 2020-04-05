@@ -32,7 +32,7 @@
             <tr>
                 <td>Current GitHub and GHPA SSO user ID</td>
                 <td>ghpaUserID</td>
-                <td><script>document.write (typeof stbobbo === 'undefined' ? 'undefined' : (stbobbo ? stbobbo : '(not currently logged in)'))</script></td>
+                <td><script>document.write (typeof ghpaUserID === '(undefined)' ? 'undefined' : (ghpaUserID ? ghpaUserID : '(not currently logged in)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -40,7 +40,7 @@
                     <p>The GitHub organization that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaOrg</td>
-                <td><script>if (ghpaOrg) { document.write(ghpaOrg); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -48,7 +48,7 @@
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaRepo</td>
-                <td><script>if (ghpaRepo) { document.write(ghpaRepo); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaRepo === '(undefined)' ? 'undefined' : (ghpaRepo ? ghpaRepo : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -56,7 +56,7 @@
                     <p>The GitHub branch that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaBranch</td>
-                <td><script>if (ghpaBranch) { document.write(ghpaBranch); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaBranch === '(undefined)' ? 'undefined' : (ghpaBranch ? ghpaBranch : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -64,7 +64,7 @@
                     <p>The HTML file to retrieve from the private GitHub repository if the browsing a GitHub Pages directory.</p>
                 </td>
                 <td>ghpaDefaultHTMLfile</td>
-                <td><script>if (ghpaDefaultHTMLfile) { document.write(ghpaDefaultHTMLfile); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -72,7 +72,7 @@
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
                 </td>
                 <td>ghpaLoginFormfile</td>
-                <td><script>if (ghpaLoginFormfile) { document.write(ghpaLoginFormfile); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaLoginFormfile === '(undefined)' ? 'undefined' : (ghpaLoginFormfile ? ghpaLoginFormfile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -80,7 +80,7 @@
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
                 <td>ghpaFilename</td>
-                <td><script>if (ghpaFilename) { document.write(ghpaFilename); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaFilename === '(undefined)' ? 'undefined' : (ghpaFilename ? ghpaFilename : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -88,7 +88,7 @@
                     <p>Should the password be required to match the format of a GitHub personal access token string?</p>
                 </td>
                 <td>ghpaTokensOnlyFlag</td>
-                <td><script>if (ghpaTokensOnlyFlag) { document.write(ghpaTokensOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? ghpaTokensOnlyFlag : '(false)'))</script></td>
                 <td>N</td>
             </tr>
             <tr>
@@ -96,7 +96,7 @@
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
                 <td>ghpaSSOFlag</td>
-                <td><script>if (ghpaSSOFlag) { document.write(ghpaSSOFlag); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? ghpaSSOFlag : '(false)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -104,7 +104,7 @@
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
-                <td><script>if (ghpaAuthOnlyFlag) { document.write(ghpaAuthOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? ghpaAuthOnlyFlag : '(false)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
@@ -112,7 +112,7 @@
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
-                <td><script>if (ghpaRenderRetrievedBodyOnlyFlag) { document.write(ghpaRenderRetrievedBodyOnlyFlag); } else { document.write('(empty)'); }</script></td>
+                <td><script>document.write (typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? ghpaRenderRetrievedBodyOnlyFlag : '(false)'))</script></td>
                 <td>Y</td>
             </tr>
         <table>
