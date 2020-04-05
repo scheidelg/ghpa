@@ -17,13 +17,12 @@
                 const oldStyle=elementReference.style
 
                 elementReference.style.color = 'blue';
-                elementReference.style.fontWeight = 'bolder';
 
                 for (flashCount = 0; flashCount < 5; flashCount++) {
 
                     setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
 
-                    setTimeout(function(){ elementReference.style.color = 'blue'; elementReference.style.fontWeight = 'bolder'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+                    setTimeout(function(){ elementReference.style.color = 'blue'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
 
                 }
 
@@ -58,7 +57,7 @@
                 <th><a href="#ghpaLoginFormFile" onclick="flashElement(document.getElementById('ghpaLoginFormFile'));">Login Form</a></th>
                 <th><a href="#ghpaSSOFlag" onclick="flashElement(document.getElementById('ghpaSSOFlag'));">SSO?</a></th>
                 <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag'));">Auth Only?</a></th>
-                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag-desc'));">Retrieve Only &lt;body&gt;?</a></th>
+                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag'));">Retrieve Only &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
@@ -234,9 +233,9 @@
                 <td>Y</td>
             </tr>
             <tr id='ghpaRenderRetrievedBodyOnlyFlag'>
-                <td><span  id='ghpaRenderRetrievedBodyOnlyFlag-desc'>Flag: Only Render Retreived Body
+                <td>Flag: Only Render Retreived Body
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
-                </span></td>
+                </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
                 <td><script>document.write (typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? ghpaRenderRetrievedBodyOnlyFlag : '(false)'))</script></td>
                 <td>Y</td>
