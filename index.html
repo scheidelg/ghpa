@@ -168,7 +168,7 @@
                 <td><script>document.write (typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
-            <tr>
+            <tr id='ghpaRepo'>
                 <td>GitHub Repository
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
@@ -192,7 +192,7 @@
                 <td><script>document.write (typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
-            <tr>
+            <tr id='ghpaLoginFormfile'>
                 <td>Login File
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
                 </td>
@@ -200,7 +200,7 @@
                 <td><script>document.write (typeof ghpaLoginFormfile === '(undefined)' ? 'undefined' : (ghpaLoginFormfile ? ghpaLoginFormfile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
-            <tr>
+            <tr id='ghpaFilename'>
                 <td>File to Retrieve 
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
@@ -216,7 +216,7 @@
                 <td><script>document.write (typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? ghpaTokensOnlyFlag : '(false)'))</script></td>
                 <td>N</td>
             </tr>
-            <tr>
+            <tr id='ghpaSSOFlag'>
                 <td>Flag: Single Sign-on (SSO)
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
@@ -224,7 +224,7 @@
                 <td><script>document.write (typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? ghpaSSOFlag : '(false)'))</script></td>
                 <td>Y</td>
             </tr>
-            <tr>
+            <tr id='ghpaAuthOnlyFlag'>
                 <td>Flag: Authentication Only
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
