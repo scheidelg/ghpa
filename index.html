@@ -56,7 +56,7 @@
                 <th><a href="#ghpaLoginFormFile" onclick="flashElement(document.getElementById('ghpaLoginFormFile'));">Login Form</a></th>
                 <th><a href="#ghpaSSOFlag" onclick="flashElement(document.getElementById('ghpaSSOFlag'));">SSO?</a></th>
                 <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag'));">Auth Only?</a></th>
-                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag'));">Retrieve Only &lt;body&gt;?</a></th>
+                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag-desc'));">Retrieve Only &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
@@ -232,9 +232,9 @@
                 <td>Y</td>
             </tr>
             <tr id='ghpaRenderRetrievedBodyOnlyFlag'>
-                <td>Flag: Only Render Retreived Body
+                <td><span  id='ghpaRenderRetrievedBodyOnlyFlag-desc'>Flag: Only Render Retreived Body
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
-                </td>
+                </span></td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
                 <td><script>document.write (typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? ghpaRenderRetrievedBodyOnlyFlag : '(false)'))</script></td>
                 <td>Y</td>
