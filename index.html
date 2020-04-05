@@ -53,7 +53,7 @@
                 <th>Description</a></th>
                 <th>Public File</a></th>
                 <th><a href="#ghpaRepo" onclick="flashElement(document.getElementById('ghpaRepo'));">Private Repo</a></th>
-                <th><a href="#ghpaFileName" onclick="flashElement(document.getElementById('ghpaFileName'));">Private File</a></th>
+                <th><a href="#ghpaFilename" onclick="flashElement(document.getElementById('ghpaFilename'));">Private File</a></th>
                 <th><a href="#ghpaLoginFormFile" onclick="flashElement(document.getElementById('ghpaLoginFormFile'));">Login Form</a></th>
                 <th><a href="#ghpaSSOFlag" onclick="flashElement(document.getElementById('ghpaSSOFlag'));">SSO?</a></th>
                 <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag'));">Auth Only?</a></th>
@@ -192,12 +192,12 @@
                 <td><script>document.write (typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
-            <tr id='ghpaLoginFormfile'>
+            <tr id='ghpaLoginFormFile'>
                 <td>Login File
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
                 </td>
-                <td>ghpaLoginFormfile</td>
-                <td><script>document.write (typeof ghpaLoginFormfile === '(undefined)' ? 'undefined' : (ghpaLoginFormfile ? ghpaLoginFormfile : '(empty)'))</script></td>
+                <td>ghpaLoginFormFile</td>
+                <td><script>document.write (typeof ghpaLoginFormFile === '(undefined)' ? 'undefined' : (ghpaLoginFormFile ? ghpaLoginFormFile : '(empty)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr id='ghpaFilename'>
