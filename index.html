@@ -32,7 +32,7 @@
             <tr>
                 <td>Current GitHub and GHPA SSO user ID</td>
                 <td>ghpaUserID</td>
-                <td><script>if (ghpaUserID) { document.write(ghpaUserID); } else { document.write('(not currently logged in)'); }</script></td>
+                <td><script>document.write (typeof ghpaUserID === 'undefined' ? 'undefined' : (ghpaUserID ? ghpaUserID : '(not currently logged in)'))</script></td>
                 <td>Y</td>
             </tr>
             <tr>
