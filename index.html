@@ -5,6 +5,13 @@
 
         <!-- Load the GHPA functions and initial configuration. -->
         <script src="/js/GHPA.js"></script>
+
+        <!-- QUick script to make an element flash on screen -->
+        <script>
+            function ghpaRenderRetrievedBodyOnlyFlag () {
+                return (true);
+            }
+        </script>
     </head>
     <body>
         <noscript><p>
@@ -102,7 +109,7 @@
                 <td>(global)</td>
                 <td>(global)</td>
                 <td>Y</td>
-                <td><a href="#ghpaRenderRetrievedBodyOnlyFlag">(global)</a></td>
+                <td><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement('ghpaRenderRetrievedBodyOnlyFlag');">(global)</a></td>
             </tr>
             <tr>
                 <td><a href="examples/logout.html">Logout of the private repository</a>
@@ -126,7 +133,7 @@
                 <th>Description</th>
                 <th>Variable</th>
                 <th>Value</th>
-                <th>Can be Overridden?</th>
+                <th>Page Can Override?</th>
             </tr>
             <tr>
                 <td>Current GitHub and GHPA SSO user ID</td>
