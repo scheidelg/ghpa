@@ -180,11 +180,11 @@ async function ghpaLoadPage() {
          * setting it to a null string. */
         document.getElementById('ghpaPrompt').style.display = '';
 
-        /* If ghpaLoginFormfile is set to '-', then don't replace the element
+        /* If ghpaLoginFormFile is set to '-', then don't replace the element
          * ghpaLoginForm. */
-        if (ghpaLoginFormfile != '-') {
+        if (ghpaLoginFormFile != '-') {
             /* Retrieve the login form. */
-            await fetch(ghpaLoginFormfile)
+            await fetch(ghpaLoginFormFile)
 
             .then(function (response) {
 
@@ -914,7 +914,7 @@ ghpaFilename                        string
 
     This is generally *not* set.
 
-ghpaLoginFormfile                   string
+ghpaLoginFormFile                   string
 
     Name of the file to load HTML from to replace the HTML element ID
     ghpaLoginForm.  This can be an absolute or relative path.
@@ -922,11 +922,11 @@ ghpaLoginFormfile                   string
     This is set globally in this file but can be overridden on an individual
     web page, for example:
 
-        <head><script>ghpaLoginFormfile='/specialform.html';</script></head>
+        <head><script>ghpaLoginFormFile='/specialform.html';</script></head>
 
     If this variable is set to '-':
     
-        <head><script>ghpaLoginFormfile='-';</script></head>
+        <head><script>ghpaLoginFormFile='-';</script></head>
         
     then the element ghpaLoginForm isn't replaced at all.
 
@@ -999,7 +999,7 @@ let ghpaRepo = 'ghpa-private-1';
 let ghpaBranch = 'master';
 
 let ghpaDefaultHTMLfile = 'index.html';
-let ghpaLoginFormfile ='/examples/loginform.html';
+let ghpaLoginFormFile ='/examples/loginform.html';
 
 /* Don't change this; it should always be empty in the global configuration.
  * It can be overridden by setting the variable on a specific public stub
