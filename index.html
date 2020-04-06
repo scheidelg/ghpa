@@ -168,7 +168,8 @@
             <tr>
                 <td>Current GitHub and GHPA SSO user ID</td>
                 <td>ghpaUserID</td>
-                <td><script>document.write(htmlEncode(typeof ghpaUserID === '(undefined)' ? 'undefined' : (ghpaUserID ? ghpaUserID : '(not currently logged in)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaUserID, undefined, undefined, '(not currently logged in)')));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaUserID === '(undefined)' ? 'undefined' : (ghpaUserID ? ghpaUserID : '(not currently logged in)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -176,7 +177,8 @@
                     <p>The GitHub organization that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaOrg</td>
-                <td><script>document.write(htmlEncode(typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaOrg)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaRepo'>
@@ -184,7 +186,8 @@
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaRepo</td>
-                <td><script>document.write(htmlEncode(typeof ghpaRepo === '(undefined)' ? 'undefined' : (ghpaRepo ? ghpaRepo : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaRepo)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaRepo === '(undefined)' ? 'undefined' : (ghpaRepo ? ghpaRepo : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -192,7 +195,8 @@
                     <p>The GitHub branch that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaBranch</td>
-                <td><script>document.write(htmlEncode(typeof ghpaBranch === '(undefined)' ? 'undefined' : (ghpaBranch ? ghpaBranch : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaBranch)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaBranch === '(undefined)' ? 'undefined' : (ghpaBranch ? ghpaBranch : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -200,7 +204,8 @@
                     <p>The HTML file to retrieve from the private GitHub repository if the browsing a GitHub Pages directory.</p>
                 </td>
                 <td>ghpaDefaultHTMLfile</td>
-                <td><script>document.write(htmlEncode(typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaDefaultHTMLfile)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaLoginFormFile'>
@@ -208,7 +213,8 @@
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
                 </td>
                 <td>ghpaLoginFormFile</td>
-                <td><script>document.write(htmlEncode(typeof ghpaLoginFormFile === '(undefined)' ? 'undefined' : (ghpaLoginFormFile ? ghpaLoginFormFile : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaLoginFormFile)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaLoginFormFile === '(undefined)' ? 'undefined' : (ghpaLoginFormFile ? ghpaLoginFormFile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaFilename'>
@@ -216,7 +222,8 @@
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
                 <td>ghpaFilename</td>
-                <td><script>document.write(htmlEncode(typeof ghpaFilename === '(undefined)' ? 'undefined' : (ghpaFilename ? ghpaFilename : '(empty)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaFilename)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaFilename === '(undefined)' ? 'undefined' : (ghpaFilename ? ghpaFilename : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -224,7 +231,8 @@
                     <p>Should the password be required to match the format of a GitHub personal access token string?</p>
                 </td>
                 <td>ghpaTokensOnlyFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? '(true)': '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaTokensOnlyFlag)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? '(true)': '(false)')))</script></td> -->
                 <td>N</td>
             </tr>
             <tr id='ghpaSSOFlag'>
@@ -232,7 +240,8 @@
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
                 <td>ghpaSSOFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? '(true)' : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaSSOFlag)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaAuthOnlyFlag'>
@@ -240,7 +249,8 @@
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? '(true)' : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaAuthOnlyFlag)));</script></td>
+<!--                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaRenderRetrievedBodyOnlyFlag'>
@@ -248,9 +258,7 @@
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? '(true)' : '(false)')))</script></td> -->
-<!--                <td><script>document.write(htmlEncode(displayVarVal(ghpaRenderRetrievedBodyOnlyFlag)));</script></td> -->
-                <td><script>document.write(htmlEncode(displayVarVal(0.00)));</script></td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaRenderRetrievedBodyOnlyFlag)));</script></td>
                 <td>Y</td>
             </tr>
         <table>
