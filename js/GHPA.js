@@ -655,7 +655,6 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
          * with a function that splits the string at '/' characters, then
          * spins through the resulting array to remove '' and '.' elements,
          * and remove any '..' element along with it's preceding element. */
-         */
         let myRegExp = /(\/\/)|(\/\.\/)|(\/[^\/]+(?<!(\.)|(\.\.))\/\.\.\/)/g;
         while (ghpaFilename.search(myRegExp) != -1) {
             ghpaFilename = ghpaFilename.replace(myRegExp, '/');
