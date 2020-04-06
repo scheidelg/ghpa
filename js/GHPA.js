@@ -896,6 +896,47 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
 
 /*============================================================================
+ function htmlEncode(inputString)
+------------------------------------------------------------------------------
+Convert a string that is 'safe' to render in HTML.  This converst *all*
+characters instead of trying to blacklist bad characters or even whitelist
+good characters.
+------------------------------------------------------------------------------
+Arguments
+
+inputString                         string
+
+    The string to convert for 'safe' rendering in HTML.
+
+------------------------------------------------------------------------------
+Variables:
+
+outputString                        string
+
+    The encoded string, built as we go.
+
+------------------------------------------------------------------------------
+Return Value: encoded string
+
+----------------------------------------------------------------------------*/
+function htmlEncode(inputString) {
+    // start with an emptry string
+    let outputString = '';
+
+    // loop through all characters, starting at the last character and
+    // working backwards
+    for (let index=inputString.length-1; index >= 0; index--) {
+
+        // for each character, prepend character code to the output
+        // string so far
+        outputString = '&#' + inputString.charCodeAt(index) + outputString;
+    }
+
+    // return the encoded string
+    return(outputString);
+}
+
+/*============================================================================
 Update the Date.prottype to generate a date/time stamp formatted as:
 
     yyyy-mm-dd hh:mm:ss UTC[+-]hh:mm
@@ -1053,6 +1094,11 @@ ghpaTokensOnlyFlag                  boolean
     True:  require passwords matching the format of a personal access token
            string (recommended global value)
     False: allow any password
+
+ghpaUserID                          boolean
+
+    User ID retreived from sessionStorage so that web pages can display the
+    'current' user for purposes of SSO.
 ----------------------------------------------------------------------------*/
 let ghpaOrg = 'scheidelg';
 let ghpaRepo = 'ghpa-private-1';
@@ -1066,7 +1112,6 @@ let ghpaLoginFormFile ='/examples/loginform.html';
  * file. */
 let ghpaFilename = '';
 
-// TO DO: document this in variable definitions above <------------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 let ghpaUserID = sessionStorage.getItem('ghpaUserID');
 
 const ghpaTokensOnlyFlag = true;
