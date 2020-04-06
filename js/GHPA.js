@@ -572,43 +572,104 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
     } else {
 
         /* The ghpaFilename variable is initially defined in the JavaScript
-         * header, and set to an emptry string.  The calling page can optionally
-         * specify the private page to load by setting the value of the variable.
+         * header, and set to an emptry string.  The calling page can
+         * optionally specify the private page to load by setting the value of
+         * the variable.
          *
-         * If the variable is set to an empty string then retrieve the pathname of
-         * the URL for the current window; if the variable is set to a non-empty
-         * string, the use (keep) the current value. */
-        if (ghpaFilename === '') {
+         * If the variable is set to an empty string then retrieve the
+         * pathname of the URL for the current window
+         * (window.location.pathname).  Note that this is always an absolute
+         * path but may specify a directory name instead of a specific
+         * file. */
+        if (! ghpaFilename) {
             ghpaFilename = window.location.pathname;
+
+        /* If the filename isn't set to an empty string but isn't an absolute
+         * path (i.e., it doesn't start with a '/' character), then combine it
+         * with window.location.pathname. */
+        } else if (ghpaFilename.slice(0, 1) != '/') {
+            /* Prepend the filename with the directory portion of
+             * window.location.pathname.  For example, if 
+             * window.location.pathname is '/dir/subdir/file1' and the existing
+             * existing filename is 'file2', then we want to end up with
+             * '/dir/subdir/file1'.
+             *
+             * In other words, we're assuming that a non-absolute filename is
+             * intended to be relative to the current directory.
+             *
+             * We can do this by stripping window.location.pathanm of anything
+             * after the right-most '/' character, then appending the
+             * filename. */
+            ghpaFilename = window.location.pathname.replace(/\/.*$/, '/') + ghpaFilename;
         }
 
-        /* If the pathname for the file to retrieve is empty or ends with a '/'
-         * character, then append the default HTML file name that was set in the
-         * ghpaDefaultHTMLfile variable (usually via the ghpaConfig.js file). */
-        if (ghpaFilename == '' || ghpaFilename.slice(ghpaFilename.length - 1) == '/') {
-            ghpaFilename = ghpaFilename + ghpaDefaultHTMLfile
+        /* If the filename references a directory (i.e, ends with a '/'
+         * character), then append the default HTML file name that was set in
+         * the ghpaDefaultHTMLfile variable (usually via the ghpaConfig.js
+         * file).  */
+        if (ghpaFilename.slice(ghpaFilename.length - 1) == '/') {
+            ghpaFilename = ghpaFilename + ghpaDefaultHTMLfile;
         }
 
-        /* If the filename begins with a '/' character then remove that character.
+        /* We now we have an absolute filename that specifies the file to
+         * retrieve but that filename might contain some oddities, since we've
+         * effectively allowed user input through the use of the ghpaFilename
+         * and ghpaDefaultHTMLfile variables.
          *
-         * Two notes:
+         * Just a few of the variations that we might have at this point:
          *
-         *  - Every window.location.pathname should start with a '/' character, so
-         *    this will always match unless (a) a calling page specifically sets
-         *    the ghpaFilename variable without a leading '/', or (b) an edge
-         *    case in a browser.
+         *     /dir/subdir/./file1
+         *     /dir/subdir/../file1
+         *     /dir/subdir/..//.//../file1
+         *     /dir/subdir/.//file
+         *     /sub dir/file
+         *     /subdir/ file
          *
-         *  - Strictly speaking this shouldn't be necessary because the GitHub API
-         *    is smart enough to deal with GET requests that contain '//'
-         *    sequences. But it's just a few lines of code and I think it's better
-         *    to keep the GET request cleaner. */
-        if (ghpaFilename.slice(0, 1) == '/') {
-            ghpaFilename = ghpaFilename.slice(1)
+         * First we should encode 'special' URI characters.  We can do this
+         * with the encodeURI() function.
+         *
+         * Then we should normalize the path.  We can normalize by iteratively
+         * replacing:
+         *
+         *      Text         RegEx                              Replace With
+         *      -----        -----                              -----
+         *      //           \/\/                               /
+         *      /./          \/\.\/                             /
+         *      /xxx/../     \/[^\/]+(?<!(\.)|(\.\.))\/\.\.\/   /
+         *         where 'xxx' is not '.' or '..'
+         */
+
+        /* Encode any 'special' URI characters. */
+        ghpaFilename = encodeURI(ghpaFilename);
+
+        /* Normalize the path.
+         *
+         * We're using a variable to hold the regular expression object to
+         * minimize the odds of a typo in the initial search() and subsequent
+         * replace().  Aside from generally unpredictable results, a mismatch
+         * could cause an infinite loop.
+         *
+         * Note that this relies on a negative look-behind assertion.  If we
+         * need to support a browser that doesn't support negative look-behind
+         * assertions (low odds at this point) then we'd need to replace this
+         * with a function that splits the string at '/' characters, then
+         * spins through the resulting array to remove '' and '.' elements,
+         * and remove any '..' element along with it's preceding element. */
+         */
+        let myRegExp = /(\/\/)|(\/\.\/)|(\/[^\/]+(?<!(\.)|(\.\.))\/\.\.\/)/g;
+        while (ghpaFilename.search(myRegExp) != -1) {
+            ghpaFilename = ghpaFilename.replace(myRegExp, '/');
         }
 
-        // Craft the GitHub GET request to retrieve the specified file.
+        /* Craft the GitHub GET request to retrieve the specified file.
+         *
+         * Note that the GitHub GET request URI includes '/contents/' with a
+         * trailing '/' character followed by the filename to retrieve; but
+         * that our code below doesn't include the trailing '/' character.
+         * That's because at this point ghpaFilename is guaranteed to have a
+         * leading '/' character - so it's all good. */
         const request = new Request(
-            `https://api.github.com/repos/${ghpaOrg}/${ghpaRepo}/contents/${ghpaFilename}?ref=${ghpaBranch}`,
+            `https://api.github.com/repos/${ghpaOrg}/${ghpaRepo}/contents${ghpaFilename}?ref=${ghpaBranch}`,
             {
                 method: 'GET',
                 credentials: 'omit',
