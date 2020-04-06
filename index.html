@@ -59,7 +59,7 @@
                 } else if (myVariable) {
                     // if we were passed truthyText then use that; otherwise
                     // use the variable's value
-                    retval = (typeof truthyText != 'undefined' ? truthyText : String(myVariable));
+                    retval = (typeof truthyText == 'undefined' ? String(myVariable): truthyText);
 
                 // variable is defined and falsy
                 } else {
