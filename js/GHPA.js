@@ -600,7 +600,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
              * We can do this by stripping window.location.pathanm of anything
              * after the right-most '/' character, then appending the
              * filename. */
-            ghpaFilename = window.location.pathname.replace(/\/.*$/, '/') + ghpaFilename;
+            ghpaFilename = window.location.pathname.replace(/\/[^\/]*$/, '/') + ghpaFilename;
         }
 
         /* If the filename references a directory (i.e, ends with a '/'
