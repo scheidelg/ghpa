@@ -44,6 +44,47 @@
                 // action
                 return (true);
             }
+
+            // Quick function to display a variable's value as text, or an
+            // appropriate string if the variable is undefined or empty.
+            function displayVarVal(myVariable, truthyText, falsyText) {
+                const variableType = typeof myVariable;
+                let retval;
+
+                // if the variable is undefined, just return 'undefined'
+                if (variableType == 'undefined') {
+                    retval = '(undefined)';
+
+                // variable is defined and truthy
+                } else if (myVariable) {
+                    // if we were passed truthyText then use that; otherwise
+                    // use the variable's value
+                    retval = (typeof truthyText != 'undefined' ? truthyText : String(myVariable));
+
+                // variable is defined and falsy
+                } else {
+
+                    // if we were passed falsyTest then use that
+                    if (typeof falsyText != 'undefined') {
+                        retval = falsyText
+
+                    // OK, now we have to check the variable type and provide
+                    // appropriate falsy text
+                    } else {
+                        switch(variableType) {
+                            case 'boolean':
+                            case 'number':
+                            case 'bigint':
+                                retval = String(myVariable);
+                                break;
+                            default:
+                                retval = '(empty ${variableType})';
+                        }
+                    }
+                }
+
+                return (retval);
+            }
         </script>
     </head>
     <body>
