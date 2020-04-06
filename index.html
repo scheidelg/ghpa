@@ -260,7 +260,7 @@
                     <p>Should the password be required to match the format of a GitHub personal access token string?</p>
                 </td>
                 <td>ghpaTokensOnlyFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? ghpaTokensOnlyFlag : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? '(true)': '(false)')))</script></td>
                 <td>N</td>
             </tr>
             <tr id='ghpaSSOFlag'>
@@ -268,7 +268,7 @@
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
                 <td>ghpaSSOFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? ghpaSSOFlag : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? '(true)' : '(false)')))</script></td>
                 <td>Y</td>
             </tr>
             <tr id='ghpaAuthOnlyFlag'>
@@ -276,7 +276,7 @@
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? ghpaAuthOnlyFlag : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? '(true)' : '(false)')))</script></td>
                 <td>Y</td>
             </tr>
             <tr id='ghpaRenderRetrievedBodyOnlyFlag'>
@@ -284,7 +284,7 @@
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
-                <td><script>document.write(htmlEncode(typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? ghpaRenderRetrievedBodyOnlyFlag : '(false)')))</script></td>
+                <td><script>document.write(htmlEncode(typeof ghpaRenderRetrievedBodyOnlyFlag === '(undefined)' ? 'undefined' : (ghpaRenderRetrievedBodyOnlyFlag ? '(true)' : '(false)')))</script></td>
                 <td>Y</td>
             </tr>
         <table>
