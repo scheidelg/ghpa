@@ -47,14 +47,11 @@ authMessageElement                  object
 Return Value: none
 ----------------------------------------------------------------------------*/
 function ghpaAuthMessage(authMessage) {
-    /* Get a reference to the web page element with id of
-     * 'ghpaAuthMessage'. */
-//    const authMessageElement = document.getElementById('ghpaAuthMessage');
-
-    /* If the element exists and isn't hidden, then set the HTML of that
+    /* Get a reference to the web page element with id of 'ghpaAuthMessage'.
+     * If the element exists and isn't hidden, then set the HTML of that
      * element. */
     if ((authMessageElement = document.getElementById('ghpaAuthMessage')) && authMessageElement.style.display != 'none') {
-        authMessageElement.innerHTML = encodeURI(authMessage) + '<small> [' + (new Date().localBigEndianFull()) + ']</small>';
+        authMessageElement.innerHTML = htmlEncode(authMessage) + '<small> [' + (new Date().localBigEndianFull()) + ']</small>';
 
     /* Otherwise, use a popup. */
     } else {
