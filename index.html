@@ -110,11 +110,11 @@
                 <td>(global)</td>
             </tr>
             <tr>
-                <td><a href="examples/explicit.html">Public stub file, different private file</a>
-                    <p>The stub file exists in the public repository but explicitly identifies a different file to load from the private repository.</p></td>
+                <td><a href="examples/explicit.html">Public stub file, different private file via absolute path</a>
+                    <p>The stub file exists in the public repository but explicitly identifies a different file to load from the private repository. The file is identified with an absolute path.</p></td>
                 <td>explicit.html</td>
                 <td>(global)</td>
-                <td>file4.html</td>
+                <td>/examples/file4.html</td>
                 <td>(global)</td>
                 <td>(global)</td>
                 <td>(global)</td>
@@ -144,8 +144,8 @@
                 <td>(global)</td>
             </tr>
             <tr>
-                <td><a href="examples/file1_repo2.html">Public stub file, different private repository, different file</a>
-                    <p>The stub file exists in the public repository but explicitly identifies a different private repository from which to load a different private file.</p></td>
+                <td><a href="examples/file1_repo2.html">Public stub file, different private repository, different file in same directory</a>
+                    <p>The stub file exists in the public repository but explicitly identifies a different private repository from which to load a different private file. The file is identified only by it's filename, meaning that the file will be retrieved from the same relative directory as the public stub file.</p></td>
                 <td>file1_repo2.html</td>
                 <td>ghpa-private-2</td>
                 <td>file1.html</td>
