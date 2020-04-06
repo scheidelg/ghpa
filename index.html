@@ -6,86 +6,9 @@
         <!-- Load the GHPA functions and initial configuration. -->
         <script src="/js/GHPA.js"></script>
 
-        <script>
-            // Quick function to make an element 'flash'
-            async function flashElement(elementReference) {
-
-                let flashCount;
-                // number of milliseconds to display the new style on each
-                // 'flash'
-                const secondsNewStyle = 900
-                // number of milliseconds to display the old style between
-                // each 'flash'
-                const secondsOldStyle = 300
-
-                // save the current style information
-                const oldStyle=elementReference.style
-
-                // set the style to use to 'flash' the content; this should
-                // match the style used inside the loop
-                elementReference.style.color = 'blue';
-
-                // set 'flashCount < 5' to the number of times you want to
-                // flip between styles
-                for (flashCount = 0; flashCount < 5; flashCount++) {
-
-                    // after the desired interval, revert to the original style
-                    setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
-                    // after the desired interval, change to the new style
-                    setTimeout(function(){ elementReference.style.color = 'blue'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-
-                }
-
-                // final reversion to the original style
-                setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
-                // return 'true' so a calling event still takes its default
-                // action
-                return (true);
-            }
-
-            // Quick function to display a variable's value as text, or an
-            // appropriate string if the variable is undefined or empty.
-            function displayVarVal(myVariable, truthyText, falsyText) {
-                const variableType = typeof myVariable;
-                let retval;
-
-                // if the variable is undefined, just return 'undefined'
-                if (variableType == 'undefined') {
-                    retval = '(undefined)';
-
-                // variable is defined and truthy
-                } else if (myVariable) {
-                    // if we were passed truthyText then use that; otherwise
-                    // use the variable's value
-                    retval = (typeof truthyText == 'undefined' ? String(myVariable): truthyText);
-
-                // variable is defined and falsy
-                } else {
-
-                    // if we were passed falsyTest then use that
-                    if (typeof falsyText != 'undefined') {
-                        retval = falsyText
-
-                    // OK, now we have to check the variable type and provide
-                    // appropriate falsy text
-                    } else {
-                        switch(variableType) {
-                            case 'boolean':
-                            case 'number':
-                            case 'bigint':
-                                retval = String(myVariable);
-                                break;
-                            default:
-                                retval = '(empty ${variableType})';
-                        }
-                    }
-                }
-
-                return (retval);
-            }
-        </script>
+        <!-- Load a few miscellanoues scripts; not part of GHPA, just quick
+             point solutions. -->
+        <script src="js/misc.js"></script>
     </head>
     <body>
         <noscript><p>
