@@ -1,75 +1,4 @@
 /*============================================================================
-function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
-------------------------------------------------------------------------------
-Quick function to make an element 'flash', to call attention to it.
-------------------------------------------------------------------------------
-Arguments
-
-elementReference                    element object
-
-    An object reference to the element that is supposed to flash.
-
-flashCount                          number, optional
-
-    Counter while flashing; defaults to 5.
-
-secondsNewStyle                     number, optional
-
-    Number of milliseconds to display the new style on each flash.  Defaults
-    to 900.
-
-secondsOldStyle                     number, optional
-
-    Number of milliseconds to display the original style (however the element
-    was configured before calling this function) between each flash.
-
-------------------------------------------------------------------------------
-Variables
-
-oldStyle                            style object
-
-    The style that the element had before this function was called.
-
-------------------------------------------------------------------------------
-Return Value: true (so that calling event still takes its default action)
-----------------------------------------------------------------------------*/
-async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
-
-    if (typeof flashCount == 'undefined') flashCount = 5;
-    if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
-    if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
-    
-    // save the current style information
-    const oldStyle=elementReference.style
-
-    // set the style to use to 'flash' the content; this should
-    // match the style used inside the loop
-    //
-    // to make this more portable, change the 'flash style to an argument passed
-    // to the function
-    elementReference.style.color = 'blue';
-
-    // set 'flashCount < 5' to the number of times you want to
-    // flip between styles
-    for ( ; flashCount > 0; flashCount--) {
-
-        // after the desired interval, revert to the original style
-        setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
-        // after the desired interval, change to the new style
-        setTimeout(function(){ elementReference.style.color = 'blue'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-
-    }
-
-    // final reversion to the original style
-    setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
-    // return 'true' so a calling event still takes its default
-    // action
-    return (true);
-}
-
-/*============================================================================
 function displayVarVal(myVariable, undefinedText, truthyText, falsyText)
 ------------------------------------------------------------------------------
 Quick function to display a variable's value as text, or an appropriate string
@@ -166,10 +95,82 @@ function displayVarVal(myVariable, undefinedText, truthyText, falsyText) {
                     retval = String(myVariable);
                     break;
                 default:
-                    retval = '(empty ${variableType})';
+                    retval = `(empty ${variableType})`;
             }
         }
     }
 
     return (retval);
+}
+
+
+/*============================================================================
+function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
+------------------------------------------------------------------------------
+Quick function to make an element 'flash', to call attention to it.
+------------------------------------------------------------------------------
+Arguments
+
+elementReference                    element object
+
+    An object reference to the element that is supposed to flash.
+
+flashCount                          number, optional
+
+    Counter while flashing; defaults to 5.
+
+secondsNewStyle                     number, optional
+
+    Number of milliseconds to display the new style on each flash.  Defaults
+    to 900.
+
+secondsOldStyle                     number, optional
+
+    Number of milliseconds to display the original style (however the element
+    was configured before calling this function) between each flash.
+
+------------------------------------------------------------------------------
+Variables
+
+oldStyle                            style object
+
+    The style that the element had before this function was called.
+
+------------------------------------------------------------------------------
+Return Value: true (so that calling event still takes its default action)
+----------------------------------------------------------------------------*/
+async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
+
+    if (typeof flashCount == 'undefined') flashCount = 5;
+    if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
+    if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
+    
+    // save the current style information
+    const oldStyle=elementReference.style
+
+    // set the style to use to 'flash' the content; this should
+    // match the style used inside the loop
+    //
+    // to make this more portable, change the 'flash style to an argument passed
+    // to the function
+    elementReference.style.color = 'blue';
+
+    // set 'flashCount < 5' to the number of times you want to
+    // flip between styles
+    for ( ; flashCount > 0; flashCount--) {
+
+        // after the desired interval, revert to the original style
+        setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
+
+        // after the desired interval, change to the new style
+        setTimeout(function(){ elementReference.style.color = 'blue'; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+
+    }
+
+    // final reversion to the original style
+    setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
+
+    // return 'true' so a calling event still takes its default
+    // action
+    return (true);
 }
