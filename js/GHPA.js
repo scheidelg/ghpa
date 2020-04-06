@@ -54,7 +54,7 @@ function ghpaAuthMessage(authMessage) {
     /* If the element exists and isn't hidden, then set the HTML of that
      * element. */
     if ((authMessageElement = document.getElementById('ghpaAuthMessage')) && authMessageElement.style.display != 'none') {
-        authMessageElement.innerHTML = authMessage + '<small> [' + (new Date().localBigEndianFull()) + ']</small>';
+        authMessageElement.innerHTML = encodeURI(authMessage) + '<small> [' + (new Date().localBigEndianFull()) + ']</small>';
 
     /* Otherwise, use a popup. */
     } else {
@@ -862,7 +862,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * was *not* 404 (file not found), then display an error message
                  * specific to 'authentication failed. */
                 if (ghpaAuthOnlyFlag && response.status != 404) {
-                    ghpaAuthMessage(`Failed to authenticate to ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} as ${login} (status: ${response.status}).`);
+                    ghpaAuthMessage(`Failed to authenticate to ${ghpaOrg} : ${ghpaRepo} : ${ghpaBranch} as ${login} (status: ${response.status}).`);
 
                 /* If this was an attempt to actually retrieve content (i.e., not
                  * an authentication-only check), then display a generic error
@@ -872,7 +872,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
                  * desired; either inside this 'else' or through a series of
                  * additional 'else if' statements. */
                 } else {
-                    ghpaAuthMessage(`Failed to load ${ghpaOrg} / ${ghpaRepo} / ${ghpaBranch} / ${ghpaFilename} as ${login} (status: ${response.status}).`);
+                    ghpaAuthMessage(`Failed to load ${ghpaOrg} : ${ghpaRepo} : ${ghpaBranch} : ${ghpaFilename} as ${login} (status: ${response.status}).`);
                 }
             }
 
