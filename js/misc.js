@@ -108,6 +108,9 @@ function displayVarVal(myVariable, undefinedText, truthyText, falsyText) {
 function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
 ------------------------------------------------------------------------------
 Quick function to make an element 'flash', to call attention to it.
+
+Note: A 'better' way to do this would be with a style class, then
+adding/removing the class.
 ------------------------------------------------------------------------------
 Arguments
 
@@ -142,6 +145,7 @@ Return Value: true (so that calling event still takes its default action)
 async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
 
 //    let flashCount;
+if (typeof flashCount == 'undefined') flashCount = 5;
     // number of milliseconds to display the new style on each
     // 'flash'
 //    const secondsNewStyle = 900
