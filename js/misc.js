@@ -162,7 +162,9 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
     //
     // to make this more portable, change the 'flash style to an argument passed
     // to the function
-    elementReference.style.backgroundColor = 'pink';
+//    elementReference.style.backgroundColor = 'pink';
+    elementReference.style.borderColor = 'red';
+    elementReference.style.borderWidth = '5px';
 
     // set 'flashCount < 5' to the number of times you want to
     // flip between styles
@@ -172,7 +174,8 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
         setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
 
         // after the desired interval, change to the new style
-        setTimeout(function(){ elementReference.style.backgroundColor = 'pink'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+//        setTimeout(function(){ elementReference.style.backgroundColor = 'pink'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+        setTimeout(function(){ elementReference.style.borderColor = 'red'; elementReference.style.borderWidth = '5px'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
     }
 
     // final reversion to the original style
