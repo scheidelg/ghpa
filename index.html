@@ -169,7 +169,6 @@
                 <td>Current GitHub and GHPA SSO user ID</td>
                 <td>ghpaUserID</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaUserID, undefined, undefined, '(not currently logged in)')));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaUserID === '(undefined)' ? 'undefined' : (ghpaUserID ? ghpaUserID : '(not currently logged in)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -178,7 +177,6 @@
                 </td>
                 <td>ghpaOrg</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaOrg)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaRepo-row'>
@@ -187,7 +185,6 @@
                 </td>
                 <td>ghpaRepo</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaRepo)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaRepo === '(undefined)' ? 'undefined' : (ghpaRepo ? ghpaRepo : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -196,7 +193,6 @@
                 </td>
                 <td>ghpaBranch</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaBranch)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaBranch === '(undefined)' ? 'undefined' : (ghpaBranch ? ghpaBranch : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -205,7 +201,6 @@
                 </td>
                 <td>ghpaDefaultHTMLfile</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaDefaultHTMLfile)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaLoginFormFile-row'>
@@ -214,17 +209,14 @@
                 </td>
                 <td>ghpaLoginFormFile</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaLoginFormFile)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaLoginFormFile === '(undefined)' ? 'undefined' : (ghpaLoginFormFile ? ghpaLoginFormFile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaFilename-row'>
                 <td><a href="#ghpaFilename-col" onclick="flashElement(document.getElementById('ghpaFilename-col'), 0, 10000);">File to Retrieve </a>
-                <td><a href="#ghpaFilename-col" onclick="flashElement(document.getElementById('ghpaFilename-col'));">File to Retrieve </a>
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
                 <td>ghpaFilename</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaFilename)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaFilename === '(undefined)' ? 'undefined' : (ghpaFilename ? ghpaFilename : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr>
@@ -242,7 +234,6 @@
                 </td>
                 <td>ghpaSSOFlag</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaSSOFlag)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaAuthOnlyFlag-row'>
@@ -251,7 +242,6 @@
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaAuthOnlyFlag)));</script></td>
-<!--                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
             <tr id='ghpaRenderRetrievedBodyOnlyFlag-row'>
