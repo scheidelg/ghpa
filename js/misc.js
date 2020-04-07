@@ -151,15 +151,15 @@ async function calloutClass(className) {
 
 //const myStyleSheet=document.getElementById('callouts');
 
-let elementsInClass = document.getElementsByClassName(className);
+    const elementsInClass = document.getElementsByClassName(className);
 
-let oldStyles = new Array(elementsInClass.length);
+    const oldStyles = new Array(elementsInClass.length);
 
-for (let index = 0; index < elementsInClass.length; index++) {
-    oldStyles[index] = elementsInClass[index].style;
-    elementsInClass[index].style.border = '2px solid red';
-    setTimeout(function(){ elementsInClass[index].style = oldStyles[index]; }, 5000);
-}
+    for (let index = 0; index < elementsInClass.length; index++) {
+        oldStyles[index] = elementsInClass[index].style;
+        elementsInClass[index].style.border = '2px solid red';
+        setTimeout(function(){ elementsInClass[index].style = oldStyles[index]; }, 10000);
+    }
 
 /*
     // set defaults for the 'flash'
