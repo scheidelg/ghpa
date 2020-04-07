@@ -154,7 +154,7 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
     if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
     if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
 
-    $(elementReference).css('border') = '3px solid red';
+//    $(elementReference).css('border') = '3px solid red';
 
     // save the current style information
 //    const oldStyle = elementReference.style
