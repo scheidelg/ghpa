@@ -154,11 +154,8 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
     if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
     if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
 
-//    $(elementReference).css('border') = '3px solid red';
-
     // save the current style information
-//    const oldStyle = elementReference.style
-    const oldBorder = $(elementReference).css('border');
+    const oldStyle=elementReference.style
 
     // set the style to use to 'flash' the content; this should
     // match the style used inside the loop
@@ -166,27 +163,24 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
     // to make this more portable, change the 'flash style to an argument passed
     // to the function
 //    elementReference.style.backgroundColor = 'pink';
-//    elementReference.style.borderColor = 'red';
-//    elementReference.style.borderWidth = '5px';
-//    elementReference.style.borderStyle = 'solid';
-    $(elementReference).css('border') = '3px solid red';
+    elementReference.style.borderColor = 'red';
+    elementReference.style.borderWidth = '5px';
+    elementReference.style.borderStyle = 'solid';
 
     // set 'flashCount < 5' to the number of times you want to
     // flip between styles
     for (flashCounter = 0; flashCounter < (flashMax-1); flashCounter++) {
 
         // after the desired interval, revert to the original style
-//        setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-        setTimeout(function(){ $(elementReference).css('border') = oldborder; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
+        setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
 
         // after the desired interval, change to the new style
 //        setTimeout(function(){ elementReference.style.backgroundColor = 'pink'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-//        setTimeout(function(){ elementReference.style.borderColor = 'red'; elementReference.style.borderWidth = '5px'; elementReference.style.borderStyle = 'solid'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-        setTimeout(function(){ $(elementReference).css('border') = '3px solid red'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
+        setTimeout(function(){ elementReference.style.borderColor = 'red'; elementReference.style.borderWidth = '5px'; elementReference.style.borderStyle = 'solid'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
     }
 
     // final reversion to the original style
-    setTimeout(function(){ $(elementReference).css('border') = oldborder; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
+    setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
 
     // return 'true' so a calling event still takes its default
     // action
