@@ -3,7 +3,7 @@
     <head>
         <link rel="stylesheet" type="text/css" href="/localstyle.css">
         <style>
-            .ghpaRepo { }
+            .ghpaRepo { border="solid"; }
         </style>
 
         <!-- Load the GHPA functions and initial configuration. -->
@@ -182,7 +182,7 @@
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaOrg)));</script></td>
                 <td>Y</td>
             </tr>
-            <tr class = 'ghpaRepo' id='ghpaRepo-row'>
+            <tr class='ghpaRepo' id='ghpaRepo-row'>
                 <td><a href="#ghpaRepo-col" onclick="flashElement(document.getElementById('ghpaRepo-col'), 0, 10000);">GitHub Repository</a>
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
