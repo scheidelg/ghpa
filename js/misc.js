@@ -139,26 +139,26 @@ oldStyle                            style object
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
-async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
+async function flashElement(elementReference) {
 
-    // set defaults for the 'flash'
-    if (typeof flashCount == 'undefined') flashCount = 5;
-    if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
-    if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
+    let flashCount;
+    // number of milliseconds to display the new style on each
+    // 'flash'
+    const secondsNewStyle = 900
+    // number of milliseconds to display the old style between
+    // each 'flash'
+    const secondsOldStyle = 300
 
     // save the current style information
     const oldStyle=elementReference.style
 
     // set the style to use to 'flash' the content; this should
     // match the style used inside the loop
-    //
-    // to make this more portable, change the 'flash style to an argument passed
-    // to the function
     elementReference.style.color = 'blue';
 
     // set 'flashCount < 5' to the number of times you want to
     // flip between styles
-    for ( ; flashCount > 0; flashCount--) {
+    for (flashCount = 0; flashCount < 5; flashCount++) {
 
         // after the desired interval, revert to the original style
         setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
@@ -174,4 +174,5 @@ async function flashElement(elementReference, flashCount, secondsNewStyle, secon
     // return 'true' so a calling event still takes its default
     // action
     return (true);
+
 }
