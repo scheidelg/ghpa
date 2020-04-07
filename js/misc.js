@@ -113,8 +113,8 @@ Arguments
 
 elementReference                    element object
 
-    An object reference to the element that is supposed to flash.
-
+    A reference to the object element that is supposed to flash.
+   
 flashCount                          number, optional
 
     Counter while flashing; defaults to 5.
@@ -139,12 +139,13 @@ oldStyle                            style object
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
-async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
+async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
 
+    // set defaults for the 'flash'
     if (typeof flashCount == 'undefined') flashCount = 5;
     if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
     if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
-    
+
     // save the current style information
     const oldStyle=elementReference.style
 
