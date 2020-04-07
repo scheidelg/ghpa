@@ -164,7 +164,7 @@ if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
 
     // set 'flashCount < 5' to the number of times you want to
     // flip between styles
-    for (flashCount = 0; flashCount < 5; flashCount++) {
+    for (flashCount = 5; flashCount > 0; flashCount--) {
 
         // after the desired interval, revert to the original style
         setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCount * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
