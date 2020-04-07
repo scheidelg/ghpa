@@ -139,7 +139,7 @@ oldStyle                            style object
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
-async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
+async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
 
     // set defaults for the 'flash'
     if (typeof flashCount == 'undefined') flashCount = 5;
