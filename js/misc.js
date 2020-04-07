@@ -173,7 +173,6 @@ async function flashElement(elementReference, flashMax, secondsNewStyle, seconds
 
         // after the desired interval, change to the new style
         setTimeout(function(){ elementReference.style.backgroundColor = 'pink'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-
     }
 
     // final reversion to the original style
