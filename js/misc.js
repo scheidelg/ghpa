@@ -146,13 +146,22 @@ oldStyle                            style object
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
-async function flashElement(elementReference, flashMax, secondsNewStyle, secondsOldStyle) {
-    let flashCounter;
+async function calloutClass(className) {
+//    let flashCounter;
 
 const myStyleSheet=document.getElementById('callouts');
 
+let elementsInClass = document.getElementsByClassName("example");
 
+let oldStyles = new Array(elementsInClass.length);
 
+for (let index = 0; index < elementsInClass.length; index++) {
+    oldStyles[index] = elementsInClass[index].style;
+    elementsInClass[index].style.border = '2px solid red';
+    setTimeout(function(){ elementsInClass[index].style = oldStyles[index]; }, 5000);
+}
+
+/*
     // set defaults for the 'flash'
     if (typeof flashMax == 'undefined') flashMax = 5;
     if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
@@ -183,7 +192,7 @@ const myStyleSheet=document.getElementById('callouts');
 
     // final reversion to the original style
     setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
+*/
     // return 'true' so a calling event still takes its default
     // action
     return (true);
