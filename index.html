@@ -3,6 +3,14 @@
     <head>
         <link rel="stylesheet" type="text/css" href="/localstyle.css">
 
+        <style id="callout">
+            .ghpaRepo { }
+            .ghpaFilename { }
+            .ghpaLoginFormFile { }
+            .ghpaSSOFlag { }
+            .ghpaAuthOnlyFlag { }
+            .ghpaRenderRetrievedBodyOnlyFlag { }
+        </style>
         <!-- Load the GHPA functions and initial configuration. -->
         <script src="/js/GHPA.js"></script>
 
@@ -179,7 +187,7 @@
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaOrg)));</script></td>
                 <td>Y</td>
             </tr>
-            <tr id='ghpaRepo-row'>
+            <tr id='ghpaRepo-row' class='ghpaRepo'>
                 <td><a href="#ghpaRepo-col" onclick="flashElement(document.getElementById('ghpaRepo-col'), 0, 10000);">GitHub Repository</a>
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
