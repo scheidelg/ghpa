@@ -149,9 +149,9 @@ Return Value: true (so that calling event still takes its default action)
 async function calloutClass(className) {
 //    let flashCounter;
 
-const myStyleSheet=document.getElementById('callouts');
+//const myStyleSheet=document.getElementById('callouts');
 
-let elementsInClass = document.getElementsByClassName("example");
+let elementsInClass = document.getElementsByClassName(className);
 
 let oldStyles = new Array(elementsInClass.length);
 
