@@ -149,6 +149,10 @@ Return Value: true (so that calling event still takes its default action)
 async function flashElement(elementReference, flashMax, secondsNewStyle, secondsOldStyle) {
     let flashCounter;
 
+const myStyleSheet=document.getElementById('callouts');
+
+
+
     // set defaults for the 'flash'
     if (typeof flashMax == 'undefined') flashMax = 5;
     if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
