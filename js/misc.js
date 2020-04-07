@@ -145,14 +145,14 @@ async function flashElement(elementReference, flashCount, secondsNewStyle, secon
     // number of milliseconds to display the new style on each
     // 'flash'
 //    const secondsNewStyle = 900
-secondsNewStyle = 900
+if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
     // number of milliseconds to display the old style between
     // each 'flash'
 //    const secondsOldStyle = 300
-secondsOldStyle = 300
+if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
 
     // save the current style information
-    const oldStyle=elementReference.style
+    const oldStyle=elementReference.style;
 
     // set the style to use to 'flash' the content; this should
     // match the style used inside the loop
