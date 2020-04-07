@@ -139,15 +139,17 @@ oldStyle                            style object
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
-async function flashElement(elementReference) {
+async function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle) {
 
-    let flashCount;
+//    let flashCount;
     // number of milliseconds to display the new style on each
     // 'flash'
-    const secondsNewStyle = 900
+//    const secondsNewStyle = 900
+secondsNewStyle = 900
     // number of milliseconds to display the old style between
     // each 'flash'
-    const secondsOldStyle = 300
+//    const secondsOldStyle = 300
+secondsOldStyle = 300
 
     // save the current style information
     const oldStyle=elementReference.style
