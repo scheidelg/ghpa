@@ -34,11 +34,11 @@
 
         <hr>
 
-        <table>
+        <table style="margin-bottom: 0px;">
             <tr><th style="font-style: italic;">The listed pages demonstrate some (but not all) of the ways to use GHPA to access content in the private GitHub repository.</th></tr>
         </table>
 
-        <table>
+        <table style="margin-top: 0px;">
             <!-- Define the column groups for purposes of associated a class
                  with columns to be called out with calloutClasses.  This
                  allows us to call out an an entire column at once. -->
@@ -52,17 +52,14 @@
                 <col class='ghpaRenderRetrievedBodyOnlyFlag'>
             </colgroup>
             <tr>
-                <th colspan="8" style="font-style: italic;">The listed pages demonstrate some (but not all) of the ways to use GHPA to access content in the private GitHub repository.</th>
-            </tr>
-            <tr>
                 <th>Description</a></th>
                 <th>Public File</a></th>
-                <th id="ghpaRepo-col"><a href="#ghpaRepo-row" onclick="calloutClass('ghpaRepo');">Private Repo</a></th>
-                <th id="ghpaFilename-col"><a href="#ghpaFilename-row" onclick="calloutClass('ghpaFilename');">Private File</a></th>
-                <th id="ghpaLoginFormFile-col"><a href="#ghpaLoginFormFile-row" onclick="calloutClass('ghpaLoginFormFile');">Login Form</a></th>
-                <th id="ghpaSSOFlag-col"><a href="#ghpaSSOFlag-row" onclick="calloutClass('ghpaSSOFlag');">SSO?</a></th>
-                <th id="ghpaAuthOnlyFlag-col"><a href="#ghpaAuthOnlyFlag-row" onclick="calloutClass('ghpaAuthOnlyFlag');">Auth Only?</a></th>
-                <th id="ghpaRenderRetrievedBodyOnlyFlag-col"><a href="#ghpaRenderRetrievedBodyOnlyFlag-row" onclick="calloutClass('ghpaRenderRetrievedBodyOnlyFlag');">Retrieve Only &lt;body&gt;?</a></th>
+                <th id='ghpaRepo-col'><a href="#ghpaRepo-row" onclick="calloutClass('ghpaRepo');">Private Repo</a></th>
+                <th id='ghpaFilename-col'><a href="#ghpaFilename-row" onclick="calloutClass('ghpaFilename');">Private File</a></th>
+                <th id='ghpaLoginFormFile-col'><a href="#ghpaLoginFormFile-row" onclick="calloutClass('ghpaLoginFormFile');">Login Form</a></th>
+                <th id='ghpaSSOFlag-col'><a href="#ghpaSSOFlag-row" onclick="calloutClass('ghpaSSOFlag');">SSO?</a></th>
+                <th id='ghpaAuthOnlyFlag-col'><a href="#ghpaAuthOnlyFlag-row" onclick="calloutClass('ghpaAuthOnlyFlag');">Auth Only?</a></th>
+                <th id='ghpaRenderRetrievedBodyOnlyFlag-col'><a href="#ghpaRenderRetrievedBodyOnlyFlag-row" onclick="calloutClass('ghpaRenderRetrievedBodyOnlyFlag');">Retrieve Only &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
@@ -182,10 +179,10 @@
             </tr>
         </table>
 
-        <table>
-            <tr>
-                <th colspan="4" style="font-style: italic;">These are the currently configured global GHPA configuration options and variables.</th>
-            </tr>
+        <table style="margin-bottom: 0px;">
+            <tr><th style="font-style: italic;">These are the currently configured global GHPA configuration options and variables.</th></tr>
+        </table>
+        <table style="margin-top: 0px;">
             <tr>
                 <th>Description</th>
                 <th>Variable</th>
@@ -230,20 +227,20 @@
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaDefaultHTMLfile)));</script></td>
                 <td>Y</td>
             </tr>
-            <tr id='ghpaLoginFormFile-row' class='ghpaLoginFormFile'>
-                <td><a href="#ghpaLoginFormFile-col" onclick="calloutClass('ghpaLoginFormFile');">Login Form File</a>
-                    <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
-                </td>
-                <td>ghpaLoginFormFile</td>
-                <td><script>document.write(htmlEncode(displayVarVal(ghpaLoginFormFile)));</script></td>
-                <td>Y</td>
-            </tr>
             <tr id='ghpaFilename-row' class='ghpaFilename'>
                 <td><a href="#ghpaFilename-col" onclick="calloutClass('ghpaFilename');">File to Retrieve </a>
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
                 <td>ghpaFilename</td>
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaFilename)));</script></td>
+                <td>Y</td>
+            </tr>
+            <tr id='ghpaLoginFormFile-row' class='ghpaLoginFormFile'>
+                <td><a href="#ghpaLoginFormFile-col" onclick="calloutClass('ghpaLoginFormFile');">Login Form File</a>
+                    <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
+                </td>
+                <td>ghpaLoginFormFile</td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaLoginFormFile)));</script></td>
                 <td>Y</td>
             </tr>
             <tr>
