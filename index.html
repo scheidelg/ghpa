@@ -3,15 +3,6 @@
     <head>
         <link rel="stylesheet" type="text/css" href="/localstyle.css">
 
-        <style>
-            .colPrivateRepo {}
-            .colPrivateFile {}
-            .colLoginForm {}
-            .colSSO {}
-            .colAuthOnly {}
-            .colRetrieveOnlyBody {}
-        </style>        
-
         <!-- Load the GHPA functions and initial configuration. -->
         <script src="/js/GHPA.js"></script>
 
@@ -33,27 +24,18 @@
         <hr>
 
         <table>
-            <colgroup>
-                <col span="2">
-                <col class="colPrivateRepo">
-                <col class="colPrivateFile">
-                <col class="colLoginForm">
-                <col class="colSSO">
-                <col class="colAuthOnly">
-                <col class="colRetrieveOnlyBody">
-            </colgroup>
             <tr>
                 <th colspan="8" style="font-style: italic;">The listed pages demonstrate some (but not all) of the ways to use GHPA to access content in the private GitHub repository.</th>
             <tr>
             <tr>
                 <th>Description</a></th>
                 <th>Public File</a></th>
-                <th><a href="#ghpaRepo" onclick="flashElement(document.getElementById('ghpaRepo'));">Private Repo</a></th>
-                <th><a href="#ghpaFilename" onclick="flashElement(document.getElementById('ghpaFilename'));">Private File</a></th>
-                <th><a href="#ghpaLoginFormFile" onclick="flashElement(document.getElementById('ghpaLoginFormFile'));">Login Form</a></th>
-                <th><a href="#ghpaSSOFlag" onclick="flashElement(document.getElementById('ghpaSSOFlag'));">SSO?</a></th>
-                <th><a href="#ghpaAuthOnlyFlag" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag'));">Auth Only?</a></th>
-                <th><a href="#ghpaRenderRetrievedBodyOnlyFlag" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag'));">Retrieve Only &lt;body&gt;?</a></th>
+                <th id="ghpaRepo-col"><a href="#ghpaRepo-row" onclick="flashElement(document.getElementById('ghpaRepo-row'));">Private Repo</a></th>
+                <th id="ghpaFilename-col"><a href="#ghpaFilename-row" onclick="flashElement(document.getElementById('ghpaFilename-row'));">Private File</a></th>
+                <th id="ghpaLoginFormFile-col"><a href="#ghpaLoginFormFile-row" onclick="flashElement(document.getElementById('ghpaLoginFormFile-row'));">Login Form</a></th>
+                <th id="ghpaSSOFlag-col"><a href="#ghpaSSOFlag-row" onclick="flashElement(document.getElementById('ghpaSSOFlag-row'));">SSO?</a></th>
+                <th id="ghpaAuthOnlyFlag-col"><a href="#ghpaAuthOnlyFlag-row" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag-row'));">Auth Only?</a></th>
+                <th id="ghpaRenderRetrievedBodyOnlyFlag-col"><a href="#ghpaRenderRetrievedBodyOnlyFlag-row" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag-row'));">Retrieve Only &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
@@ -199,8 +181,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaOrg === '(undefined)' ? 'undefined' : (ghpaOrg ? ghpaOrg : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
-            <tr id='ghpaRepo'>
-                <td>GitHub Repository
+            <tr id='ghpaRepo-row'>
+                <td><a href="#ghpaRepo-col" onclick="flashElement(document.getElementById('ghpaRepo-col'));">GitHub Repository</a>
                     <p>The GitHub repository that will be used unless overridden on a specific web page.</p>
                 </td>
                 <td>ghpaRepo</td>
@@ -226,8 +208,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaDefaultHTMLfile === '(undefined)' ? 'undefined' : (ghpaDefaultHTMLfile ? ghpaDefaultHTMLfile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
-            <tr id='ghpaLoginFormFile'>
-                <td>Login Form File
+            <tr id='ghpaLoginFormFile-row'>
+                <td><a href="#ghpaLoginFormFile-col" onclick="flashElement(document.getElementById('ghpaLoginFormFile-col'));">Login Form File</a>
                     <p>The HTML file to load as the login form when the user needs to authenticate to GitHub.<br></p>
                 </td>
                 <td>ghpaLoginFormFile</td>
@@ -235,8 +217,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaLoginFormFile === '(undefined)' ? 'undefined' : (ghpaLoginFormFile ? ghpaLoginFormFile : '(empty)')))</script></td> -->
                 <td>Y</td>
             </tr>
-            <tr id='ghpaFilename'>
-                <td>File to Retrieve 
+            <tr id='ghpaFilename-row'>
+                <td><a href="#ghpaFilename-col" onclick="flashElement(document.getElementById('ghpaFilename-col'));">File to Retrieve </a>
                     <p>The name of the file to retrieve from the private GitHub repository. This should always be empty in the global configuration.</p>
                 </td>
                 <td>ghpaFilename</td>
@@ -253,8 +235,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaTokensOnlyFlag === '(undefined)' ? 'undefined' : (ghpaTokensOnlyFlag ? '(true)': '(false)')))</script></td> -->
                 <td>N</td>
             </tr>
-            <tr id='ghpaSSOFlag'>
-                <td>Flag: Single Sign-on (SSO)
+            <tr id='ghpaSSOFlag-row'>
+                <td><a href="#ghpaSSOFlag-col" onclick="flashElement(document.getElementById('ghpaSSOFlag-col'));">Flag: Single Sign-on (SSO)</a>
                     <p>Should successful authentication cause GitHub credentials to be remembered and used for later authentication (so that the user doesn't have to continually re-enter the credentials)?</p>
                 </td>
                 <td>ghpaSSOFlag</td>
@@ -262,8 +244,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaSSOFlag === '(undefined)' ? 'undefined' : (ghpaSSOFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
-            <tr id='ghpaAuthOnlyFlag'>
-                <td>Flag: Authentication Only
+            <tr id='ghpaAuthOnlyFlag-row'>
+                <td><a href="#ghpaAuthOnlyFlag-col" onclick="flashElement(document.getElementById('ghpaAuthOnlyFlag-col'));">Flag: Authentication Only</a>
                     <p>Should a public stub file should only perform a GitHub authentication check (e.g., authentication-only) vs. loading a page from the private GitHub repository?</p>
                 </td>
                 <td>ghpaAuthOnlyFlag</td>
@@ -271,8 +253,8 @@
 <!--                <td><script>document.write(htmlEncode(typeof ghpaAuthOnlyFlag === '(undefined)' ? 'undefined' : (ghpaAuthOnlyFlag ? '(true)' : '(false)')))</script></td> -->
                 <td>Y</td>
             </tr>
-            <tr id='ghpaRenderRetrievedBodyOnlyFlag'>
-                <td>Flag: Only Render Retreived Body
+            <tr id='ghpaRenderRetrievedBodyOnlyFlag-row'>
+                <td><a href="#ghpaRenderRetrievedBodyOnlyFlag-col" onclick="flashElement(document.getElementById('ghpaRenderRetrievedBodyOnlyFlag-col'));">Flag: Only Render Retreived Body</a>
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
                 <td>ghpaRenderRetrievedBodyOnlyFlag</td>
