@@ -105,94 +105,50 @@ function displayVarVal(myVariable, undefinedText, truthyText, falsyText) {
 
 
 /*============================================================================
-function flashElement(elementReference, flashCount, secondsNewStyle, secondsOldStyle)
+function calloutClass(className)
 ------------------------------------------------------------------------------
-Quick function to make an element 'flash', to call attention to it.
-
-Note: A 'better' way to do this would be with a style class, then
-adding/removing the class.
+Quick function to 'call out' all elements of a given class, for a few seconds.
 ------------------------------------------------------------------------------
 Arguments
 
-elementReference                    element object
+className                           string
 
-    A reference to the object element that is supposed to flash.
-   
-flashMax                            number, optional
-
-    Number of times to flash; defaults to 5.
-
-secondsNewStyle                     number, optional
-
-    Number of milliseconds to display the new style on each flash.  Defaults
-    to 900.
-
-secondsOldStyle                     number, optional
-
-    Number of milliseconds to display the original style (however the element
-    was configured before calling this function) between each flash.
+    The name of the class to call out.
 
 ------------------------------------------------------------------------------
 Variables
 
-flashCounter                        number, optional
+elementsInClass                     object array
 
-    Counter while flashing.
+    An array of the elements that are in the specified class.
 
-oldStyle                            style object
+oldStyles                           object array
 
-    The style that the element had before this function was called.
+    An array of the old styles.  Index syncs with elementsInClass
 
 ------------------------------------------------------------------------------
 Return Value: true (so that calling event still takes its default action)
 ----------------------------------------------------------------------------*/
 async function calloutClass(className) {
-//    let flashCounter;
 
-//const myStyleSheet=document.getElementById('callouts');
-
+    // get an array of all elements matching the specified class name
     const elementsInClass = document.getElementsByClassName(className);
 
+    // declare an array to hold the previous styles, so that we can reset
     const oldStyles = new Array(elementsInClass.length);
 
+    // loop through all the matching elements
     for (let index = 0; index < elementsInClass.length; index++) {
+        // save the old style
         oldStyles[index] = elementsInClass[index].style;
+
+        // set the new style
         elementsInClass[index].style.border = '2px solid red';
+
+        // set a timer to restore the old style after a few seconds
         setTimeout(function(){ elementsInClass[index].style = oldStyles[index]; }, 10000);
     }
 
-/*
-    // set defaults for the 'flash'
-    if (typeof flashMax == 'undefined') flashMax = 5;
-    if (typeof secondsNewStyle == 'undefined') secondsNewStyle = 900;
-    if (typeof secondsOldStyle == 'undefined') secondsOldStyle = 300;
-
-    // save the current style information
-    const oldStyle=elementReference.style
-
-    // set the style to use to 'flash' the content; this should
-    // match the style used inside the loop
-    //
-    // to make this more portable, change the 'flash style to an argument passed
-    // to the function
-//    elementReference.style.backgroundColor = 'pink';
-    elementReference.style.border = '2px solid red';
-
-    // set 'flashCount < 5' to the number of times you want to
-    // flip between styles
-    for (flashCounter = 0; flashCounter < (flashMax-1); flashCounter++) {
-
-        // after the desired interval, revert to the original style
-        setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-
-        // after the desired interval, change to the new style
-//        setTimeout(function(){ elementReference.style.backgroundColor = 'pink'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-        setTimeout(function(){ elementReference.style.border = '2px solid red'; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + (secondsNewStyle + secondsOldStyle)));
-    }
-
-    // final reversion to the original style
-    setTimeout(function(){ elementReference.style = oldStyle; }, ((flashCounter * (secondsNewStyle + secondsOldStyle)) + secondsNewStyle));
-*/
     // return 'true' so a calling event still takes its default
     // action
     return (true);
