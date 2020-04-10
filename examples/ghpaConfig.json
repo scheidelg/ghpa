@@ -1,14 +1,17 @@
 {
     "global": {
-	    "organization": "scheidelg",
-		"repository": "ghpa-private-1",
-		"branch": "master",
-		
-		"defaultHTMLfile": "index.html",
-		"loginFormFile": "/examples/loginform.html",
-		
-		"tokensOnlyFlag": true,
-		"SSOFlag": true,
-		"authOnlyFlag": false
-	}
+        "organization": "scheidelg",
+        "repository": "ghpa-private-1",
+        "branch": "master",
+
+        "defaultHTMLfile": "index.html",
+        "loginFormFile": "/examples/loginform.html",
+
+        "tokensOnlyFlag": true,
+        "SSOFlag": true,
+        "authOnlyFlag": false
+    },
+    "repo2": {
+        "repository": "ghpa-private-1"
+    }
 }
