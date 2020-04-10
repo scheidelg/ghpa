@@ -1,5 +1,5 @@
-function ghpaReadConfig(configFile) {
-    const jsonData = fetch(configFile)
+async function ghpaReadConfig(configFile) {
+    const jsonData = await fetch(configFile)
     .then(function (response) {
         if (!response.ok) {
             throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
