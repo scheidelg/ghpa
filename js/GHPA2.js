@@ -10,9 +10,14 @@ async function ghpaReadConfig(configFile) {
     })
     .catch(function (errObject) {
         console.error(errObject.message);
+// return an empty JSON object here --- ?  test to see whether it's really necessary (or if not strictly necessary, desirable)
     });
     
     let x=1;
 }
 
-ghpaReadConfig('/examples/ghpaConfig.json');
+function ghpaInit() {
+    ghpaReadConfig('/examples/ghpaConfig.json');
+}
+
+document.addEventListener('DOMContentLoaded', ghpaInit);
