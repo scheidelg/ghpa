@@ -1,3 +1,5 @@
+'use strict';
+
 async function ghpaReadConfig(configFile) {
     const jsonData = await fetch(configFile)
     .then(function (response) {
