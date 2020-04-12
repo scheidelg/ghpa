@@ -1,4 +1,22 @@
 {
-    // this is a comment
-    "tokensOnly": true
+    "tokensOnly": true,
+
+    "pageConfigOptions": {
+        "authOnly": false,
+        "SSO": true
+    },
+
+    "loginFormOptions": {
+        "loginFormFile": "/examples/loginform.html"
+    },
+
+    "ghpaClasses": {
+        "global": {
+            "organization": "scheidel",
+            "repository": "ghpa-private-1",
+            "branch": "master",
+            "defaultHTMLfile": "index.html",
+            "onlyGetBody": true
+        }
+    }
 }
