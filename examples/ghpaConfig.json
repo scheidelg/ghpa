@@ -1,3 +1,4 @@
 {
-    "tokensOnly": true,
+    // this is a comment
+    "tokensOnly": true
 }
