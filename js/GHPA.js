@@ -817,7 +817,7 @@ async function ghpaRetrieve(retrievedCredsFlag, creds, credsKey) {
 
                     /* Render just the content inside <body></body> tags from
                      * the retrieved content? */
-                    if (ghpaRenderRetrievedBodyOnlyFlag) {
+                    if (ghpaOnlyGetBodyFlag) {
 
                         /* Find the first instance of '<body'.  Not looking
                          * for '<body>' because we have to allow for the
@@ -1039,7 +1039,7 @@ ghpaOrg                             string
 
         <head><script>ghpaOrg='scheidelg';</script></head>
 
-ghpaRenderRetrievedBodyOnlyFlag     string
+ghpaOnlyGetBodyFlag                 string
 
     Flag whether all the retrieved content should be used, or only the content
     inside of <body></body> tags.
@@ -1114,4 +1114,4 @@ let ghpaUserID = sessionStorage.getItem('ghpaUserID');
 const ghpaTokensOnlyFlag = true;
 let ghpaSSOFlag = true;
 let ghpaAuthOnlyFlag = false;
-let ghpaRenderRetrievedBodyOnlyFlag = true;
+let ghpaOnlyGetBodyFlag = true;
