@@ -1,17 +1,22 @@
 {
-    "global": {
-        "organization": "scheidelg",
-        "repository": "ghpa-private-1",
-        "branch": "master",
+    "tokensOnly": true,
 
-        "defaultHTMLfile": "index.html",
-        "loginFormFile": "/examples/loginform.html",
-
-        "tokensOnlyFlag": true,
-        "SSOFlag": true,
-        "authOnlyFlag": false
+    "pageConfigOptions": {
+        "authOnly": false,
+        "SSO": true,
     },
-    "repo2": {
-        "repository": "ghpa-private-2"
+
+    "loginFormOptions": {
+        "loginFormFile": "/examples/loginform.html",
+    },
+
+    "ghpaClasses": {
+        "global": {
+            "organization": "scheidel",
+            "repository": "ghpa-private-1",
+            "branch": "master",
+            "defaultHTMLfile": "index.html",
+            "onlyGetBody": true,
+        },
     }
 }
