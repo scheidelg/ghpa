@@ -11,7 +11,7 @@
             .ghpaLoginFormFile { }
             .ghpaSSOFlag { }
             .ghpaAuthOnlyFlag { }
-            .ghpaRenderRetrievedBodyOnlyFlag { }
+            .ghpaOnlyGetBodyFlag { }
         </style>
 
         <!-- Load the GHPA functions and initial configuration. -->
@@ -49,7 +49,7 @@
                 <col class='ghpaLoginFormFile'>
                 <col class='ghpaSSOFlag'>
                 <col class='ghpaAuthOnlyFlag'>
-                <col class='ghpaRenderRetrievedBodyOnlyFlag'>
+                <col class='ghpaOnlyGetBodyFlag'>
             </colgroup>
             <tr>
                 <th>Description</a></th>
@@ -59,7 +59,7 @@
                 <th id='ghpaLoginFormFile-col'><a href="#ghpaLoginFormFile-row" onclick="calloutClass('ghpaLoginFormFile');">Login Form</a></th>
                 <th id='ghpaSSOFlag-col'><a href="#ghpaSSOFlag-row" onclick="calloutClass('ghpaSSOFlag');">SSO?</a></th>
                 <th id='ghpaAuthOnlyFlag-col'><a href="#ghpaAuthOnlyFlag-row" onclick="calloutClass('ghpaAuthOnlyFlag');">Auth Only?</a></th>
-                <th id='ghpaRenderRetrievedBodyOnlyFlag-col'><a href="#ghpaRenderRetrievedBodyOnlyFlag-row" onclick="calloutClass('ghpaRenderRetrievedBodyOnlyFlag');">Retrieve Only &lt;body&gt;?</a></th>
+                <th id='ghpaOnlyGetBodyFlag-col'><a href="#ghpaOnlyGetBodyFlag-row" onclick="calloutClass('ghpaOnlyGetBodyFlag');">Only Get &lt;body&gt;?</a></th>
             </tr>
             <tr>
                 <td><a href="examples/file1.html">Public stub file, corresponding private file</a>
@@ -267,12 +267,12 @@
                 <td><script>document.write(htmlEncode(displayVarVal(ghpaAuthOnlyFlag)));</script></td>
                 <td>Y</td>
             </tr>
-            <tr id='ghpaRenderRetrievedBodyOnlyFlag-row' class='ghpaRenderRetrievedBodyOnlyFlag'>
-                <td><a href="#ghpaRenderRetrievedBodyOnlyFlag-col" onclick="calloutClass('ghpaRenderRetrievedBodyOnlyFlag');">Flag: Only Render Retreived Body</a>
+            <tr id='ghpaOnlyGetBodyFlag-row' class='ghpaOnlyGetBodyFlag'>
+                <td><a href="#ghpaOnlyGetBodyFlag-col" onclick="calloutClass('ghpaOnlyGetBodyFlag');">Flag: Only Render Retreived Body</a>
                     <p>After retrieving content from a private GitHub repository file, should we check the retrieved content for &lt;body&gt;&lt;/body&gt; tags and only render that content, vs. rendering all the retrieved content?</p>
                 </td>
-                <td>ghpaRenderRetrievedBodyOnlyFlag</td>
-                <td><script>document.write(htmlEncode(displayVarVal(ghpaRenderRetrievedBodyOnlyFlag)));</script></td>
+                <td>ghpaOnlyGetBodyFlag</td>
+                <td><script>document.write(htmlEncode(displayVarVal(ghpaOnlyGetBodyFlag)));</script></td>
                 <td>Y</td>
             </tr>
         <table>
