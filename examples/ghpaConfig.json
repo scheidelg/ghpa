@@ -1,7 +1,7 @@
 {
     "tokensOnly": true,
 
-    "pageConfigOptions": {
+    "pageOptions": {
         "authOnly": false,
         "SSO": true
     },
