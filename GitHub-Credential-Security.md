@@ -122,18 +122,18 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
  10. <a id="10"></a>GitHub Gist: crypto-aes.gcm.js by Chris Veness
  
- "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
+   "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
- An excellent and succinct set of examples.
+   An excellent and succinct set of examples.
     
- https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
+   https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
  11. <a id="11"></a>Web Cryptography API Examples by Daniel Roesler
 
- Another good set of examples for using the Web Crtypography API.
+   Another good set of examples for using the Web Crtypography API.
 
- https://github.com/diafygi/webcrypto-examples
+   https://github.com/diafygi/webcrypto-examples
 
  12. <a id="12"></a>GitHub Deprecation of API Password Authentication
 
- https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
+   https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
