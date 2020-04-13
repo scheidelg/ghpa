@@ -10,7 +10,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
  3. If an organization owns the private GitHub repository, then assign granular access to users of the repository.
  
-     Organizations can grant individual GitHub users granular access - including read-only access - to a repository.<sup>[\[1\]](https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization)</sup> If an individual's credentials are compromised, then those compromised credentials will only have the specific access that you granted.
+     Organizations can grant individual GitHub users granular access - including read-only access - to a repository.<sup>[\[1\]](#1)</sup> If an individual's credentials are compromised, then those compromised credentials will only have the specific access that you granted.
 
      Do this regardless of whether users access th GHPA-enabled website with their regular GitHub user accounts or machine user accounts(xref).
 
@@ -34,7 +34,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
     Unfortunately, the minimum scope required to read content from a private GitHub repository is *repo*.(cite ref) This scope grants 'full control of private repositories' which also includes full control of public repositories. *In the event of compromised credentials, the attacker will have access to all the public and private repositories to which the user has access*.
 
-    Personal access tokens with a user's regular GitHub account is still better than authenticating with the user's regular GitHub password, and the cost (hassle of using a 40-character personal access token string) is generally worth the benefit. Remember: If an attacker compromises a GitHub user's regular user account name and password, then the attacker will be able to login to GitHub as the user.*
+    Personal access tokens with a user's regular GitHub account is still better than authenticating with the user's regular GitHub password, and the cost (i.e., hassle of using a 40-character personal access token string) is generally worth the benefit. Remember: If an attacker compromises a GitHub user's regular user account name and password, then the attacker will be able to login to GitHub as the user.*
 
 ## Some Additional Details
 
@@ -92,7 +92,7 @@ There are some additional actions - some related to the points listed above - th
 
 ## References
 
- 1. 'Repository permission levels for an organization' on GitHub.com
+ <a name="1">1.</a> 'Repository permission levels for an organization' on GitHub.com
 
     https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 
