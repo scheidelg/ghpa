@@ -1,7 +1,7 @@
 'use strict';
 
-async function ghpaReadConfig(configFile) {
-    return(await fetch(configFile)
+function ghpaReadConfig(configFile) {
+    return(fetch(configFile)
     .then(function (response) {
         if (response.status != 200) {
             throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
