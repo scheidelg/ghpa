@@ -11,7 +11,7 @@ function ghpaReadConfig(configFile, ghpaConfigCheck) {
         })
         .catch(function (errObject) {
             console.error(`Error processing ${configFile}: ${errObject.message}`);
-        });
+        })
     );
 }
 
