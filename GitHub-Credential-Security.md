@@ -96,31 +96,31 @@ There are some additional actions - some related to the points listed above - th
 
     https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 
- 2. 'Managing Deploy Keys' / 'Machine users' on GitHub.com
+ 2. <a id="2"></a>'Managing Deploy Keys' / 'Machine users' on GitHub.com
 
     https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users
 
- 3. 'Creating a personal access token for the command line' on GitHub.com
+ 3. <a id="3"></a>'Creating a personal access token for the command line' on GitHub.com
 
     https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
- 4. Windows.sessionstorage
+ 4. <a id="4"></a>Windows.sessionstorage
 
     https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 
- 5. Same-origin Policy
+ 5. <a id="5"></a>Same-origin Policy
 
     https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
 
- 6. Web Crypto API
+ 6. <a id="6"></a>Web Crypto API
 
     https://developer.mozilla.org/en-US/docs/Web/API/Crypto
 
- 7. Web Crypto API Examples
+ 7. <a id="7"></a>Web Crypto API Examples
  
     https://mdn.github.io/dom-examples/web-crypto/
 
- 8. GitHub Gist: crypto-aes.gcm.js by Chris Veness
+ 8. <a id="8"></a>GitHub Gist: crypto-aes.gcm.js by Chris Veness
  
     "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
@@ -128,12 +128,12 @@ There are some additional actions - some related to the points listed above - th
     
     https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
- 9. Web Cryptography API Examples by Daniel Roesler
+ 9. <a id="9"></a>Web Cryptography API Examples by Daniel Roesler
 
     Another good set of examples for using the Web Crtypography API.
 
     https://github.com/diafygi/webcrypto-examples
 
- 10. GitHub Deprecation of API Password Authentication
+ 10. <a id="10"></a>GitHub Deprecation of API Password Authentication
 
     https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
