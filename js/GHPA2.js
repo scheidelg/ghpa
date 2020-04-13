@@ -1,35 +1,24 @@
 'use strict';
 
-function ghpaConfigCheck(configObject) {
-    let x = 1;
-}
-
-async function ghpaReadConfig(configFile) {
-    return(
-        await fetch(configFile)    // get the config file
-        .then(function (response) {
-            if (response.status != 200) {
-                throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
-            }
-        })
-        .catch(function (errObject) {
-            console.error(`Error processing ${configFile}: ${errObject.message}`);
-        })
-    );
+function ghpaReadConfig(configFile) {
+    return(fetch(configFile)
+    .then(function (response) {
+        if (response.status != 200) {
+            throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
+        }
+        return response.json();
+    })
+    .catch(function (errObject) {
+        console.error(errObject.message);
+// return an empty JSON object here --- ?  test to see whether it's really necessary (or if not strictly necessary, desirable)
+    }));
 }
 
 async function ghpaInit() {
     // read the GHPA configuration file
     ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
 
-    // if we were able to read the GHPA configuration file, then check to make sure it's all valid
-//    ghpaConfigCheck(ghpaConfig);
-    let x = 1;
-    
-/*    loop through the object elements and sub-elements
-        for every element/sub-element, run ghpaOptionCheck() to see if it's legit
-            if it isn't legit, then log a console error and throw away the element/sub-element
-*/
+    let x=1;
 }
 
 if (document.addEventListener) {
