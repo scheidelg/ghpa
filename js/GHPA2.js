@@ -4,7 +4,7 @@ function ghpaConfigCheck(configObject) {
     let x = 1;
 }
 
-function ghpaReadConfig(configFile) {
+async function ghpaReadConfig(configFile) {
     return(
         fetch(configFile)    // get the config file
         .then(function (response) {
