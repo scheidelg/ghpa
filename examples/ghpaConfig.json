@@ -17,6 +17,6 @@
             "branch": "master",
             "defaultHTMLfile": "index.html",
             "onlyGetBody": true
-        },
+        }
     }
 }
