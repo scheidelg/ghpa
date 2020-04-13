@@ -1,5 +1,9 @@
 'use strict';
 
+function ghpaConfigCheck(configObject) {
+    let x = 1;
+}
+
 function ghpaReadConfig(configFile) {
     return(fetch(configFile)
     .then(function (response) {
