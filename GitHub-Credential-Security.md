@@ -84,19 +84,19 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
 ## References
 
- 1. <a id="1"></a>'Types of GitHub accounts' / 'Organization Accounts' on GitHub.com
+ 1. <a id="1"></a>Types of GitHub accounts / Organization Accounts
 
     https://help.github.com/en/github/getting-started-with-github/types-of-github-accounts#organization-accounts
 
- 2. <a id="2"></a>'Repository permission levels for an organization' on GitHub.com
+ 2. <a id="2"></a>Repository permission levels for an organization
 
     https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 
- 3. <a id="3"></a>'Managing Deploy Keys' / 'Machine users' on GitHub.com
+ 3. <a id="3"></a>Managing Deploy Keys / Machine users
 
     https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users
 
- 4. <a id="4"></a>'Creating a personal access token for the command line' on GitHub.com
+ 4. <a id="4"></a>Creating a personal access token for the command line
 
     https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
