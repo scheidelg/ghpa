@@ -2,19 +2,19 @@
 
 There are multiple options, from a security perspective, for using GitHub Pages Authorization (GHPA). We don't get into all the details of GitHub security but here's a summary of relevant options with a bit of explanation.
 
- A. Best: Use GHPA as a GitHub Application for a secure implementation..
+ 1. Best: Use GHPA as a GitHub Application for a secure implementation..
 
- B. Use a GitHub organization(cite ref here) as the owner of the private GitHub repository.
- 
+ 2. Use a GitHub organization(cite ref here) as the owner of the private GitHub repository.
+
     If an organization owns the private GitHub repository, then you'll be able to grant users granular access(xref) to and create machine user accounts(xref) for your repository.
 
- (C) If an organization owns the private GitHub repository, then assign granular access to users of the repository.
+ 3. If an organization owns the private GitHub repository, then assign granular access to users of the repository.
  
      Organizations can grant individual GitHub users granular access - including read-only access - to a repository.<sup>[\[1\]](https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization)</sup> If an individual's credentials are compromised, then those compromised credentials will only have the specific access that you granted.
 
      Do this regardless of whether users access th GHPA-enabled website with their regular GitHub user accounts or machine user accounts(xref).
 
-  (D) If an organization owns the private GitHub repository, then consider creating a read-only machine user account<sup>[\[2\]](https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users)</sup> for each user.
+ 4. If an organization owns the private GitHub repository, then consider creating a read-only machine user account<sup>[\[2\]](https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users)</sup> for each user.
 
     Granular access protects your content but still potentially exposes the user's GitHub credentials to a client-side exploit. If those credentials are for the user's regular GitHub user account, then compromised credentials grant the attacker the full acccess of the user's regular GitHub user account.
 
@@ -28,7 +28,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
      - From an end-user perspective, this increases the number of credentials the user has to manage. They'll need to use their assigned machine user account with the GHPA-enabled website, and their regular GitHub credentials for regular GitHub access.
 
- (E) Require the use of GitHub personal access tokens<sup>[\[3\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup> to access the GHPA-enabled website.
+ 5. Require the use of GitHub personal access tokens<sup>[\[3\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup> to access the GHPA-enabled website.
 
     Users can create GitHub personal access tokens to use with their GitHub accounts. Each personal access token can be granted limited scope (i.e., privileges), which limits the damage that can be caused by compromised credentials. Personal access tokens can be individually revoked at any time, which **can** limit the damage caused by compromised credentials.
 
