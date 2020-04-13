@@ -86,54 +86,54 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
 1. <a id="1"></a>'Types of GitHub accounts' / 'Organization Accounts' on GitHub.com
 
-    https://help.github.com/en/github/getting-started-with-github/types-of-github-accounts#organization-accounts
+ https://help.github.com/en/github/getting-started-with-github/types-of-github-accounts#organization-accounts
 
 2. <a id="2"></a>'Repository permission levels for an organization' on GitHub.com
 
-    https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
+ https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 
 3. <a id="3"></a>'Managing Deploy Keys' / 'Machine users' on GitHub.com
 
-    https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users
+ https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users
 
 4. <a id="4"></a>'Creating a personal access token for the command line' on GitHub.com
 
-    https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+ https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
 5. <a id="5"></a>Understanding scopes for OAuth Apps
 
-    https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/
+ https://developer.github.com/apps/building-oauth-apps/understanding-scopes-for-oauth-apps/
 
 6. <a id="6"></a>Windows.sessionstorage
 
-    https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+ https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 
 7. <a id="7"></a>Same-origin Policy
 
-    https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+ https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
 
 8. <a id="8"></a>Web Crypto API
 
-    https://developer.mozilla.org/en-US/docs/Web/API/Crypto
+ https://developer.mozilla.org/en-US/docs/Web/API/Crypto
 
 9. <a id="9"></a>Web Crypto API Examples
  
-    https://mdn.github.io/dom-examples/web-crypto/
+ https://mdn.github.io/dom-examples/web-crypto/
 
 10. <a id="10"></a>GitHub Gist: crypto-aes.gcm.js by Chris Veness
  
-   "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
+ "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
-   An excellent and succinct set of examples.
+ An excellent and succinct set of examples.
     
-   https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
+ https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
 11. <a id="11"></a>Web Cryptography API Examples by Daniel Roesler
 
-   Another good set of examples for using the Web Crtypography API.
+ Another good set of examples for using the Web Crtypography API.
 
-   https://github.com/diafygi/webcrypto-examples
+ https://github.com/diafygi/webcrypto-examples
 
 12. <a id="12"></a>GitHub Deprecation of API Password Authentication
 
-   https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
+ https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
