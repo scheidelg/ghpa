@@ -23,7 +23,8 @@ async function ghpaInit() {
     ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
 
     // if we were able to read the GHPA configuration file, then check to make sure it's all valid
-    ghpaConfigCheck(ghpaConfig);
+//    ghpaConfigCheck(ghpaConfig);
+    let x = 1;
     
 /*    loop through the object elements and sub-elements
         for every element/sub-element, run ghpaOptionCheck() to see if it's legit
