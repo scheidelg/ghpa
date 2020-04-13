@@ -6,7 +6,7 @@ function ghpaConfigCheck(configObject) {
 
 async function ghpaReadConfig(configFile) {
     return(
-        fetch(configFile)    // get the config file
+        await fetch(configFile)    // get the config file
         .then(function (response) {
             if (response.status != 200) {
                 throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
