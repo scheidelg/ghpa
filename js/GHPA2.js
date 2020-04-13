@@ -1,5 +1,9 @@
 'use strict';
 
+function ghpaConfigCheck(configObject) {
+    let x = 1;
+}
+
 function ghpaReadConfig(configFile, ghpaConfigCheck) {
     return(
         fetch(configFile)    // get the config file
@@ -7,7 +11,7 @@ function ghpaReadConfig(configFile, ghpaConfigCheck) {
             if (response.status != 200) {
                 throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
             }
-//            ghpaConfigCheck(response.json());
+            ghpaConfigCheck(response.json());
         })
         .catch(function (errObject) {
             console.error(`Error processing ${configFile}: ${errObject.message}`);
