@@ -92,7 +92,7 @@ There are some additional actions - some related to the points listed above - th
 
 ## References
 
- <a name="1">1.</a> 'Repository permission levels for an organization' on GitHub.com
+ 1. <a name="1"></a>'Repository permission levels for an organization' on GitHub.com
 
     https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/repository-permission-levels-for-an-organization
 
