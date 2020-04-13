@@ -50,9 +50,9 @@ In the absence of operating as a GitHub application, GHPA operates by prompting 
 
 Additionally, GHPA implements single sign-on (SSO) functionality so that the user doesn't have to re-enter their credentials every time they refresh or access a new webpage. This is implemented by storing the authentication credentials in sessionStorage<sup>[\[6\]](#6)</sup>. This means that if the GHPA-enabled web site were compromised such that an attacker could run arbitrary JavaScript on the user's worksation (e.g., through cross-site scripting \[XSS\]), then the attacker could potentially browse the contents of sessionStorage and retrieve the GitHub credentials. At that point, the attacker take any action permitted to those credentials.
 
-There are a few (minor) mitigating factors already built into the web browser DOM, GitHub and GiHut Pages, and GHPA:
+There are a few (minor) mitigating factors already built into the web browser DOM, GitHub and GitHub Pages, and GHPA:
 
- - sessionStorage is subject to "same-origin policy."<sup>[\[7\]](#7)</sup>
+ - sessionStorage is subject to 'same-origin policy'.<sup>[\[7\]](#7)</sup>
 
    This means there's a separate storage area for each origin (combination of website domain, protocol, and port). A successful XSS attack that runs malicious JavaScript will only be able to access that page's sessionStorage.
 
@@ -72,9 +72,9 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    This is implemented through a basic check of whether the presented 'password' matches the format for a GitHub personal access token<sup>[\[4\]](#4)</sup> string; and if not then refusing to authenticate to GitHub.
 
-   Personall access token strings are 40 hexadecimal characters. A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
+   Personal access token strings are 40 hexadecimal characters. A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
- - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[12\]](#12)</sup>
+ - GitHub is deprecating the use of API password authentication. This will be fully deprecated by November 2020.<sup>[\[12\]](#12)</sup>
 
  - GitHub accounts that have multifactor authentication (MFA) enabled - hopefully, all of them - won't be able to use their regular password to authenticate through GHPA.
 
@@ -122,18 +122,18 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
  10. <a id="10"></a>GitHub Gist: crypto-aes.gcm.js by Chris Veness
  
-    "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
+ "Uses the SubtleCrypto interface of the Web Cryptography API to encrypt and decrypt text using AES-GCM (AES Galois counter mode)."
  
-    An excellent and succinct set of examples.
+ An excellent and succinct set of examples.
     
-    https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
+ https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
  11. <a id="11"></a>Web Cryptography API Examples by Daniel Roesler
 
-    Another good set of examples for using the Web Crtypography API.
+ Another good set of examples for using the Web Crtypography API.
 
-    https://github.com/diafygi/webcrypto-examples
+ https://github.com/diafygi/webcrypto-examples
 
  12. <a id="12"></a>GitHub Deprecation of API Password Authentication
 
-    https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
+ https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
