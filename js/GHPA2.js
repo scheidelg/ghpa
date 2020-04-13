@@ -6,11 +6,10 @@ function ghpaReadConfig(configFile) {
         if (response.status != 200) {
             throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
         }
-        return response.json();
+        return (response.json());
     })
     .catch(function (errObject) {
-        console.error(errObject.message);
-// return an empty JSON object here --- ?  test to see whether it's really necessary (or if not strictly necessary, desirable)
+        console.error(`Error processing ${configFile}: ${errObject.message}`);
     }));
 }
 
