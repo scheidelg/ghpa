@@ -14,9 +14,9 @@ function ghpaReadConfig(configFile) {
     }));
 }
 
-function ghpaInit() {
+async function ghpaInit() {
     // read the GHPA configuration file
-    ghpaConfig = ghpaReadConfig('/examples/ghpaConfig.json');
+    ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
 
     let x=1;
 }
