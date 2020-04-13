@@ -2,9 +2,9 @@
 
 There are multiple options, from a security perspective, for using GitHub Pages Authorization (GHPA). We don't get into all the details of GitHub security but here's a summary of relevant options with a bit of explanation.
 
- (A) Best: Use GHPA as a GitHub Application for a secure implementation..
+ (a) Best: Use GHPA as a GitHub Application for a secure implementation..
 
- (B) Use a GitHub organization(cite ref here) as the owner of the private GitHub repository.
+ (b) Use a GitHub organization(cite ref here) as the owner of the private GitHub repository.
  
     If an organization owns the private GitHub repository, then you'll be able to grant users granular access(xref) to and create machine user accounts(xref) for your repository.
 
