@@ -9,8 +9,7 @@ function ghpaReadConfig(configFile) {
         return response.json();
     })
     .catch(function (errObject) {
-        console.error(errObject.message);
-// return an empty JSON object here --- ?  test to see whether it's really necessary (or if not strictly necessary, desirable)
+        console.error(`Error processing ${configFile}: ${errObject.message}`);
     }));
 }
 
