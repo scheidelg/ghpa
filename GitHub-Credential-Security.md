@@ -121,13 +121,10 @@ There are a few (minor) mitigating factors already built into the web browser DO
     https://mdn.github.io/dom-examples/web-crypto/
 
  10. <a id="10"></a>GitHub Gist: crypto-aes.gcm.js by Chris Veness
- 
     https://gist.github.com/chrisveness/43bcda93af9f646d083fad678071b90a
 
  11. <a id="11"></a>Web Cryptography API Examples by Daniel Roesler
-
     https://github.com/diafygi/webcrypto-examples
 
  12. <a id="12"></a>GitHub Deprecation of API Password Authentication
-
     https://developer.github.com/changes/2020-02-14-deprecating-password-auth/
