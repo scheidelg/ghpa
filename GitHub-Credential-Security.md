@@ -14,7 +14,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
      Do this regardless of whether users access th GHPA-enabled website with their regular GitHub user accounts or machine user accounts(xref).
 
- 4. If an organization owns the private GitHub repository, then consider creating a read-only machine user account<sup>[\[2\]](https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users)</sup> for each user.
+ 4. If an organization owns the private GitHub repository, then consider creating a read-only machine user account<sup>[\[2\]](#2)</sup> for each user.
 
     Granular access protects your content but still potentially exposes the user's GitHub credentials to a client-side exploit. If those credentials are for the user's regular GitHub user account, then compromised credentials grant the attacker the full acccess of the user's regular GitHub user account.
 
@@ -28,7 +28,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
      - From an end-user perspective, this increases the number of credentials the user has to manage. They'll need to use their assigned machine user account with the GHPA-enabled website, and their regular GitHub credentials for regular GitHub access.
 
- 5. Require the use of GitHub personal access tokens<sup>[\[3\]](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)</sup> to access the GHPA-enabled website.
+ 5. Require the use of GitHub personal access tokens<sup>[\[3\]](#3)</sup> to access the GHPA-enabled website.
 
     Users can create GitHub personal access tokens to use with their GitHub accounts. Each personal access token can be granted limited scope (i.e., privileges), which limits the damage that can be caused by compromised credentials. Personal access tokens can be individually revoked at any time, which **can** limit the damage caused by compromised credentials.
 
@@ -40,11 +40,11 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
 In the absence of operating as a GitHub application, GHPA operates by prompting the user for their GitHub authentication credentials and using those credentials in GitHub API requests. The intent is that GHPA will only *read* the *requested* files from the *specified* private repository. However, the user has to trust that GHPA isn't going to do anything else with the credentials - either intentionally or through a compromise of the GHPA-enabled web site.
 
-Additionally, GHPA implements single sign-on (SSO) functionality so that the user doesn't have to re-enter their credentials every time they refresh or access a new webpage. This is implemented by storing the authentication credentials in sessionStorage<sup>[\[4\]](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)</sup>. This means that if the GHPA-enabled web site were compromised such that an attacker could run arbitrary JavaScript on the user's worksation (e.g., through cross-site scripting \[XSS\]), then the attacker could potentially browse the contents of sessionStorage and retrieve the GitHub credentials. At that point, the attacker take any action permitted to those credentials.
+Additionally, GHPA implements single sign-on (SSO) functionality so that the user doesn't have to re-enter their credentials every time they refresh or access a new webpage. This is implemented by storing the authentication credentials in sessionStorage<sup>[\[4\]](#4)</sup>. This means that if the GHPA-enabled web site were compromised such that an attacker could run arbitrary JavaScript on the user's worksation (e.g., through cross-site scripting \[XSS\]), then the attacker could potentially browse the contents of sessionStorage and retrieve the GitHub credentials. At that point, the attacker take any action permitted to those credentials.
 
 There are a few (minor) mitigating factors already built into the web browser DOM, GitHub and GiHut Pages, and GHPA:
 
- - sessionStorage is subject to "same-origin policy."<sup>[\[5\]](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)</sup>
+ - sessionStorage is subject to "same-origin policy."<sup>[\[5\]](#5)</sup>
 
    This means there's a separate storage area for each origin (combination of website domain, protocol, and port). A successful XSS attack that runs malicious JavaScript will only be able to access that page's sessionStorage.
 
@@ -54,7 +54,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    This also means that a user accessing a GHPA-enabled website must authenticate once per browser window.
 
- - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[6](https://developer.mozilla.org/en-US/docs/Web/API/Crypto),[5\]](https://developer.mozilla.org/en-US/docs/Web/API/Crypto)</sup>
+ - GHPA encrypts the GitHub credentials before being saved to sessionStorage.<sup>[\[6](#6),[7\]](#7)</sup>
 
     This protects against casual browsing of sessionStorage to see the user ID and password (or personal access token string) in plaintext or base64-encoded text.
 
@@ -66,7 +66,7 @@ There are a few (minor) mitigating factors already built into the web browser DO
 
    Personall access token strings are 40 hexadecimal characters. A user could potentially use 40 hexadecimal characters string as their regular password, but I'm thinking odds are low.
 
- - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[10\]](https://developer.github.com/changes/2020-02-14-deprecating-password-auth/)</sup>
+ - GitHub is deprecating the use API password authentication. This will be fully deprecated by November 2020.<sup>[\[10\]](#10)</sup>
 
  - GitHub accounts that have multifactor authentication (MFA) enabled - hopefully, all of them - won't be able to use their regular password to authenticate through GHPA.
 
