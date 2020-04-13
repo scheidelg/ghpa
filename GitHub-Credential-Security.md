@@ -24,7 +24,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
      - Machine user accounts are only available to GitHub organizations.
 
-     - This also increases the administrative burden on you as the repository administrator.
+     - This increases the administrative burden on you as the repository administrator.
 
      - From an end-user perspective, this increases the number of credentials the user has to manage. They'll need to use their assigned machine user account with the GHPA-enabled website, and their regular GitHub credentials for regular GitHub access.
 
@@ -34,7 +34,7 @@ There are multiple options, from a security perspective, for using GitHub Pages 
 
     Personal access tokens with a user's regular GitHub account is still better than authenticating with the user's regular GitHub password, and the cost (i.e., hassle of using a 40-character personal access token string) is generally worth the benefit. Remember: *If an attacker compromises a GitHub user's regular user account name and password, then the attacker will be able to login to GitHub as the user.*
 
-    You can encourage use of GitHub [personal access tokens](#pat) by enabling the GHPA 'ghpaTokensOnlyFlag' option ('encourage' instead of 'require' because a user could potentially set a password of 40 hexadecimal characters).
+    You can encourage use of GitHub personal access tokens by enabling the GHPA 'ghpaTokensOnlyFlag' option ('encourage' instead of 'require' because a user could potentially set a password of 40 hexadecimal characters).
 
  6. When creating a GitHub personal access token, make sure that your users limit the scope of the token.
  
