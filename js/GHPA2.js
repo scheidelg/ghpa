@@ -21,6 +21,9 @@ async function ghpaInit() {
     // read the GHPA configuration file
     ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
 
+    // if we were able to read the GHPA configuration file, then check to make sure it's all valid
+    ghpaConfigCheck(ghpaConfig);
+
     let x=1;
 }
 
