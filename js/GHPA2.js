@@ -1,15 +1,20 @@
 'use strict';
 
-function recurseMe(configObject, parent) {
-    for (let myProperty in configObject) {
-        if (configObject.hasOwnProperty(myProperty)) {
-            recurseMe(configObject[myProperty], parent + '/' + myProperty);
+function recurseMe(configObject, parentString) {
+    if (! parentString) { parentString = '/'; }
+    
+    for (let propertyName in configObject) {
+        if (configObject.hasOwnProperty(propertyName)) {
+console.log(parentString + propertyName);
+            if (typeof configObject[propertyName] == 'object') {
+                recurseMe(configObject[propertyName], parentString + propertyName + '/');
+            }
         }
     }
 }
 
 function ghpaConfigCheck(configObject) {
-    recurseMe(configObject, '/');
+    recurseMe(configObject);
     let x = 1;
 }
 
