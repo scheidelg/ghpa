@@ -97,7 +97,7 @@ const ghpaConfigSchema =
             "organization": "/^[0-9a-z]([0-9a-z]|\-(?!\-))*(?<!\-)$/i",
             "repository": "/^0-9a-z_.\-]/i",
             "branch": "/^[^\^\[\\:\?]+$/",
-            "defaultHTMLfile": ""/^(([0-9a-z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-f][0-9a-f]))+$/i"",
+            "defaultHTMLfile": "/^(([0-9a-z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-f][0-9a-f]))+$/i",
             "onlyGetBody": "boolean"
         }
     }
