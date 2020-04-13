@@ -11,7 +11,6 @@ function ghpaReadConfig(configFile) {
             if (response.status != 200) {
                 throw new Error(`${response.status} HTTP response retrieving configuration file ${configFile}`);
             }
-            ghpaConfigCheck(response.json());
         })
         .catch(function (errObject) {
             console.error(`Error processing ${configFile}: ${errObject.message}`);
@@ -24,6 +23,7 @@ async function ghpaInit() {
     ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
 
     // if we were able to read the GHPA configuration file, then check to make sure it's all valid
+    ghpaConfigCheck(response.json());
     
 /*    loop through the object elements and sub-elements
         for every element/sub-element, run ghpaOptionCheck() to see if it's legit
