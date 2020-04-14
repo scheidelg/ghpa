@@ -16,6 +16,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
 // so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
                 if (parentSchemaObject['(key:' + keyformatPropertyName + ')']) {        // after testing, switch to: `(key:{$keyformatPropertyName})`
                     propertyMatch = keyformatPropertyName;
+                    break;      // we found a match, so we can exit the for loop
                 }
                     
 /*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
