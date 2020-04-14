@@ -4,7 +4,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
     // if the property exists in the schema or if there's a keyformat that matches this string
 // we're going to need a way to let the calling function know which '(key:*)' property to use for recursion
     if (parentSchemaObject[propertyName]) {
-        return(0);
+        return(parentSchemaObject[propertyName]);
     } else {
         return(1);      // bogus property
     }
@@ -21,7 +21,7 @@ console.log(parentString + ' ' + propertyName);       // debugging - get rid of 
 
             // check to see if this is a valid property name and value
             propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
-            if (propertyCheck == 0) {      // valid
+            if (typof propertyCheck == 'object') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
                     recurseMe(configObject[propertyName], schemaObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
