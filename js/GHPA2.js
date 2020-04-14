@@ -17,11 +17,19 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString)
                 if (parentSchemaObject[`(key:${keyformatPropertyName})`]) {
 
                     if (typeof parentSchemaObject['(keyformats)'][keyformatPropertyName] == 'string') {
-                    
-                        // now check whether the property we're checking matches the format specified by the keyformat's regex
 
-                        propertyMatch = `(key:${keyformatPropertyName})`;
-                        break;      // we found a match, so we can exit the for loop
+                        try {
+                            const keyRegEx = new RegExp(parentSchemaObject['(keyformats)'][keyformatPropertyName]);
+
+                            // now check whether the property we're checking matches the format specified by the keyformat's regex
+                            if (keyRegEx.test(propertyName)) {
+                                propertyMatch = `(key:${keyformatPropertyName})`;
+                                break;      // we found a match, so we can exit the for loop
+                            }
+                        } catch (errObject) {
+                            error.log(`Error using configuration schema property '${parentString} (keyformats) / ${keyformatPropertyName}' as regular expression: ${errObject.message}`);
+                        }
+
                     } else {
                         error.log(`Configuration schema property '${parentString} (keyformats) / ${keyformatPropertyName}' is not a string.`);
                     }
@@ -38,6 +46,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString)
     }
 
     if (propertyMatch) {
+// here's where you need to test for valid property values
         return(propertyMatch);
     } else {
         return(1);      // bogus property
