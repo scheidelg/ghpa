@@ -38,7 +38,7 @@ function recurseMe(configObject, schemaObject, parentString, parentObject) {
     let propertyCheck;
     let propertyString;
     
-    parentString = (! parentString) ? '/' : ' /';
+    parentString = (! parentString) ? '/' : (parentString + ' /');
 //    if (! parentString) { parentString = ''; }     // gotta start somewhere, boyo
     
     for (let propertyName in configObject) {        // iterate through all properties in the passed object
