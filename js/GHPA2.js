@@ -36,18 +36,20 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
 
 function recurseMe(configObject, schemaObject, parentString, parentObject) {
     let propertyCheck;
+    let propertyString;
     
     if (! parentString) { parentString = '/'; }     // gotta start somewhere, boyo
     
     for (let propertyName in configObject) {        // iterate through all properties in the passed object
         if (configObject.hasOwnProperty(propertyName)) {        // only continue if this is a non-inherited property
-console.log(parentString + ' ' + propertyName);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
+            propertyString = parentString + '/ ' + propertyName;
+console.log(propertyString);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
             propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
             if (typeof propertyCheck == 'string') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
+                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString, configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
             } else {        // invalid
                 // delete the property; s'OK to delete the current property being iterated through, just not any others
