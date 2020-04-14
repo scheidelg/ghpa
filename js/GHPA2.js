@@ -23,7 +23,7 @@ console.log(parentString + ' ' + propertyName);       // debugging - get rid of 
             propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
             if (typeof propertyCheck == 'string') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                    recurseMe(configObject[propertyName], schemaObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
+                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
             } else {        // invalid
                 // delete the property; s'OK to delete the current property being iterated through, just not any others
