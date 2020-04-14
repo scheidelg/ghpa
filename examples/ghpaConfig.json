@@ -20,7 +20,7 @@
             "branch": "master",
             "defaultHTMLfile": "index.html",
             "onlyGetBody": true
-        }
+        },
         "global": {
             "organization": "scheidel",
             "repository": "ghpa-private-1",
