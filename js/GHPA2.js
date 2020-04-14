@@ -1,6 +1,6 @@
 'use strict';
 
-function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
+function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString) {
     let propertyMatch;
 
     // if the property exists in the schema
@@ -14,15 +14,15 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
         for (let keyformatPropertyName in parentSchemaObject['(keyformats)']) {
             if (parentSchemaObject['(keyformats)'].hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
 // so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
-                if (parentSchemaObject[`(key:${keyformatPropertyName})`]) {        // after testing, switch to: `(key:${keyformatPropertyName})`
+                if (parentSchemaObject[`(key:${keyformatPropertyName})`]) {
 
                     // now check whether the property we're checking matches the format specified by the keyformat's regex
                     
                     propertyMatch = `(key:${keyformatPropertyName})`;
                     break;      // we found a match, so we can exit the for loop
 
-/*                } else {
-                    error.log(' */
+                } else {
+                    error.log(`Configuration schema contains '${parentString} (keyformats) / ${keyformatPropertyName}' without matching '${parentString} (key:${keyformatPropertyName})';
                 }
                     
 /*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
@@ -53,7 +53,7 @@ function recurseMe(configObject, schemaObject, parentString) {      // , parentO
 console.log(propertyString);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
-            propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
+            propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject, parentString);
             if (typeof propertyCheck == 'string') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
                     recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString);     //, configObject);   // recurse into sub-properties, adding this property name to the parent string
