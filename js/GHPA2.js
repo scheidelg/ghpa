@@ -8,7 +8,7 @@ function ghpaConfigPropertyCheck(propertyName, parentObject) {
     }
 }
 
-function recurseMe(configObject, parentString, parentObject) {
+function recurseMe(configObject, schemaObject, parentString, parentObject) {
     let propertyCheck;
     
     if (! parentString) { parentString = '/'; }     // gotta start somewhere, boyo
@@ -21,7 +21,7 @@ console.log(parentString + propertyName);       // debugging - get rid of this a
             propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject);
             if (propertyCheck == 0) {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                    recurseMe(configObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
+                    recurseMe(configObject[propertyName], schemaObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
             } else {        // invalid
                 // delete the property; s'OK to delete the current property being iterated through, just not any others
@@ -34,7 +34,7 @@ console.log(parentString + propertyName);       // debugging - get rid of this a
 }
 
 function ghpaConfigCheck(configObject) {
-    recurseMe(configObject);
+    recurseMe(configObject, ghpaConfigSchema);
     let x = 1;
 }
 
