@@ -1,13 +1,33 @@
 'use strict';
 
-function recurseMe(configObject, parentString) {
-    if (! parentString) { parentString = '/'; }     // gotta start somewhere, boyo
+function ghpaConfigPropertyCheck(propertyName, parentObject) {
+    if (propertyName == 'fritz') {
+        return(1);
+    } else {
+        return(0);
+    }
+}
+
+function recurseMe(configObject, parentString, parentObject) {
+    let propertyCheck;
+    
+    if (! parentString) { parentString = '/ '; }     // gotta start somewhere, boyo
     
     for (let propertyName in configObject) {        // iterate through all properties in the passed object
         if (configObject.hasOwnProperty(propertyName)) {        // only continue if this is a non-inherited property
-console.log(parentString + propertyName);
-            if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                recurseMe(configObject[propertyName], parentString + propertyName + '/');   // recurse into sub-properties, adding this property name to the parent string
+console.log(parentString + propertyName);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
+
+            // check to see if this is a valid property name and value
+            propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject);
+            if (propertyCheck == 0) {      // valid
+                if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
+                    recurseMe(configObject[propertyName], parentString + propertyName + ' / ', configObject);   // recurse into sub-properties, adding this property name to the parent string
+                }
+            } else {        // invalid
+                // delete the property; s'OK to delete the current property being iterated through, just not any others
+// console error message here!!! (for real, not just for debugging); different messages based on ghpaConfigPropertyCheck() return value
+
+                delete configObject[propertyName];
             }
         }
     }
