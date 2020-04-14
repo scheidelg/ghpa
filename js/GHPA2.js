@@ -20,6 +20,9 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
                     
                     propertyMatch = '(key:' + keyformatPropertyName + ')';
                     break;      // we found a match, so we can exit the for loop
+
+/*                } else {
+                    error.log(' */
                 }
                     
 /*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
@@ -37,7 +40,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
     }
 }
 
-function recurseMe(configObject, schemaObject, parentString, parentObject) {
+function recurseMe(configObject, schemaObject, parentString) {      // , parentObject) {
     let propertyCheck;
     let propertyString;
     
@@ -53,7 +56,7 @@ console.log(propertyString);       // debugging - get rid of this and probably (
             propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
             if (typeof propertyCheck == 'string') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString, configObject);   // recurse into sub-properties, adding this property name to the parent string
+                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString);     //, configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
             } else {        // invalid
                 // delete the property; s'OK to delete the current property being iterated through, just not any others
