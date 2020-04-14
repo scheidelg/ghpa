@@ -1,10 +1,12 @@
 'use strict';
 
-function ghpaConfigPropertyCheck(propertyName, parentObject) {
-    if (propertyName == 'fritz') {
-        return(1);
-    } else {
+function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
+    // if the property exists in the schema or if there's a keyformat that matches this string
+// we're going to need a way to let the calling function know which '(key:*)' property to use for recursion
+    if (parentSchemaObject[propertyName]) {
         return(0);
+    } else {
+        return(1);      // bogus property
     }
 }
 
@@ -18,7 +20,7 @@ function recurseMe(configObject, schemaObject, parentString, parentObject) {
 console.log(parentString + ' ' + propertyName);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
-            propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject);
+            propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
             if (propertyCheck == 0) {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
                     recurseMe(configObject[propertyName], schemaObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
@@ -112,13 +114,13 @@ const ghpaConfigSchema =
     },
 
     "ghpaClasses": {
-        "(keys)": {
-            "(keyformat)": "/^[a-z]([0-9a-z]|([\-_](?![\-_])))*(?<![\-_])$/i",
+        "(key:ghpaClass)": {
             "organization": "/^[0-9a-z]([0-9a-z]|\-(?!\-))*(?<!\-)$/i",
             "repository": "/^0-9a-z_.\-]/i",
             "branch": "/^[^\^\[\\:\?]+$/",
             "defaultHTMLfile": "/^(([0-9a-z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-f][0-9a-f]))+$/i",
             "onlyGetBody": "boolean"
-        }
+        },
+        "(keyformat:ghpaClass)": "/^[a-z]([0-9a-z]|([\-_](?![\-_])))*(?<![\-_])$/i"
     }
 };
