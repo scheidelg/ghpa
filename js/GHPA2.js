@@ -15,7 +15,7 @@ function recurseMe(configObject, schemaObject, parentString, parentObject) {
     
     for (let propertyName in configObject) {        // iterate through all properties in the passed object
         if (configObject.hasOwnProperty(propertyName)) {        // only continue if this is a non-inherited property
-console.log(parentString + propertyName);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
+console.log(parentString + ' ' + propertyName);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
             propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject);
