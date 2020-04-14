@@ -6,16 +6,22 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
     // if the property exists in the schema
     if (parentSchemaObject[propertyName]) {
         propertyMatch =  propertyName;
-    } else {
+
+    // if there are any keyformats, then check those for a match
+    } else if (parentSchemaObject['(keyformats)'] && typeof parentSchemaObject['(keyformats)'] == 'object') {
 
         //  if there's a keyformat that matches this string
-        for (let keyformatPropertyName in parentSchemaObject) {
-            if (configObject.hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
-                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
-                if (matches) {
+        for (let keyformatPropertyName in parentSchemaObject['(keyformats)']) {
+            if (parentSchemaObject['(keyformats)'].hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
 // so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
+                if (parentSchemaObject['(key:' + keyformatPropertyName] + ')') {        // after testing, switch to: `(key:{$keyformatPropertyName})`
                     propertyMatch = keyformatPropertyName;
                 }
+                    
+/*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
+                if (matches) {
+                }
+*/
             }
         }
     }
@@ -138,6 +144,8 @@ const ghpaConfigSchema =
             "defaultHTMLfile": "/^(([0-9a-z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-f][0-9a-f]))+$/i",
             "onlyGetBody": "boolean"
         },
-        "(keyformat:ghpaClass)": "/^[a-z]([0-9a-z]|([\-_](?![\-_])))*(?<![\-_])$/i"
+        "(keyformats)": {
+            "ghpaClass": "/^[a-z]([0-9a-z]|([\-_](?![\-_])))*(?<![\-_])$/i"
+        }
     }
 };
