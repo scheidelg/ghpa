@@ -1,10 +1,27 @@
 'use strict';
 
 function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
-    // if the property exists in the schema or if there's a keyformat that matches this string
-// we're going to need a way to let the calling function know which '(key:*)' property to use for recursion
+    let propertyMatch;
+
+    // if the property exists in the schema
     if (parentSchemaObject[propertyName]) {
-        return(propertyName);
+        propertyMatch =  propertyName;
+    } else {
+
+        //  if there's a keyformat that matches this string
+        for (let keyformatPropertyName in parentSchemaObject) {
+            if (configObject.hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
+                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
+                if (matches) {
+// so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
+                    propertyMatch = keyformatPropertyName;
+                }
+            }
+        }
+    }
+
+    if (propertyMatch) {
+        return(propertyMatch);
     } else {
         return(1);      // bogus property
     }
