@@ -38,11 +38,12 @@ function recurseMe(configObject, schemaObject, parentString, parentObject) {
     let propertyCheck;
     let propertyString;
     
-    if (! parentString) { parentString = ''; }     // gotta start somewhere, boyo
+    parentString = (! parentString) ? '/' : ' /';
+//    if (! parentString) { parentString = ''; }     // gotta start somewhere, boyo
     
     for (let propertyName in configObject) {        // iterate through all properties in the passed object
         if (configObject.hasOwnProperty(propertyName)) {        // only continue if this is a non-inherited property
-            propertyString = parentString + '/ ' + propertyName;
+            propertyString = parentString + ' ' + propertyName;
 console.log(propertyString);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
