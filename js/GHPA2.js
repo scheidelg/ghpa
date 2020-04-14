@@ -15,6 +15,9 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
             if (parentSchemaObject['(keyformats)'].hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
 // so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
                 if (parentSchemaObject['(key:' + keyformatPropertyName + ')']) {        // after testing, switch to: `(key:{$keyformatPropertyName})`
+
+                    // now check whether the property we're checking matches the format specified by the keyformat's regex
+                    
                     propertyMatch = '(key:' + keyformatPropertyName + ')';
                     break;      // we found a match, so we can exit the for loop
                 }
@@ -55,7 +58,7 @@ console.log(propertyString);       // debugging - get rid of this and probably (
             } else {        // invalid
                 // delete the property; s'OK to delete the current property being iterated through, just not any others
 // console error message here!!! (for real, not just for debugging); different messages based on ghpaConfigPropertyCheck() return value
-
+// write a separate function that returns a base string depending on the integer value; then massage into the actual message here; then can re-use the function when checking HTML elements and attributes
                 delete configObject[propertyName];
             }
         }
