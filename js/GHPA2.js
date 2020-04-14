@@ -21,7 +21,7 @@ console.log(parentString + ' ' + propertyName);       // debugging - get rid of 
 
             // check to see if this is a valid property name and value
             propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject);
-            if (typof propertyCheck == 'object') {      // valid
+            if (typeof propertyCheck == 'object') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
                     recurseMe(configObject[propertyName], schemaObject[propertyName], parentString + ' ' + propertyName + ' /', configObject);   // recurse into sub-properties, adding this property name to the parent string
                 }
