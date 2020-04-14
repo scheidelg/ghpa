@@ -15,7 +15,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject) {
             if (parentSchemaObject['(keyformats)'].hasOwnProperty(keyformatPropertyName)) {        // only continue if this is a non-inherited property
 // so far just checking to see if there's *any* "(keyformat:*)", not necessarily a matching one
                 if (parentSchemaObject['(key:' + keyformatPropertyName + ')']) {        // after testing, switch to: `(key:{$keyformatPropertyName})`
-                    propertyMatch = keyformatPropertyName;
+                    propertyMatch = '(key:' + keyformatPropertyName + ')';
                     break;      // we found a match, so we can exit the for loop
                 }
                     
