@@ -1,7 +1,10 @@
 {
     "tokensOnly": true,
+    
+    "fritz": false,
 
     "pageOptions": {
+        "fritz": 0,
         "authOnly": false,
         "SSO": true
     },
@@ -11,6 +14,13 @@
     },
 
     "ghpaClasses": {
+        "fritz": {
+            "organization": "scheidel",
+            "repository": "ghpa-private-1",
+            "branch": "master",
+            "defaultHTMLfile": "index.html",
+            "onlyGetBody": true
+        }
         "global": {
             "organization": "scheidel",
             "repository": "ghpa-private-1",
