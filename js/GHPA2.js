@@ -22,7 +22,7 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString)
                     break;      // we found a match, so we can exit the for loop
 
                 } else {
-                    error.log(`Configuration schema contains '${parentString} (keyformats) / ${keyformatPropertyName}' without matching '${parentString} (key:${keyformatPropertyName})'`;
+                    error.log(`Configuration schema contains '${parentString} (keyformats) / ${keyformatPropertyName}' without matching '${parentString} (key:${keyformatPropertyName})'`);
                 }
                     
 /*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
