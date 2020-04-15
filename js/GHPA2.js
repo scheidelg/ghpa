@@ -51,7 +51,21 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
         
         if (propertyMatchSubstrings[1] == typeof parentObject[propertyName]) {
 // we know that the property has the correct type; now check the details
-            return(propertyMatch);
+            if (propertyMatchSubstrings[2]) {       // there was a regex specified in the property
+
+                
+                        try {
+                            const valueRegEx = new RegExp(propertyMatchSubstrings[2]);
+
+                            if (! valueRegEx.test(String(parentObject[propertyName]))) {
+                                return(3);
+                            }
+                        } catch (errObject) {
+                            error.log(`Error using configuration property '${parentString} ${propertyName}' as regular expression: ${errObject.message}`);
+                        }                
+                
+                return(propertyMatch);
+            }
         } else {
             return(2);
         }
