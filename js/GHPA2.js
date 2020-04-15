@@ -124,7 +124,8 @@ let ghpaConfig;
 //  - $-_.+!*'()\
 //  - %xx where xx is 20 through FF
 //
-// (keyformat)
+// (keyformat) / ghpaClass
+//  - start with alpha
 //  - any of:
 //     - alphanumeric
 //     - _-
@@ -156,19 +157,19 @@ const ghpaConfigSchema =
     },
 
     "loginFormOptions": {
-        "loginFormFile": "/^(([0-9a-z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-f][0-9a-f]))+$/i",
+        "loginFormFile": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
     },
 
     "ghpaClasses": {
         "(key:ghpaClass)": {
-            "organization": "/^[0-9a-z]([0-9a-z]|\-(?!\-))*(?<!\-)$/i",
-            "repository": "/^0-9a-z_.\-]/i",
-            "branch": "/^[^\^\[\\:\?]+$/",
-            "defaultHTMLfile": "/^(([0-9a-z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-f][0-9a-f]))+$/i",
+            "organization": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$",
+            "repository": "^[0-9a-zA-Z_.\-]+$",
+            "branch": "^[^\^\[\\:\?]+$",
+            "defaultHTMLfile": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
             "onlyGetBody": "boolean"
         },
         "(keyformats)": {
-            "ghpaClass": "/^[a-z]([0-9a-z]|([\-_](?![\-_])))*(?<![\-_])$/i"
+            "ghpaClass": "[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
         }
     }
 };
