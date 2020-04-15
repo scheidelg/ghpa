@@ -1,6 +1,6 @@
 'use strict';
 
-function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString) {
+function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject, parentString) {
     let propertyMatch;
 
     // if the property exists in the schema
@@ -47,6 +47,9 @@ function ghpaConfigPropertyCheck(propertyName, parentSchemaObject, parentString)
 
     if (propertyMatch) {
 // here's where you need to test for valid property values
+        const propertyMatchSubstrings = parentSchemaObject[propertyMatch].match(/^(.+?)(?::(.*))?$/)
+        
+//        if (propertyMatchSubstrings[1] != typeof 
         return(propertyMatch);
     } else {
         return(1);      // bogus property
@@ -66,7 +69,7 @@ function recurseMe(configObject, schemaObject, parentString) {      // , parentO
 console.log(propertyString);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
 
             // check to see if this is a valid property name and value
-            propertyCheck = ghpaConfigPropertyCheck(propertyName, schemaObject, parentString);
+            propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject, schemaObject, parentString);
             if (typeof propertyCheck == 'string') {      // valid
                 if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
                     recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString);     //, configObject);   // recurse into sub-properties, adding this property name to the parent string
@@ -157,25 +160,19 @@ const ghpaConfigSchema =
     },
 
     "loginFormOptions": {
-        "loginFormFile": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
+        "loginFormFile": "string:^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
     },
 
     "ghpaClasses": {
         "(key:ghpaClass)": {
-            "organization": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$",
-            "repository": "^[0-9a-zA-Z_.\-]+$",
-            "branch": "^[^\^\[\\:\?]+$",
-            "defaultHTMLfile": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
+            "organization": "string:^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$",
+            "repository": "string:^[0-9a-zA-Z_.\-]+$",
+            "branch": "string:^[^\^\[\\:\?]+$",
+            "defaultHTMLfile": "string:^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
             "onlyGetBody": "boolean"
         },
         "(keyformats)": {
-            "ghpaClass": "global"
+            "ghpaClass": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
         }
     }
 };
-
-/*
-        "(keyformats)": {
-            "ghpaClass": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
-        }
-*/
