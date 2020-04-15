@@ -53,7 +53,7 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
 // we know that the property has the correct type; now check the details
             if (propertyMatchSubstrings[2]) {       // there was a regex specified in the property
 
-                
+
                         try {
                             const valueRegEx = new RegExp(propertyMatchSubstrings[2]);
 
@@ -63,9 +63,11 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
                         } catch (errObject) {
                             error.log(`Error using configuration property '${parentString} ${propertyName}' as regular expression: ${errObject.message}`);
                         }                
-                
-                return(propertyMatch);
+
             }
+
+            return(propertyMatch);
+
         } else {
             return(2);
         }
