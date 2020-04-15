@@ -49,8 +49,12 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
 // here's where you need to test for valid property values
         const propertyMatchSubstrings = parentSchemaObject[propertyMatch].match(/^(.+?)(?::(.*))?$/)
         
-//        if (propertyMatchSubstrings[1] != typeof 
-        return(propertyMatch);
+        if (propertyMatchSubstrings[1] == typeof parentObject[propertyName]) {
+// we know that the property has the correct type; now check the details
+            return(propertyMatch);
+        } else {
+            return(2);
+        }
     } else {
         return(1);      // bogus property
     }
