@@ -169,7 +169,13 @@ const ghpaConfigSchema =
             "onlyGetBody": "boolean"
         },
         "(keyformats)": {
-            "ghpaClass": "[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
+            "ghpaClass": "global"
         }
     }
 };
+
+/*
+        "(keyformats)": {
+            "ghpaClass": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
+        }
+*/
