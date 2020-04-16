@@ -1,0 +1,116 @@
+{
+    "(regex-classes)": {
+        "URI-path": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
+        "URI-file": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+    },
+
+    "tokensOnly": true,
+    
+    "(tokensOnly)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "pageOptions": {
+        "authOnly": false,
+
+        "(authOnly)": {
+            "required": false,
+            "create-by-default": true
+        },
+
+        "SSO": true,
+
+        "(SSO)": {
+            "required": false,
+            "create-by-default": true
+        }
+    },
+
+    "(pageOptions)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "loginFormOptions": {
+        "loginFormFile": "",
+
+        "(loginFormFile)": {
+            "required": false,
+            "create-by-default": false,
+            "regex": "(class:URI-path)"
+        }
+    },
+
+    "(loginFormOptions)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "ghpaClasses": {
+        "*ghpaClass": {
+            "organization": "",
+
+            "(organization)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$"
+            },
+
+            "repository": "",
+
+            "(repository)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[0-9a-zA-Z_.\-]+$"
+            },
+
+            "branch": "",
+
+            "(branch)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[^\^\[\\:\?]+$"
+            },
+
+            "defaultHTMLfile": "",
+
+            "(defaultHTMLfile)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "(class:URI-file)"
+            },
+
+            "onlyGetBody": true,
+
+            "(onlyGetBody)": {
+                "required": false,
+                "create-by-default": false
+            }
+        },
+
+        "(*ghpaClass)": {
+            "regex": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
+        },
+
+        "global": {
+            "(configuration-key-class)": "*ghpaClass",
+
+            "defaultHTMLfile": "index.html",
+
+            "(defaultHTMLfile)": {
+                "create-by-default": true
+            }
+        },
+
+        "(global)": {
+            "required": false,
+            "create-by-default": true
+        }
+    },
+
+    "(ghpaClasses)": {
+        "required": false,
+        "create-by-default": true
+    }
+}
