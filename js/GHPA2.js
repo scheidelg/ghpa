@@ -199,3 +199,133 @@ const ghpaConfigSchema =
         }
     }
 };
+
+// need a way to specify whether 'required' properties will be created, or cause an error; maybe a function argument?
+//  - ok, 'required' vs. 'default'
+const ghpaConfigSchema2 =
+{
+    "tokensOnly": true,
+    
+    "(tokensOnly)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "pageOptions": {
+        "authOnly": false,
+
+        "(authOnly)": {
+            "required": false,
+            "create-by-default": true
+        },
+
+        "SSO": true,
+
+        "(SSO)": {
+            "required": false,
+            "create-by-default": true
+        }
+    },
+
+    "(pageOptions)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "loginFormOptions": {
+        "loginFormFile": "",
+
+        "(loginFormFile)": {
+            "required": false,
+            "create-by-default": false,
+            "regex": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+        }
+    },
+
+    "(loginFormOptions)": {
+        "required": false,
+        "create-by-default": true
+    },
+
+    "ghpaClasses": {
+        "*ghpaClass": {
+            "organization": "",
+
+            "(organization)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$"
+            },
+
+            "repository": "",
+
+            "(repository)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[0-9a-zA-Z_.\-]+$"
+            },
+
+            "branch": "",
+
+            "(branch)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^[^\^\[\\:\?]+$"
+            },
+
+            "defaultHTMLfile": "",
+
+            "(defaultHTMLfile)": {
+                "required": false,
+                "create-by-default": false,
+                "regex": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+            },
+
+            "onlyGetBody": true,
+
+            "(onlyGetBody)": {
+                "required": false,
+                "create-by-default": false
+            }
+        },
+
+        "(*ghpaClass)": {
+            "regex": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
+        },
+
+        "global": {
+            "(configuration-key-class)": "*ghpaClass",
+
+            "defaultHTMLfile": "index.html",
+
+            "(defaultHTMLfile)": {
+                "create-by-default": true
+            }
+        },
+
+        "(global)": {
+            "required": false,
+            "create-by-default": true
+        }
+    },
+
+    "(ghpaClasses)": {
+        "required": false,
+        "create-by-default": true
+    }
+};
+
+// when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'configuratin-key-class'
+
+// note that "regex": is always optional, but in particular for for booleans - since it generally doesn't make sense, we know that it's either true or false, and if it's only one or the other then why do you need a configuration option?
+
+// "required": and "create-by-default": don't make sense for a wildcard property; but "regex:" is required
+
+// move config and schema config to root - but still use as arguments to the config check function
+
+// load schema from a file as well
+
+// make an initial pass on the schema to make sure everything is OK, report errors there (i.e., only once), remove things from the schema that don't make sense; then when processing just skip over problems with the schema
+
+// allow comments in config files; strip them out before or as part of the *.json() call
+
