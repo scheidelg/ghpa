@@ -175,7 +175,7 @@ let ghpaConfig;
 //  - cannot start with a /
 const ghpaConfigSchema =
 {
-    "tokensOnly": "boolean:^false$",
+    "tokensOnly": "boolean",
 
     "pageOptions": {
         "authOnly": "boolean",
