@@ -146,7 +146,7 @@ async function ghpaInit() {
     }
 
     // read the GHPA configuration schema
-    if (ghpaConfigSchema != await ghpaReadJSONfile('/ghpaConfigSchema.json')) {
+    if (!(ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json'))) {
         let z=1;
     }
 
