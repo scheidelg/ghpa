@@ -127,7 +127,7 @@ function ghpaReadConfig(configFile) {
 }
 
 function ghpaReadJSONfile(JSONfile) {
-    if (JSONfile == '/ghpaConfig.json') return;
+    if (JSONfile == '/ghpaConfigSchema.json') return;
 
     return(fetch(JSONfile)
     .then(function (response) {
