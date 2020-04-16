@@ -38,7 +38,7 @@
         "(loginFormFile)": {
             "required": false,
             "create-by-default": false,
-            "regex-value": "(class:URI-path)"
+            "value-regex": "(class:URI-path)"
         }
     },
 
@@ -54,7 +54,7 @@
             "(organization)": {
                 "required": false,
                 "create-by-default": false,
-                "regex-value": "^[0-9a-zA-Z]([0-9a-zA-Z]|\\-(?!\\-))*(?<!\\-)$"
+                "value-regex": "^[0-9a-zA-Z]([0-9a-zA-Z]|\\-(?!\\-))*(?<!\\-)$"
             },
 
             "repository": "",
@@ -62,7 +62,7 @@
             "(repository)": {
                 "required": false,
                 "create-by-default": false,
-                "regex-value": "^[0-9a-zA-Z_.\\-]+$"
+                "value-regex": "^[0-9a-zA-Z_.\\-]+$"
             },
 
             "branch": "",
@@ -70,7 +70,7 @@
             "(branch)": {
                 "required": false,
                 "create-by-default": false,
-                "regex-value": "^[^\\^\\[\\\\:\\?]+$"
+                "value-regex": "^[^\\^\\[\\\\:\\?]+$"
             },
 
             "defaultHTMLfile": "",
@@ -78,7 +78,7 @@
             "(defaultHTMLfile)": {
                 "required": false,
                 "create-by-default": false,
-                "regex-value": "(class:URI-file)"
+                "value-regex": "(class:URI-file)"
             },
 
             "onlyGetBody": true,
@@ -90,7 +90,7 @@
         },
 
         "(*ghpaClass)": {
-            "regex-key": "^[a-zA-Z]([0-9a-zA-Z]|([\\-_](?![\\-_])))*(?<![\\-_])$"
+            "key-regex": "^[a-zA-Z]([0-9a-zA-Z]|([\\-_](?![\\-_])))*(?<![\\-_])$"
         },
 
         "global": {
