@@ -107,6 +107,12 @@ function ghpaConfigCheck(configObject) {
     let x = 1;
 }
 
+function ghpaConfigCheck2(configObject) {
+// do one check working off of the configuration file and checking against the schema; another check working off of the schema and checking the configuration file
+    recurseMe(configObject, ghpaConfigSchema);
+    let x = 1;
+}
+
 function ghpaReadConfig(configFile) {
     return(fetch(configFile)
     .then(function (response) {
@@ -120,12 +126,28 @@ function ghpaReadConfig(configFile) {
     }));
 }
 
+function ghpaReadJSONfile(JSONfile) {
+    return(fetch(JSONfile)
+    .then(function (response) {
+        if (response.status != 200) {
+            throw new Error(`${response.status} HTTP response retrieving JSON file ${JSONfile}`);
+        }
+        return (response.json());
+    })
+    .catch(function (errObject) {
+        console.error(`Error processing ${JSONfile}: ${errObject.message}`);
+    }));
+}
+
 async function ghpaInit() {
-    // read the GHPA configuration file
-    ghpaConfig = await ghpaReadConfig('/examples/ghpaConfig.json');
+    // read the GHPA configuration
+    ghpaConfig = await ghpaReadJSONfile('/ghpaConfig.json');
+
+    // read the GHPA configuration schema
+    ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json');
 
     // if we were able to read the GHPA configuration file, then check to make sure it's all valid
-    ghpaConfigCheck(ghpaConfig);
+//    ghpaConfigCheck(ghpaConfig);
 
     let x=1;
 }
@@ -139,6 +161,7 @@ if (document.addEventListener) {
 }
 
 let ghpaConfig;
+let ghpaConfigSchema;
 
 // loginFormFile - any of:
 //  - alphanumeric
@@ -168,7 +191,7 @@ let ghpaConfig;
 //     - $-_.+!*'()\
 //     - %xx where xx is 20 through FF
 //  - cannot start with or contain a /
-const ghpaConfigSchema =
+/*const ghpaConfigSchema =
 {
     "tokensOnly": "boolean",
 
@@ -194,6 +217,7 @@ const ghpaConfigSchema =
         }
     }
 };
+
 
 // need a way to specify whether 'required' properties will be created, or cause an error; maybe a function argument?
 //  - ok, 'required' vs. 'default'
@@ -314,6 +338,7 @@ const ghpaConfigSchema2 =
         "create-by-default": true
     }
 };
+*/
 
 // when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'configuratin-key-class'
 
