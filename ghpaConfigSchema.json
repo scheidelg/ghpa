@@ -4,6 +4,8 @@
         "URI-file": "^(([0-9a-zA-Z\\$\\-_\\.\\+\\!\\*\\'\\(\\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
     },
 
+    "(regex-classes)": "fritz",
+    
     "tokensOnly": true,
     
     "(tokensOnly)": {
