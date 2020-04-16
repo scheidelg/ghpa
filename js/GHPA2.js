@@ -47,21 +47,25 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
 
     if (propertyMatch) {
         if (typeof parentObject[propertyName] != 'object') {
+            if (typeof parentSchemaObject[propertyMatch] == 'string') {
 // here's where you need to test for valid property values
-            const propertyMatchSubstrings = parentSchemaObject[propertyMatch].match(/^(.+?)(?::(.*))?$/)
+                const propertyMatchSubstrings = parentSchemaObject[propertyMatch].match(/^(.+?)(?::(.*))?$/)
 
-            if (propertyMatchSubstrings[1] == typeof parentObject[propertyName]) {
-    // we know that the property has the correct type; now check the details
-                if (propertyMatchSubstrings[2]) {       // there was a regex specified in the property
-                    try {
-                        const valueRegEx = new RegExp(propertyMatchSubstrings[2]);
+                if (propertyMatchSubstrings[1] == typeof parentObject[propertyName]) {
+        // we know that the property has the correct type; now check the details
+                    if (propertyMatchSubstrings[2]) {       // there was a regex specified in the property
+                        try {
+                            const valueRegEx = new RegExp(propertyMatchSubstrings[2]);
 
-                        if (! valueRegEx.test(String(parentObject[propertyName]))) {
-                            return(3);
-                        }
-                    } catch (errObject) {
-                        error.log(`Error using configuration property '${parentString} ${propertyName}' as regular expression: ${errObject.message}`);
-                    }                
+                            if (! valueRegEx.test(String(parentObject[propertyName]))) {
+                                return(3);
+                            }
+                        } catch (errObject) {
+                            error.log(`Error using configuration property '${parentString} ${propertyName}' as regular expression: ${errObject.message}`);
+                        }                
+                    }
+                } else {
+                    error.log(`Configuration schema property '${parentString} ${propertyMatch}' is not a string.`);
                 }
             } else {
                 return(2);
