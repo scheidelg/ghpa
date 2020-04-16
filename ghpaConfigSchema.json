@@ -1,7 +1,7 @@
 {
     "(regex-classes)": {
-        "URI-path": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
-        "URI-file": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+        "URI-path": "",
+        "URI-file": ""
     },
 
     "tokensOnly": true,
@@ -54,7 +54,7 @@
             "(organization)": {
                 "required": false,
                 "create-by-default": false,
-                "regex": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$"
+                "regex": ""
             },
 
             "repository": "",
@@ -62,7 +62,7 @@
             "(repository)": {
                 "required": false,
                 "create-by-default": false,
-                "regex": "^[0-9a-zA-Z_.\-]+$"
+                "regex": ""
             },
 
             "branch": "",
@@ -70,7 +70,7 @@
             "(branch)": {
                 "required": false,
                 "create-by-default": false,
-                "regex": "^[^\^\[\\:\?]+$"
+                "regex": ""
             },
 
             "defaultHTMLfile": "",
@@ -90,7 +90,7 @@
         },
 
         "(*ghpaClass)": {
-            "regex": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
+            "regex": ""
         },
 
         "global": {
