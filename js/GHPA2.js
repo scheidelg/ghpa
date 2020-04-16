@@ -36,11 +36,6 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
                 } else {
                     error.log(`Configuration schema contains '${parentString} (keyformats) / ${keyformatPropertyName}' without matching '${parentString} (key:${keyformatPropertyName})'.`);
                 }
-                    
-/*                let matches = keyformatPropertyName.match(/^\(keyformat\:(.+\))$/i);
-                if (matches) {
-                }
-*/
             }
         }
     }
@@ -172,7 +167,7 @@ let ghpaConfig;
 //     - alphanumeric
 //     - $-_.+!*'()\
 //     - %xx where xx is 20 through FF
-//  - cannot start with a /
+//  - cannot start with or contain a /
 const ghpaConfigSchema =
 {
     "tokensOnly": "boolean",
@@ -204,6 +199,11 @@ const ghpaConfigSchema =
 //  - ok, 'required' vs. 'default'
 const ghpaConfigSchema2 =
 {
+    "(regex-classes)": {
+        "URI-path": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
+        "URI-file": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+    },
+
     "tokensOnly": true,
     
     "(tokensOnly)": {
@@ -238,7 +238,7 @@ const ghpaConfigSchema2 =
         "(loginFormFile)": {
             "required": false,
             "create-by-default": false,
-            "regex": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+            "regex": "(class:URI-path)"
         }
     },
 
@@ -278,7 +278,7 @@ const ghpaConfigSchema2 =
             "(defaultHTMLfile)": {
                 "required": false,
                 "create-by-default": false,
-                "regex": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
+                "regex": "(class:URI-file)"
             },
 
             "onlyGetBody": true,
