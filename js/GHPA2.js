@@ -65,10 +65,10 @@ function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject,
                         }                
                     }
                 } else {
-                    error.log(`Configuration schema property '${parentString} ${propertyMatch}' is not a string.`);
+                    return(2);
                 }
             } else {
-                return(2);
+                error.log(`Configuration schema property '${parentString} ${propertyMatch}' is not a string.`);
             }
         }
 
@@ -175,7 +175,7 @@ let ghpaConfig;
 //  - cannot start with a /
 const ghpaConfigSchema =
 {
-    "tokensOnly": "boolean",
+    "tokensOnly": "boolean:^false$",
 
     "pageOptions": {
         "authOnly": "boolean",
