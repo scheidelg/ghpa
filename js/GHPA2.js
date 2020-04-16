@@ -140,14 +140,10 @@ function ghpaReadJSONfile(JSONfile) {
 }
 
 async function ghpaInit() {
-    // read the GHPA configuration
-    if (ghpaConfig = await ghpaReadJSONfile('/ghpaConfig.json')) {
-        let y=1;
-    }
-
-    // read the GHPA configuration schema
-    if (!(ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json'))) {
-        let z=1;
+    // read the GHPA configuration and the GHPA configuration schema
+    if (!(ghpaConfig = await ghpaReadJSONfile('/ghpaConfig.json')) || !(ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json'))) {
+        console.error('Failed to load either the GHPA configuration file or GHPA configuration schema file; exiting.');
+        return;
     }
 
     // if we were able to read the GHPA configuration file, then check to make sure it's all valid
