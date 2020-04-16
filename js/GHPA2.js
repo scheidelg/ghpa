@@ -127,8 +127,6 @@ function ghpaReadConfig(configFile) {
 }
 
 function ghpaReadJSONfile(JSONfile) {
-    if (JSONfile == '/ghpaConfigSchema.json') return;
-
     return(fetch(JSONfile)
     .then(function (response) {
         if (response.status != 200) {
@@ -144,7 +142,13 @@ function ghpaReadJSONfile(JSONfile) {
 async function ghpaInit() {
     // read the GHPA configuration and the GHPA configuration schema
     if (!(ghpaConfig = await ghpaReadJSONfile('/ghpaConfig.json')) || !(ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json'))) {
-        console.error('Failed to load either the GHPA configuration file or GHPA configuration schema file; exiting.');
+        console.error('Failed to load one of the GHPA configuration file or GHPA configuration schema file; exiting.');
+        return;
+    }
+
+    // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
+    if (! ghpaConfigSchemaLintCheck(ghpaConfigSchema)) {
+        console.error('GHPA configuration schema failed lint check; exiting.');
         return;
     }
 
@@ -153,6 +157,11 @@ async function ghpaInit() {
 
     let x=1;
 }
+
+function ghpaConfigSchemaLintCheck(configSchemaObject) {
+    return(true);
+}
+
 
 if (document.addEventListener) {
     // for modern browsers - run init after DOM is loaded
