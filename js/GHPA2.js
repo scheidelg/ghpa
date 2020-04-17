@@ -320,10 +320,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             // not a configuration schema directive (standard or dynamic)
             } else {
                 // must have a corresponding configuration schema directive at the same level
-                if (configSchemaObject.hasOwnProperty(`(${propertyKey})`)) {
-let xyzzy=1;
-                // propertyKey doesn't have a corresponding configuration schema directive at the same level
-                } else {
+                if (! configSchemaObject.hasOwnProperty(`(${propertyKey})`)) {
                     console.error(`Configuration schema property '${propertyString}' doesn't have a matching configuration schema directive.`);
                     returnValue = false;
                 }
