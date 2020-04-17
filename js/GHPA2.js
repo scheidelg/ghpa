@@ -146,7 +146,7 @@ async function ghpaInit() {
         return;
     }
 
-    let fritz;
+    let fritz = { a:0, b:3} ;
 
     cloneObject(ghpaConfig, fritz);
 
@@ -173,7 +173,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     
 //    for (const propertyKey in sourceObject) {       // iterate through all properties in sourceObject
 //    }
-    targetObject = 3;
+    targetObject.a = 5;
 }
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
