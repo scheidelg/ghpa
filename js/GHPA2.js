@@ -279,7 +279,23 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                         // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
                                         // or references a valid regex class
                                         if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
-                                            if (! (configSchemaObject.hasOwnProperty('(regex-classes)') && configSchemaObject['(regex-classes)'].hasOwnProperty(propertyKeySubkey))) {  // if this isn't a reference to a regex class, then check to make sure it's a valid regex
+
+                                            // is propertyKeySubkeya reference to a regex class?
+                                            if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 7) === '(class:') {
+                                                const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(class:(.*)\)/);
+
+                                                // test whether this is a reference to a valid regex class
+                                                if (!(regexMatches &&
+                                                    configSchemaRoot.hasOwnProperty('(regex-classes)') &&
+                                                    (typeof configSchemaRoot['(regex-classes)'] === 'object') &&
+                                                    configSchemaRoot['(regex-classes)'].hasOwnProperty(regexMatches[1]))) {
+
+                                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
+                                                        returnValue = false;
+                                                }
+
+                                            // propertyKeySubkey is not a reference to a regex class; test whether it's a valid regex
+                                            } else {
                                                 // try to use the string as a regular expression; catch any errorrs
                                                 try {
                                                     new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
