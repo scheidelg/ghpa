@@ -173,38 +173,40 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
-                // if we find regular expression classes, check to make sure it and it's child properties are valid
-                if (propertyKey === '(regex-classes)') {
-                    // if we're at the root of the configuration schema then validate child properties
-                    if (parentString === '/') {
-                        for (let regexClassName in configSchemaObject[propertyKey]) {
-                            if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
-                                // if the regex class value is a string, then test whether this is a valid regular expression
-                                if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
-                                    // try to use the string as a regular expression; catch any errorrs
-                                    try {
-                                        new RegExp(configSchemaObject[propertyKey][regexClassName]);
-                                    } catch (errorObject) {
-                                        console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' value /${configSchemaObject[regexClassName]}/ isn't a valid regular expression.`);
+
+                // must end with a closing ')' character
+                if (propertyKey.slice(-1) === ')') {
+
+                    // if we find regular expression classes, check to make sure it and it's child properties are valid
+                    if (propertyKey === '(regex-classes)') {
+                        // if we're at the root of the configuration schema then validate child properties
+                        if (parentString === '/') {
+                            for (let regexClassName in configSchemaObject[propertyKey]) {
+                                if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
+                                    // if the regex class value is a string, then test whether this is a valid regular expression
+                                    if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
+                                        // try to use the string as a regular expression; catch any errorrs
+                                        try {
+                                            new RegExp(configSchemaObject[propertyKey][regexClassName]);
+                                        } catch (errorObject) {
+                                            console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' value /${configSchemaObject[regexClassName]}/ isn't a valid regular expression.`);
+                                            returnValue = false;
+                                        }
+                                    // regex class property value isn't a string; error
+                                    } else {
+                                        console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' isn't a string.`);
                                         returnValue = false;
                                     }
-                                // regex class property value isn't a string; error
-                                } else {
-                                    console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' isn't a string.`);
-                                    returnValue = false;
                                 }
                             }
+                        // not at the root; log an error and set returnValue to false
+                        } else {
+                            console.error(`Configuration schema property '${propertyString}' error; regular expression classes can only be defined at the root of the configuration schema.`);
+                            returnValue = false;
                         }
-                    // not at the root; log an error and set returnValue to false
+
+                    // a dynamic configuration schema directive
                     } else {
-                        console.error(`Configuration schema property '${propertyString}' error; regular expression classes can only be defined at the root of the configuration schema.`);
-                        returnValue = false;
-                    }
-                    
-                // a dynamic configuration schema directive
-                } else {
-                    // must end with a closing ')' character
-                    if (propertyKey.slice(-1) === ')') {
 
                         // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
                         if (propertyKey.charAt(1) === '*') {
@@ -224,7 +226,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                 console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a 'create-by-default' child property.`);
                                 returnValue = false;
                             }
-                            
+
                         // check for required and default child properties for configuration schema directive of a non-wildcard property
                         } else {
                             // 'key-regex' child property can't exist
@@ -244,7 +246,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                 console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'create-by-default' child property.`);
                                 returnValue = false;
                             }
-                            
+
                         }
 
                         // get the property key that's referenced by this dynamic configuration schema directive
@@ -310,14 +312,14 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                 }
                             }
                         }
-
-                    // doesn't end with a closing ')' character
-                    } else {
-                        console.error(`Configuration schema property '${propertyString}' starts with a '(' but doesn't end with a ')'.`);
-                        returnValue = false;
                     }
+
+                // configuration schema directive that doesn't end with a closing ')' character?
+                } else {
+                    console.error(`Configuration schema property '${propertyString}' starts with a '(' but doesn't end with a ')'.`);
+                    returnValue = false;
                 }
-                
+
             // not a configuration schema directive (standard or dynamic)
             } else {
                 // must have a corresponding configuration schema directive at the same level
