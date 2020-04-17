@@ -151,11 +151,11 @@ async function ghpaInit() {
     fritz = {a:0, b:3} ;
     cloneObject(ghpaConfig, fritz);
 
-    fritz = {a:0, b:3} ;
+/*    fritz = {a:0, b:3} ;
     cloneObject(ghpaConfig, fritz, 1);
 
     fritz = {} ;
-    cloneObject(ghpaConfig, fritz);
+    cloneObject(ghpaConfig, fritz); */
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! ghpaConfigSchemaLintCheck(ghpaConfigSchema)) {
@@ -183,9 +183,16 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
     
-//    for (const propertyKey in sourceObject) {       // iterate through all properties in sourceObject
-//    }
-    targetObject.a = 5;
+    // iterate through all properties in sourceObject
+    for (const propertyKey in sourceObject){
+        if (sourceObject.hasOwnProperty(propertyKey)){
+            if (typeof sourceObject[propertyKey] === 'object') {
+                let x = 1;
+            } else {
+                targetObject[propertyKey] = sourceObject[propertyKey];
+            }
+        }
+    }
 }
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
