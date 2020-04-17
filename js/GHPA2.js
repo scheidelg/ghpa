@@ -186,7 +186,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                     if (propertyKey === '(regex-classes)') {
                         // if we're at the root of the configuration schema then validate child properties
                         if (configSchemaObjectString === '/') {
-                            for (const regexClassName in configSchemaObject[propertyKey]) {     // this will still execute even if '(regex-classes)' isn't an object, but there won't be any children properties so it's OK - no error
+                            for (const regexClassName in configSchemaObject[propertyKey]) {     // we'll still get to this code  even if '(regex-classes)' isn't an object, but there won't be any children properties so it's OK - no error
                                 if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                                     // if the regex class value is a string, then test whether this is a valid regular expression
                                     if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
