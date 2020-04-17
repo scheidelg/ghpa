@@ -38,7 +38,7 @@
         "(loginFormFile)": {
             "required": false,
             "create-by-default": false,
-            "value-regex": "(class:URI-path)"
+            "value-regex": "(regex-class:URI-path)"
         }
     },
 
@@ -78,7 +78,7 @@
             "(defaultHTMLfile)": {
                 "required": false,
                 "create-by-default": false,
-                "value-regex": "(class:URI-file)"
+                "value-regex": "(regex-class:URI-file)"
             },
 
             "onlyGetBody": true,
