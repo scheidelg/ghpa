@@ -158,18 +158,18 @@ async function ghpaInit() {
     let x=1;
 }
 
-function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchemaRoot) {
+function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
     let propertyString;
     let returnValue = true;
 
-    parentString = (! parentString) ? '/' : (parentString + ' /');
+    configSchemaObjectString = (! configSchemaObjectString) ? '/' : (configSchemaObjectString + ' /');
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
 
 // TO DO: test the 'for...in' with 'const' instead of 'let'; if it works, replicate everywhere
     for (const propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
         if (configSchemaObject.hasOwnProperty(propertyKey)) {        // only continue if this is a non-inherited property
-            propertyString = parentString + ' ' + propertyKey;
-console.log(`schema lint check: ${propertyString}`);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
+            propertyString = configSchemaObjectString + ' ' + propertyKey;
+console.log(`schema lint check: ${propertyString}`);       // debugging - get rid of this
 
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
@@ -180,7 +180,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                     // if we find regular expression classes, check to make sure it and it's child properties are valid
                     if (propertyKey === '(regex-classes)') {
                         // if we're at the root of the configuration schema then validate child properties
-                        if (parentString === '/') {
+                        if (configSchemaObjectString === '/') {
                             for (const regexClassName in configSchemaObject[propertyKey]) {
                                 if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                                     // if the regex class value is a string, then test whether this is a valid regular expression
@@ -330,7 +330,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                 // if this proeprty is an object, then recurse
                 if (typeof configSchemaObject[propertyKey] === 'object') {
-                     ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], parentString, configSchemaRoot)
+                     ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], configSchemaObjectString + ' ' + propertyKey, configSchemaRoot)
                 }
             }
         }
@@ -338,24 +338,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
     return(returnValue);
 }                    
             
-            
-/*            
-            // check to see if this is a valid property name and value
-            propertyCheck = ghpaConfigPropertyCheck(propertyName, configObject, schemaObject, parentString);
-            if (typeof propertyCheck == 'string') {      // valid
-                if (typeof configObject[propertyName] == 'object') {    // only recurse if this property is an object
-                    recurseMe(configObject[propertyName], schemaObject[propertyCheck], propertyString);     //, configObject);   // recurse into sub-properties, adding this property name to the parent string
-                }
-            } else {        // invalid
-                // delete the property; s'OK to delete the current property being iterated through, just not any others
-// console error message here!!! (for real, not just for debugging); different messages based on ghpaConfigPropertyCheck() return value
-// write a separate function that returns a base string depending on the integer value; then massage into the actual message here; then can re-use the function when checking HTML elements and attributes
-                delete configObject[propertyName];
-            }
-        }
-    }
-}
-*/
+
 
 if (document.addEventListener) {
     // for modern browsers - run init after DOM is loaded
