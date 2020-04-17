@@ -330,7 +330,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                 // if this proeprty is an object, then recurse
                 if (typeof configSchemaObject[propertyKey] === 'object') {
-                     ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], configSchemaObjectString + ' ' + propertyKey, configSchemaRoot)
+                    returnValue = ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], configSchemaObjectString + ' ' + propertyKey, configSchemaRoot) && returnValue;
                 }
             }
         }
