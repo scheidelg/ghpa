@@ -162,7 +162,7 @@ function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchem
     let propertyString;
     let returnValue = true;
     
-    if (true) let asdfxyzzy = true;
+    if (true) { let asdfxyzzy = true; }
     
     parentString = (! parentString) ? '/' : (parentString + ' /');
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
