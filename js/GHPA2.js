@@ -264,7 +264,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                             // check to make sure that any propertyKey subkeys are legit
                             for (let propertyKeySubkey in configSchemaObject[propertyKey]) {
-                                if (configSchemaObject[propertyKey][propertyKeySubkey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
+                                if (configSchemaObject[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
 
                                     switch(propertyKeySubkey) {
                                         case 'key-regex':
