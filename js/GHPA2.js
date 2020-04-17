@@ -166,7 +166,7 @@ function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchem
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
 
 // TO DO: test the 'for...in' with 'const' instead of 'let'; if it works, replicate everywhere
-    for (let propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
+    for (const propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
         if (configSchemaObject.hasOwnProperty(propertyKey)) {        // only continue if this is a non-inherited property
             propertyString = parentString + ' ' + propertyKey;
 console.log(`schema lint check: ${propertyString}`);       // debugging - get rid of this and probably (depending on how detailed we want error messages to be) the parentString argument
@@ -181,7 +181,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                     if (propertyKey === '(regex-classes)') {
                         // if we're at the root of the configuration schema then validate child properties
                         if (parentString === '/') {
-                            for (let regexClassName in configSchemaObject[propertyKey]) {
+                            for (const regexClassName in configSchemaObject[propertyKey]) {
                                 if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                                     // if the regex class value is a string, then test whether this is a valid regular expression
                                     if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
@@ -269,7 +269,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                         }
 
                         // check to make sure that any propertyKey subkeys are legit
-                        for (let propertyKeySubkey in configSchemaObject[propertyKey]) {
+                        for (const propertyKeySubkey in configSchemaObject[propertyKey]) {
                             if (configSchemaObject[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
 
                                 switch(propertyKeySubkey) {
