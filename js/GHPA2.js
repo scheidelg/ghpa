@@ -146,8 +146,15 @@ async function ghpaInit() {
         return;
     }
 
-    let fritz = {} ;
+    let fritz = {};
 
+    fritz = {a:0, b:3} ;
+    cloneObject(ghpaConfig, fritz);
+
+    fritz = {a:0, b:3} ;
+    cloneObject(ghpaConfig, fritz, 1);
+
+    fritz = {} ;
     cloneObject(ghpaConfig, fritz);
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
