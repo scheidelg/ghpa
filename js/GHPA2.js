@@ -161,9 +161,7 @@ async function ghpaInit() {
 function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchemaRoot) {
     let propertyString;
     let returnValue = true;
-    
-    if (true) { let asdfxyzzy = true; }
-    
+
     parentString = (! parentString) ? '/' : (parentString + ' /');
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
 
@@ -329,7 +327,11 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                     console.error(`Configuration schema property '${propertyString}' doesn't have a matching configuration schema directive.`);
                     returnValue = false;
                 }
-// RECURSE HERE IF THIS IS AN OBJECT!!!!!!!!!!!!
+
+                // if this proeprty is an object, then recurse
+                if (typeof configSchemaObject[propertyKey] === 'object') {
+                     ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], parentString, configSchemaRoot)
+                }
             }
         }
     }
