@@ -148,13 +148,13 @@ async function ghpaInit() {
 
     let fritz = {};
 
-    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz);
 
-    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 1);
 
-    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 2);
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
