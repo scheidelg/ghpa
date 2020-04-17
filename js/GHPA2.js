@@ -146,6 +146,10 @@ async function ghpaInit() {
         return;
     }
 
+    let fritz;
+
+    cloneObject(ghpaConfig, fritz);
+
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! ghpaConfigSchemaLintCheck(ghpaConfigSchema)) {
         console.error('GHPA configuration schema failed lint check; exiting.');
@@ -156,6 +160,20 @@ async function ghpaInit() {
 //    ghpaConfigCheck(ghpaConfig);
 
     let x=1;
+}
+
+function cloneObject(sourceObject, targetObject, cloneType) {
+    // cloneType === 0: blow away existing targetObject
+    // cloneType === 1: keep existing targetObject properties that don't exist in sourceObject; replace existing targetObject property values if the property exists in sourceObject
+    // cloneType === 3: keep existing targetObject properties and property values
+
+    // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
+//    if (! cloneType) {
+//    }
+    
+//    for (const propertyKey in sourceObject) {       // iterate through all properties in sourceObject
+//    }
+    targetObject = 3;
 }
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
