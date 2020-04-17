@@ -148,14 +148,14 @@ async function ghpaInit() {
 
     let fritz = {};
 
-    fritz = {a:0, b:3} ;
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz);
 
-/*    fritz = {a:0, b:3} ;
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 1);
 
-    fritz = {} ;
-    cloneObject(ghpaConfig, fritz); */
+    fritz = { "joey": "test, "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses" {"fritz": { "organization": "bob" } } } ;
+    cloneObject(ghpaConfig, fritz, 2);
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! ghpaConfigSchemaLintCheck(ghpaConfigSchema)) {
@@ -174,6 +174,20 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     // cloneType === 1: all sourceObject properties replace existing targetObject properties;
     //                  but extra targetObject properties are retained
     // cloneType === 2: keep existing targetObject properties and property values
+    if (typeof sourceObject !== 'object') {
+        console.error("cloneObject 'sourceObject' argument isn't an object.");
+        return;
+    }
+
+    if (typeof targetbject !== 'object') {
+        console.error("cloneObject 'targetObject' argument isn't an object.");
+        return;
+    }
+
+    if (!(typeof cloneType === 'number') && (cloneType < 0 || cloneType > 2)) {
+        console.error("cloneObject 'cloneType' argument must be a number between 0 and 2 (inclusive).");
+        return;
+    }
 
     function cloneObjectRecursion(sourceObject, targetObject, cloneType) {
         // iterate through all properties in sourceObject
