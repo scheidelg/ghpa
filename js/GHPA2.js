@@ -316,13 +316,13 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             } else {
                 // must have a corresponding configuration schema directive at the same level
                 if (configSchemaObject.hasOwnProperty(`(${propertyKey})`)) {
-// RECURSE HERE IF THIS IS AN OBJECT!!!!!!!!!!!!
 let xyzzy=1;
                 // propertyKey doesn't have a corresponding configuration schema directive at the same level
                 } else {
                     console.error(`Configuration schema property '${propertyString}' doesn't have a matching configuration schema directive.`);
                     returnValue = false;
                 }
+// RECURSE HERE IF THIS IS AN OBJECT!!!!!!!!!!!!
             }
         }
     }
