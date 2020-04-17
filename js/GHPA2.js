@@ -250,10 +250,10 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                         }
 
                         // get the property key that's referenced by this dynamic configuration schema directive
-                        const propertyKeyReferenced = propertyKey.slice(1, -1);
+//                        const propertyKeyReferenced = propertyKey.slice(1, -1);
 
                         // make sure that the referenced property key actually exists
-                        if (propertyKeyReferenced && configSchemaObject.hasOwnProperty(propertyKeyReferenced)) {
+                        if ((const propertyKeyReferenced = propertyKey.slice(1, -1)) && configSchemaObject.hasOwnProperty(propertyKeyReferenced)) {
 
                             // check for required, invalid, and default child properties for configuration schema directive of an object property
                             if (typeof configSchemaObject[propertyKeyReferenced] === 'object') {
