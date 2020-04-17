@@ -171,10 +171,47 @@ async function ghpaInit() {
 
 function cloneObject(sourceObject, targetObject, cloneType) {
     // cloneType === 0: blow away existing targetObject
-    // cloneType === 1: keep existing targetObject properties that don't exist in sourceObject; replace existing targetObject property values if the property exists in sourceObject
-    // cloneType === 3: keep existing targetObject properties and property values
+    // cloneType === 1: all sourceObject properties replace existing targetObject properties;
+    //                  but extra targetObject properties are retained
+    // cloneType === 2: keep existing targetObject properties and property values
+
+    function cloneObjectRecursion(sourceObject, targetObject, cloneType) {
+        // iterate through all properties in sourceObject
+        for (const propertyKey in sourceObject) {
+            if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
+                // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
+                // but don't delete a targetObject object properties that matchies the sourceObject object property key
+                if ((cloneType === 1) && (targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] !== 'object')) {
+                    delete targetObject[propertyKey]
+                }
+
+                // if sourceObject[propertyKey] is an object
+                if (typeof sourceObject[propertyKey] === 'object') {
+                    // if the property doeesn't exist in the target, then create it as an empty object
+                    if (! targetObject.hasOwnProperty(propertyKey)) {
+                        targetObject[propertyKey] = {};
+                    }
+
+                    // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
+                    if (targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] === 'object')) {
+                        cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey], cloneType);
+                    }
+
+                // else sourceObject[propertyKey] is not an object
+                } else {
+                    // if the target property doesn't exist - either because it wasn't present to begin with or because we deleted it - then set it
+                    if (! targetObject.hasOwnProperty(propertyKey)) {
+                        targetObject[propertyKey] = sourceObject[propertyKey];
+                    }
+                }
+            }
+        }
+    }
 
     // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
+    //
+    // technically we could just make this all in the main function, but I like the idea of having the code for this initial
+    // check for an empty cloneType only happen once
     if (! cloneType) {
         for (const propertyKey in targetObject){
             if (targetObject.hasOwnProperty(propertyKey)){
@@ -182,17 +219,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
             }
         }
     }
-    
-    // iterate through all properties in sourceObject
-    for (const propertyKey in sourceObject){
-        if (sourceObject.hasOwnProperty(propertyKey)){
-            if (typeof sourceObject[propertyKey] === 'object') {
-                let x = 1;
-            } else {
-                targetObject[propertyKey] = sourceObject[propertyKey];
-            }
-        }
-    }
+
+    // kick off the recursion
+    cloneObjectRecursion(sourceObject, targetObject, cloneType);
 }
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
