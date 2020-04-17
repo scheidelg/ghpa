@@ -179,7 +179,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         return;
     }
 
-    if (typeof targetbject !== 'object') {
+    if (typeof targetObject !== 'object') {
         console.error("cloneObject 'targetObject' argument isn't an object.");
         return;
     }
