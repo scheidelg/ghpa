@@ -146,7 +146,7 @@ async function ghpaInit() {
         return;
     }
 
-    let fritz = { a:0, b:3} ;
+    let fritz = {} ;
 
     cloneObject(ghpaConfig, fritz);
 
