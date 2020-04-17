@@ -159,7 +159,6 @@ async function ghpaInit() {
 }
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, parentString) {
-    let propertyCheck;
     let propertyString;
     let returnValue;
     
@@ -209,18 +208,18 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                         // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
                         if (propertyKey.charAt(1) === '*') {
                             // 'key-regex' child property must exist
-                            if (! configSchemaObject[propertyKey]['key-regex']) {
+                            if (! configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
                                 console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a 'key-regex' child property.`);
                                 returnValue = false;
                             }
 
                             // 'required' child property is optional but defaults to 'false'
-                            if (! configSchemaObject[propertyKey]['required']) {
+                            if (! configSchemaObject[propertyKey].hasOwnProperty('required')) {
                                 configSchemaObject[propertyKey]['required'] = false;
                             }
 
                             // 'create-by-default' child property can't exist
-                            if (configSchemaObject[propertyKey]['create-by-default']) {
+                            if (configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
                                 console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a 'create-by-default' child property.`);
                                 returnValue = false;
                             }
@@ -228,19 +227,19 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                         // check for required and default child properties for configuration schema directive of a non-wildcard property
                         } else {
                             // 'key-regex' child property can't exist
-                            if (configSchemaObject[propertyKey]['key-regex']) {
+                            if (configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
                                 console.error(`Configuration schema directive '${propertyString}' is for a named property and has a 'key-regex' child property.`);
                                 returnValue = false;
                             }
 
                             // 'required' child property must exist
-                            if (! configSchemaObject[propertyKey]['required']) {
+                            if (! configSchemaObject[propertyKey].hasOwnProperty('required')) {
                                 console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'required' child property.`);
                                 returnValue = false;
                             }
 
                             // 'create-by-default' child property must exist
-                            if (! configSchemaObject[propertyKey]['create-by-default']) {
+                            if (! configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
                                 console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'create-by-default' child property.`);
                                 returnValue = false;
                             }
@@ -251,7 +250,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                         const propertyKeyReferenced = propertyKey.slice(1, -1);
 
                         // make sure that the referenced property key actually exists
-                        if (propertyKeyReferenced && configSchemaObject[propertyKeyReferenced]) {
+                        if (propertyKeyReferenced && configSchemaObject.hasOwnProperty(propertyKeyReferenced)) {
 
                             // check for required, invalid, and default child properties for configuration schema directive of an object property
                             if (typeof configSchemaObject[propertyKeyReferenced] === 'object') {
@@ -316,7 +315,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             // not a configuration schema directive (standard or dynamic)
             } else {
                 // must have a corresponding configuration schema directive at the same level
-                if (configSchemaObject[`(${propertyKey})`]) {
+                if (configSchemaObject.hasOwnProperty(`(${propertyKey})`)) {
 // RECURSE HERE IF THIS IS AN OBJECT!!!!!!!!!!!!
 let xyzzy=1;
                 // propertyKey doesn't have a corresponding configuration schema directive at the same level
