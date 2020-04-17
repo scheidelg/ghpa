@@ -181,7 +181,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
             if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
                 // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
                 // but don't delete a targetObject object properties that matchies the sourceObject object property key
-                if ((cloneType === 1) && (targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] !== 'object')) {
+                if ((cloneType === 1) && targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] !== 'object')) {
                     delete targetObject[propertyKey]
                 }
 
