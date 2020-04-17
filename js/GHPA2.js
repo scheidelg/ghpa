@@ -158,11 +158,12 @@ async function ghpaInit() {
     let x=1;
 }
 
-function ghpaConfigSchemaLintCheck(configSchemaObject, parentString) {
+function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchemaRoot) {
     let propertyString;
     let returnValue;
     
     parentString = (! parentString) ? '/' : (parentString + ' /');
+    if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
 
 // TO DO: test the 'for...in' with 'const' instead of 'let'; if it works, replicate everywhere
     for (let propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
@@ -173,7 +174,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
                 // if we find regular expression classes, check to make sure it and it's child properties are valid
-                if (propertyKey === "(regex-classes)") {
+                if (propertyKey === '(regex-classes)') {
                     // if we're at the root of the configuration schema then validate child properties
                     if (parentString === '/') {
                         for (let regexClassName in configSchemaObject[propertyKey]) {
@@ -270,14 +271,18 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                         case 'value-regex':
 
                                             // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
+                                            // or references a valid regex class
                                             if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
-                                                // try to use the string as a regular expression; catch any errorrs
-                                                try {
-                                                    new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
-                                                } catch (errorObject) {
-                                                    console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' value /${configSchemaObject[propertyKeySubkey]}/ isn't a valid regular expression.`);
-                                                    returnValue = false;
+                                                if (! (configSchemaObject.hasOwnProperty('(regex-classes)') && configSchemaObject['(regex-classes)'].hasOwnProperty(propertyKeySubkey))) {
+                                                    // try to use the string as a regular expression; catch any errorrs
+                                                    try {
+                                                        new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
+                                                    } catch (errorObject) {
+                                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' value /${configSchemaObject[propertyKeySubkey]}/ isn't a valid regular expression.`);
+                                                        returnValue = false;
+                                                    }
                                                 }
+
                                             // propertyKeySubkey property value isn't a string; error
                                             } else {
                                                 console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a string.`);
