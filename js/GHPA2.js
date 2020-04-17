@@ -175,8 +175,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     // cloneType === 3: keep existing targetObject properties and property values
 
     // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
-//    if (! cloneType) {
-//    }
+    if (! cloneType) {
+        targetObject = {};
+    }
     
 //    for (const propertyKey in sourceObject) {       // iterate through all properties in sourceObject
 //    }
