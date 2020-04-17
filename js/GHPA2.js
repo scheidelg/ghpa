@@ -176,7 +176,11 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
     // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
     if (! cloneType) {
-        targetObject = {};
+        for (const propertyKey in targetObject){
+            if (targetObject.hasOwnProperty(propertyKey)){
+                delete targetObject[propertyKey];
+            }
+        }
     }
     
 //    for (const propertyKey in sourceObject) {       // iterate through all properties in sourceObject
