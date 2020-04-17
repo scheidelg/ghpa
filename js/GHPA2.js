@@ -283,8 +283,8 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                             if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
 
                                                 // is propertyKeySubkeya reference to a regex class?
-                                                if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 7) === '(class:') {
-                                                    const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(class:(.*)\)/);
+                                                if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 13) === '(regex-class:') {
+                                                    const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(regex-class:(.*)\)/);
 
                                                     // test whether this is a reference to a valid regex class
                                                     if (!(regexMatches &&
