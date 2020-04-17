@@ -90,6 +90,7 @@
         },
 
         "(*ghpaClass)": {
+            "required": false,
             "key-regex": "^[a-zA-Z]([0-9a-zA-Z]|([\\-_](?![\\-_])))*(?<![\\-_])$"
         },
 
