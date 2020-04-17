@@ -317,7 +317,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             } else {
                 // must have a corresponding configuration schema directive at the same level
                 if (configSchemaObject[`(${propertyKey})`]) {
-// RECURSE HERE!!!!!!!!!!!!
+// RECURSE HERE IF THIS IS AN OBJECT!!!!!!!!!!!!
 let xyzzy=1;
                 // propertyKey doesn't have a corresponding configuration schema directive at the same level
                 } else {
