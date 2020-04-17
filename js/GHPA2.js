@@ -273,7 +273,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                             // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
                                             // or references a valid regex class
                                             if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
-                                                if (! (configSchemaObject.hasOwnProperty('(regex-classes)') && configSchemaObject['(regex-classes)'].hasOwnProperty(propertyKeySubkey))) {
+                                                if (! (configSchemaObject.hasOwnProperty('(regex-classes)') && configSchemaObject['(regex-classes)'].hasOwnProperty(propertyKeySubkey))) {  // if this isn't a reference to a regex class, then check to make sure it's a valid regex
                                                     // try to use the string as a regular expression; catch any errorrs
                                                     try {
                                                         new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
