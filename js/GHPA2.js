@@ -174,6 +174,11 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
 
+                if (typeof configSchemaObject[propertyKey] !== 'object') {
+                    console.error(`Configuration schema directive '${propertyString}' is not an object.`);
+                    returnValue = false;
+                }
+
                 // must end with a closing ')' character
                 if (propertyKey.slice(-1) === ')') {
 
@@ -181,7 +186,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                     if (propertyKey === '(regex-classes)') {
                         // if we're at the root of the configuration schema then validate child properties
                         if (configSchemaObjectString === '/') {
-                            for (const regexClassName in configSchemaObject[propertyKey]) {
+                            for (const regexClassName in configSchemaObject[propertyKey]) {     // this will still execute even if '(regex-classes)' isn't an object, but there won't be any children properties so it's OK - no error
                                 if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                                     // if the regex class value is a string, then test whether this is a valid regular expression
                                     if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
@@ -201,130 +206,128 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                             }
                         // not at the root; log an error and set returnValue to false
                         } else {
-                            console.error(`Configuration schema property '${propertyString}' error; regular expression classes can only be defined at the root of the configuration schema.`);
+                            console.error(`Configuration schema directive '${propertyString}' error; regular expression classes can only be defined at the root of the configuration schema.`);
                             returnValue = false;
                         }
 
                     // a dynamic configuration schema directive
                     } else {
 
-                        // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
-                        if (propertyKey.charAt(1) === '*') {
-                            // 'key-regex' child property must exist
-                            if (! configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
-                                console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a 'key-regex' child property.`);
-                                returnValue = false;
-                            }
-
-                            // 'required' child property is optional but defaults to 'false'
-                            if (! configSchemaObject[propertyKey].hasOwnProperty('required')) {
-                                configSchemaObject[propertyKey]['required'] = false;
-                            }
-
-                            // 'create-by-default' child property can't exist
-                            if (configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
-                                console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a 'create-by-default' child property.`);
-                                returnValue = false;
-                            }
-
-                        // check for required and default child properties for configuration schema directive of a non-wildcard property
-                        } else {
-                            // 'key-regex' child property can't exist
-                            if (configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
-                                console.error(`Configuration schema directive '${propertyString}' is for a named property and has a 'key-regex' child property.`);
-                                returnValue = false;
-                            }
-
-                            // 'required' child property must exist
-                            if (! configSchemaObject[propertyKey].hasOwnProperty('required')) {
-                                console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'required' child property.`);
-                                returnValue = false;
-                            }
-
-                            // 'create-by-default' child property must exist
-                            if (! configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
-                                console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'create-by-default' child property.`);
-                                returnValue = false;
-                            }
-
-                        }
-
                         // get the property key that's referenced by this dynamic configuration schema directive
-//                        const propertyKeyReferenced = propertyKey.slice(1, -1);
+                        const propertyKeyReferenced = propertyKey.slice(1, -1);
 
                         // make sure that the referenced property key actually exists
-                        if ((const propertyKeyReferenced = propertyKey.slice(1, -1)) && configSchemaObject.hasOwnProperty(propertyKeyReferenced)) {
+                        if (!(propertyKeyReferenced && configSchemaObject.hasOwnProperty(propertyKeyReferenced))) {
+                            console.error(`Configuration schema directive '${propertyString}' references a non-existent configuration schema property.`);
+                            returnValue = false;
+                        }
 
-                            // check for required, invalid, and default child properties for configuration schema directive of an object property
-                            if (typeof configSchemaObject[propertyKeyReferenced] === 'object') {
+                        // check for required and invalid child properties of a dynamic configuration schema directive
+                        // already reported on whether this is an object; testing here to avoid spurious error messages
+                        if (typeof configSchemaObject[propertyKey] === 'object') {
+
+                            // checks specific to a dynamic configuration schema directive that references an object property
+                            if (propertyKeyReferenced && configSchemaObject.hasOwnProperty(propertyKeyReferenced) && typeof configSchemaObject[propertyKeyReferenced] === 'object') {
                                 // 'value-regex' child property can't exist
                                 if (configSchemaObject[propertyKey]['value-regex']) {
                                     console.error(`Configuration schema directive '${propertyString}' is for an object property and has a 'value-regex' child property.`);
                                     returnValue = false;
                                 }
                             }
-                        } else {
-                            console.error(`Configuration schema directive '${propertyString}' references a non-existent configuration schema property.`);
-                            returnValue = false;
-                        }
 
-                        // check to make sure that any propertyKey subkeys are legit
-                        for (const propertyKeySubkey in configSchemaObject[propertyKey]) {
-                            if (configSchemaObject[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
+                            // 'required' child property must exist for all dynamic configuration schema directives
+                            if (! configSchemaObject[propertyKey].hasOwnProperty('required')) {
+                                console.error(`Configuration schema directive '${propertyString}' doesn't have a 'required' child property.`);
+                                returnValue = false;
+                            }
 
-                                switch(propertyKeySubkey) {
-                                    case 'key-regex':
-                                    case 'value-regex':
+                            // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
+                            if (propertyKey.charAt(1) === '*') {
+                                // 'key-regex' child property must exist
+                                if (! configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a 'key-regex' child property.`);
+                                    returnValue = false;
+                                }
 
-                                        // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
-                                        // or references a valid regex class
-                                        if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
+                                // 'create-by-default' child property can't exist
+                                if (configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a 'create-by-default' child property.`);
+                                    returnValue = false;
+                                }
 
-                                            // is propertyKeySubkeya reference to a regex class?
-                                            if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 7) === '(class:') {
-                                                const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(class:(.*)\)/);
+                            // check for required and default child properties for configuration schema directive of a non-wildcard property
+                            } else {
+                                // 'key-regex' child property can't exist
+                                if (configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a named property and has a 'key-regex' child property.`);
+                                    returnValue = false;
+                                }
 
-                                                // test whether this is a reference to a valid regex class
-                                                if (!(regexMatches &&
-                                                    configSchemaRoot.hasOwnProperty('(regex-classes)') &&
-                                                    (typeof configSchemaRoot['(regex-classes)'] === 'object') &&
-                                                    configSchemaRoot['(regex-classes)'].hasOwnProperty(regexMatches[1]))) {
+                                // 'create-by-default' child property must exist
+                                if (! configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a 'create-by-default' child property.`);
+                                    returnValue = false;
+                                }
+                            }
 
-                                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
+                            // check to make sure that any propertyKey subkeys that do exist are correctly defined
+                            for (const propertyKeySubkey in configSchemaObject[propertyKey]) {
+                                if (configSchemaObject[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
+
+                                    switch(propertyKeySubkey) {
+                                        case 'key-regex':
+                                        case 'value-regex':
+
+                                            // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
+                                            // or references a valid regex class
+                                            if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
+
+                                                // is propertyKeySubkeya reference to a regex class?
+                                                if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 7) === '(class:') {
+                                                    const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(class:(.*)\)/);
+
+                                                    // test whether this is a reference to a valid regex class
+                                                    if (!(regexMatches &&
+                                                        configSchemaRoot.hasOwnProperty('(regex-classes)') &&
+                                                        (typeof configSchemaRoot['(regex-classes)'] === 'object') &&
+                                                        configSchemaRoot['(regex-classes)'].hasOwnProperty(regexMatches[1]))) {
+
+                                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
+                                                            returnValue = false;
+                                                    }
+
+                                                // propertyKeySubkey is not a reference to a regex class; test whether it's a valid regex
+                                                } else {
+                                                    // try to use the string as a regular expression; catch any errorrs
+                                                    try {
+                                                        new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
+                                                    } catch (errorObject) {
+                                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' value /${configSchemaObject[propertyKeySubkey]}/ isn't a valid regular expression.`);
                                                         returnValue = false;
+                                                    }
                                                 }
 
-                                            // propertyKeySubkey is not a reference to a regex class; test whether it's a valid regex
+                                            // propertyKeySubkey property value isn't a string; error
                                             } else {
-                                                // try to use the string as a regular expression; catch any errorrs
-                                                try {
-                                                    new RegExp(configSchemaObject[propertyKey][propertyKeySubkey]);
-                                                } catch (errorObject) {
-                                                    console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' value /${configSchemaObject[propertyKeySubkey]}/ isn't a valid regular expression.`);
-                                                    returnValue = false;
-                                                }
+                                                console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a string.`);
+                                                returnValue = false;
                                             }
+                                            break;
 
-                                        // propertyKeySubkey property value isn't a string; error
-                                        } else {
-                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a string.`);
+                                        case 'required':
+                                        case 'create-by-default':
+
+                                            if (typeof configSchemaObject[propertyKey][propertyKeySubkey] !== 'boolean') {
+                                                console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
+                                                returnValue = false;
+                                            }
+                                            break;
+
+                                        default:
+                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a valid sub-property of a configuration schema directive.`);
                                             returnValue = false;
-                                        }
-                                        break;
-
-                                    case 'required':
-                                    case 'create-by-default':
-
-                                        if (typeof configSchemaObject[propertyKey][propertyKeySubkey] !== 'boolean') {
-                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
-                                            returnValue = false;
-                                        }
-                                        break;
-
-                                    default:
-                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a valid sub-property of a configuration schema directive.`);
-                                        returnValue = false;
-                                        break;
+                                            break;
+                                    }
                                 }
                             }
                         }
