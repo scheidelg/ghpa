@@ -160,7 +160,9 @@ async function ghpaInit() {
 
 function ghpaConfigSchemaLintCheck(configSchemaObject, parentString, configSchemaRoot) {
     let propertyString;
-    let returnValue;
+    let returnValue = true;
+    
+    if (true) returnValue = true;
     
     parentString = (! parentString) ? '/' : (parentString + ' /');
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
