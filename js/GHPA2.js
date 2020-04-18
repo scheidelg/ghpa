@@ -126,7 +126,7 @@ function ghpaReadConfig(configFile) {
     }));
 }
 
-function ghpaReadJSONfile(JSONfile) {
+function cfReadJSONfile(JSONfile) {
     return(fetch(JSONfile)
     .then(function (response) {
         if (response.status != 200) {
@@ -141,10 +141,13 @@ function ghpaReadJSONfile(JSONfile) {
 
 async function ghpaInit() {
     // read the GHPA configuration and the GHPA configuration schema
-    if (!(ghpaConfig = await ghpaReadJSONfile('/ghpaConfig.json')) || !(ghpaConfigSchema = await ghpaReadJSONfile('/ghpaConfigSchema.json'))) {
+    if (!(ghpaConfig = await cfReadJSONfile('/ghpaConfig.json')) || !(ghpaConfigSchema = await cfReadJSONfile('/ghpaConfigSchema.json'))) {
         console.error('Failed to load one of the GHPA configuration file or GHPA configuration schema file; exiting.');
         return;
     }
+
+/*
+    // tests for variations of the cloneObject() function
 
     let fritz = {};
 
@@ -156,9 +159,12 @@ async function ghpaInit() {
 
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 2);
+*/
+
+    return;
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
-    if (! ghpaConfigSchemaLintCheck(ghpaConfigSchema)) {
+    if (! cfSchemaCheck(ghpaConfigSchema)) {
         console.error('GHPA configuration schema failed lint check; exiting.');
         return;
     }
@@ -238,18 +244,53 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     cloneObjectRecursion(sourceObject, targetObject, cloneType);
 }
 
-function ghpaConfigSchemaLintCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
+function cfSchemaCheck(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
+    let returnValue = true;
+
+    for (const propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
+        if (configSchemaObject.hasOwnProperty(propertyKey)) {        // only continue if this is a non-inherited property
+
+            if (propertyKey === '(regexClasses)') {
+                for (const regexClassName in configSchemaObject[propertyKey]) {     // we'll still get to this code  even if '(regexClasses)' isn't an object, but there won't be any children properties so it's OK - no error
+                    if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
+                        // if the regex class value is a string, then test whether this is a valid regular expression
+                        if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
+                            // try to use the string as a regular expression; catch any errorrs
+                            try {
+                                new RegExp(configSchemaObject[propertyKey][regexClassName]);
+                            } catch (errorObject) {
+                                console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' value /${configSchemaObject[regexClassName]}/ isn't a valid regular expression.`);
+                                returnValue = false;
+                            }
+
+                        // regex class property value isn't a string; error
+                        } else {
+                            console.error(`Configuration schema property '${propertyKey} / ${regexClassName}' isn't a string.`);
+                            returnValue = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // now process everything else, including recursion if needed
+    returnValue = cfSchemaCheckRecursion(configSchemaObject, configSchemaObjectString, configSchemaRoot) && returnValue;
+}
+
+// defining this function outside of the primary ccSchemaCheck() function to allow for the possibility that
+// we might want to call this on an individual branch of the configuration (vs. starting at the root)
+function cfSchemaCheckRecursion(configSchemaObject, configSchemaObjectString, configSchemaRoot) {
     let propertyString;
     let returnValue = true;
 
     configSchemaObjectString = (! configSchemaObjectString) ? '/' : (configSchemaObjectString + ' /');
     if (! configSchemaRoot) { configSchemaRoot = configSchemaObject; }
 
-// TO DO: test the 'for...in' with 'const' instead of 'let'; if it works, replicate everywhere
     for (const propertyKey in configSchemaObject) {        // iterate through all properties in the passed object
         if (configSchemaObject.hasOwnProperty(propertyKey)) {        // only continue if this is a non-inherited property
             propertyString = configSchemaObjectString + ' ' + propertyKey;
-console.log(`schema lint check: ${propertyString}`);       // debugging - get rid of this
+console.log(`schema check: ${propertyString}`);       // debugging - get rid of this
 
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
@@ -263,10 +304,10 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                 if (propertyKey.slice(-1) === ')') {
 
                     // if we find regular expression classes, check to make sure it and it's child properties are valid
-                    if (propertyKey === '(regex-classes)') {
+                    if (propertyKey === '(regexClasses)') {
                         // if we're at the root of the configuration schema then validate child properties
                         if (configSchemaObjectString === '/') {
-                            for (const regexClassName in configSchemaObject[propertyKey]) {     // we'll still get to this code  even if '(regex-classes)' isn't an object, but there won't be any children properties so it's OK - no error
+                            for (const regexClassName in configSchemaObject[propertyKey]) {     // we'll still get to this code  even if '(regexClasses)' isn't an object, but there won't be any children properties so it's OK - no error
                                 if (configSchemaObject[propertyKey].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                                     // if the regex class value is a string, then test whether this is a valid regular expression
                                     if (typeof configSchemaObject[propertyKey][regexClassName] === 'string') {
@@ -308,9 +349,9 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                             // checks specific to a dynamic configuration schema directive that references an object property
                             if (propertyKeyReferenced && configSchemaObject.hasOwnProperty(propertyKeyReferenced) && typeof configSchemaObject[propertyKeyReferenced] === 'object') {
-                                // 'value-regex' child property can't exist
-                                if (configSchemaObject[propertyKey]['value-regex']) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for an object property and has a child property 'value-regex'.`);
+                                // 'valueRegex' child property can't exist
+                                if (configSchemaObject[propertyKey]['valueRegex']) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for an object property and has a child property 'valueregex'.`);
                                     returnValue = false;
                                 }
                             }
@@ -323,29 +364,29 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                             // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
                             if (propertyKey.charAt(1) === '*') {
-                                // 'key-regex' child property must exist
-                                if (! configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a child property 'key-regex'.`);
+                                // 'keyRegex' child property must exist
+                                if (! configSchemaObject[propertyKey].hasOwnProperty('keyRegex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a child property 'keyRegex'.`);
                                     returnValue = false;
                                 }
 
-                                // 'create-by-default' child property can't exist
-                                if (configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a child property 'create-by-default'.`);
+                                // 'createByDefault' child property can't exist
+                                if (configSchemaObject[propertyKey].hasOwnProperty('createByDefault')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a child property 'createByDefault'.`);
                                     returnValue = false;
                                 }
 
                             // check for required and default child properties for configuration schema directive of a non-wildcard property
                             } else {
-                                // 'key-regex' child property can't exist
-                                if (configSchemaObject[propertyKey].hasOwnProperty('key-regex')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for a named property and has a child property 'key-regex'.`);
+                                // 'keyRegex' child property can't exist
+                                if (configSchemaObject[propertyKey].hasOwnProperty('keyRegex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a named property and has a child property 'keyRegex'.`);
                                     returnValue = false;
                                 }
 
-                                // 'create-by-default' child property must exist
-                                if (! configSchemaObject[propertyKey].hasOwnProperty('create-by-default')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a child property 'create-by-default'.`);
+                                // 'createByDefault' child property must exist
+                                if (! configSchemaObject[propertyKey].hasOwnProperty('createByDefault')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is for a named property but doesn't have a child property 'createByDefault'.`);
                                     returnValue = false;
                                 }
                             }
@@ -355,22 +396,22 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                 if (configSchemaObject[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
 
                                     switch(propertyKeySubkey) {
-                                        case 'key-regex':
-                                        case 'value-regex':
+                                        case 'keyRegex':
+                                        case 'valueRegex':
 
                                             // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
                                             // or references a valid regex class
                                             if (typeof configSchemaObject[propertyKey][propertyKeySubkey] === 'string') {
 
                                                 // is propertyKeySubkeya reference to a regex class?
-                                                if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 13) === '(regex-class:') {
-                                                    const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(regex-class:(.*)\)/);
+                                                if (configSchemaObject[propertyKey][propertyKeySubkey].slice(0, 12) === '(regexClass:') {
+                                                    const regexMatches = configSchemaObject[propertyKey][propertyKeySubkey].match(/\(regexClass:(.*)\)/);
 
                                                     // test whether this is a reference to a valid regex class
                                                     if (!(regexMatches &&
-                                                        configSchemaRoot.hasOwnProperty('(regex-classes)') &&
-                                                        (typeof configSchemaRoot['(regex-classes)'] === 'object') &&
-                                                        configSchemaRoot['(regex-classes)'].hasOwnProperty(regexMatches[1]))) {
+                                                        configSchemaRoot.hasOwnProperty('(regexClasses)') &&
+                                                        (typeof configSchemaRoot['(regexClasses)'] === 'object') &&
+                                                        configSchemaRoot['(regexClasses)'].hasOwnProperty(regexMatches[1]))) {
 
                                                             console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
                                                             returnValue = false;
@@ -395,7 +436,7 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
                                             break;
 
                                         case 'required':
-                                        case 'create-by-default':
+                                        case 'createByDefault':
 
                                             if (typeof configSchemaObject[propertyKey][propertyKeySubkey] !== 'boolean') {
                                                 console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
@@ -429,14 +470,14 @@ console.log(`schema lint check: ${propertyString}`);       // debugging - get ri
 
                 // if this proeprty is an object, then recurse
                 if (typeof configSchemaObject[propertyKey] === 'object') {
-                    returnValue = ghpaConfigSchemaLintCheck(configSchemaObject[propertyKey], configSchemaObjectString + ' ' + propertyKey, configSchemaRoot) && returnValue;
+                    returnValue = cfSchemaCheck(configSchemaObject[propertyKey], configSchemaObjectString + ' ' + propertyKey, configSchemaRoot) && returnValue;
                 }
             }
         }
     }
+
     return(returnValue);
-}                    
-            
+}
 
 
 if (document.addEventListener) {
@@ -478,160 +519,12 @@ let ghpaConfigSchema;
 //     - $-_.+!*'()\
 //     - %xx where xx is 20 through FF
 //  - cannot start with or contain a /
-/*const ghpaConfigSchema =
-{
-    "tokensOnly": "boolean",
 
-    "pageOptions": {
-        "authOnly": "boolean",
-        "SSO": "boolean"
-    },
-
-    "loginFormOptions": {
-        "loginFormFile": "string:^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
-    },
-
-    "ghpaClasses": {
-        "(key:ghpaClass)": {
-            "organization": "string:^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$",
-            "repository": "string:^[0-9a-zA-Z_.\-]+$",
-            "branch": "string:^[^\^\[\\:\?]+$",
-            "defaultHTMLfile": "string:^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
-            "onlyGetBody": "boolean"
-        },
-        "(keyformats)": {
-            "ghpaClass": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
-        }
-    }
-};
-
-
-// need a way to specify whether 'required' properties will be created, or cause an error; maybe a function argument?
-//  - ok, 'required' vs. 'default'
-const ghpaConfigSchema2 =
-{
-    "(regex-classes)": {
-        "URI-path": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
-        "URI-file": "^(([0-9a-zA-Z\$\-_\.\+\!\*\'\(\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
-    },
-
-    "tokensOnly": true,
-    
-    "(tokensOnly)": {
-        "required": false,
-        "create-by-default": true
-    },
-
-    "pageOptions": {
-        "authOnly": false,
-
-        "(authOnly)": {
-            "required": false,
-            "create-by-default": true
-        },
-
-        "SSO": true,
-
-        "(SSO)": {
-            "required": false,
-            "create-by-default": true
-        }
-    },
-
-    "(pageOptions)": {
-        "required": false,
-        "create-by-default": true
-    },
-
-    "loginFormOptions": {
-        "loginFormFile": "",
-
-        "(loginFormFile)": {
-            "required": false,
-            "create-by-default": false,
-            "regex": "(class:URI-path)"
-        }
-    },
-
-    "(loginFormOptions)": {
-        "required": false,
-        "create-by-default": true
-    },
-
-    "ghpaClasses": {
-        "*ghpaClass": {
-            "organization": "",
-
-            "(organization)": {
-                "required": false,
-                "create-by-default": false,
-                "regex": "^[0-9a-zA-Z]([0-9a-zA-Z]|\-(?!\-))*(?<!\-)$"
-            },
-
-            "repository": "",
-
-            "(repository)": {
-                "required": false,
-                "create-by-default": false,
-                "regex": "^[0-9a-zA-Z_.\-]+$"
-            },
-
-            "branch": "",
-
-            "(branch)": {
-                "required": false,
-                "create-by-default": false,
-                "regex": "^[^\^\[\\:\?]+$"
-            },
-
-            "defaultHTMLfile": "",
-
-            "(defaultHTMLfile)": {
-                "required": false,
-                "create-by-default": false,
-                "regex": "(class:URI-file)"
-            },
-
-            "onlyGetBody": true,
-
-            "(onlyGetBody)": {
-                "required": false,
-                "create-by-default": false
-            }
-        },
-
-        "(*ghpaClass)": {
-            "regex": "^[a-zA-Z]([0-9a-zA-Z]|([\-_](?![\-_])))*(?<![\-_])$"
-        },
-
-        "global": {
-            "(configuration-key-class)": "*ghpaClass",
-
-            "defaultHTMLfile": "index.html",
-
-            "(defaultHTMLfile)": {
-                "create-by-default": true
-            }
-        },
-
-        "(global)": {
-            "required": false,
-            "create-by-default": true
-        }
-    },
-
-    "(ghpaClasses)": {
-        "required": false,
-        "create-by-default": true
-    }
-};
-*/
-
-// when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'configuratin-key-class'
+// when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'keyClass'
 
 // note that "regex": is always optional, but in particular for for booleans - since it generally doesn't make sense, we know that it's either true or false, and if it's only one or the other then why do you need a configuration option?
 
-// "required": and "create-by-default": don't make sense for a wildcard property; but "regex:" is required
+// "required": and "createByDefault": don't make sense for a wildcard property; but "regex:" is required
 
 // move config and schema config to root - but still use as arguments to the config check function
 
