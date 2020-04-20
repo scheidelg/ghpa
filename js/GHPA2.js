@@ -445,7 +445,7 @@ function cfSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
     // validate '/ (regexClasses)' data before starting recursion
 
-    if (cfgSchemaRootObj.hasOwnproperty('(regexClasses)')) {
+    if (cfgSchemaRootObj.hasOwnProperty('(regexClasses)')) {
         if (typeof cfgSchemaObj['(regexClasses)'] === 'object') {
             for (const regexClassName in cfgSchemaObj['(regexClasses)']) {
                 if (cfgSchemaObj['(regexClasses)'].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
