@@ -161,7 +161,7 @@ async function ghpaInit() {
     cloneObject(ghpaConfig, fritz, 2);
 */
 
-    return;
+//    return;
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! cfSchemaCheck(ghpaConfigSchema)) {
