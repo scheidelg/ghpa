@@ -532,7 +532,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         }
     }
 
-need to add checks for keyClass; make sure that's all OK
+//need to add checks for keyClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
 
     // now process everything else, including recursion if needed
     returnValue = cfSchemaCheckRecursion(cfgSchemaObj, undefined, cfgSchemaRootObj) && returnValue;
