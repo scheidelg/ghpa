@@ -282,28 +282,28 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                             // check for the referenced keyClass definition, as an object
                             if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && (typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] === 'object')) {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
-                                    console.error(`Error copying keyClass data '${cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']]}' to configuration object associated with '${propertyString}'.`);
+                                    console.error(`Error copying keyClass data '/ (keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr} ${cfgSchemaObj[propertyKey]['keyClass']}'.`);
                                     returnValue = false;
                                 }
                             } else {
-                                console.error(`Configuration schema property '${propertyString}' referenced keyClass '${cfgSchema[propertyKey]['keyClass']}' doesn't exist as an object.`);
+                                console.error(`Configuration schema property '${propertyString} / keyClass' references keyClass '${cfgSchemaObj[propertyKey]['keyClass']}'; '/ (keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' doesn't exist as an object.`);
                                 returnValue = false;
                             }
                                 
                             // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
                             if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && (typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] === 'object')) {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
-                                    console.error("Error copying keyClass data '" + cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] + " to configuration schema directive '" + propertyString + "'.");
+                                    console.error(`Error copying keyClass data '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`);
                                     returnValue = false;
                                 }
                             } else {
-                                console.error(`Configuration schema property '${propertyString}' referenced keyClass '${cfgSchema[propertyKey]['keyClass']}' doesn't exist as an object.`);
+                                console.error(`Configuration schema property '${propertyString} / keyClass' references keyClass '${cfgSchemaObj[propertyKey]['keyClass']}'; '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' doesn't exist as an object.`);
                                 returnValue = false;
                             }
 
                         // there's no keyClass object at the configuration schema root
                         } else {
-                            console.error(`Configuration schema property '${propertyString}' references keyClass '${cfgSchema[propertyKey]['keyClass']}' but there is no '/ (keyClass)' object.`);
+                            console.error(`Configuration schema property '${propertyString}' references keyClass '${cfgSchemaObj[propertyKey]['keyClass']}' but there is no '/ (keyClass)' object.`);
                             returnValue = false;
                         }
                     // 'keyClass isn't a string; error message and returnValue = false
