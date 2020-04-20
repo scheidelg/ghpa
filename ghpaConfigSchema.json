@@ -49,7 +49,7 @@
         "(ghpaClass)" : {
             "required": false,
             "createByDefault": false
-        },
+        }
     },
     
     "tokensOnly": true,
