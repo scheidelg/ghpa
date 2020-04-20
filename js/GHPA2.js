@@ -216,17 +216,17 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     // cloneType === 2: keep existing targetObject properties and property values
     if (typeof sourceObject !== 'object') {
         console.error("cloneObject() 'sourceObject' argument isn't an object.");
-        return;
+        return(false);
     }
 
     if (typeof targetObject !== 'object') {
         console.error("cloneObject() 'targetObject' argument isn't an object.");
-        return;
+        return(false);
     }
 
     if (!(typeof cloneType === 'number') && (cloneType < 0 || cloneType > 2)) {
         console.error("cloneObject() 'cloneType' argument must be a number between 0 and 2 (inclusive).");
-        return;
+        return(false);
     }
 
     // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
@@ -243,6 +243,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
     // kick off the recursion
     cloneObjectRecursion(sourceObject, targetObject, cloneType);
+    
+    return(true);
 }
 
 function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
