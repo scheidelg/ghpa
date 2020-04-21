@@ -47,8 +47,7 @@
         },
 
         "(ghpaClass)" : {
-            "required": false,
-            "createByDefault": false
+            "required": false
         }
     },
     
