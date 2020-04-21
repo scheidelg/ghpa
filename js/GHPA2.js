@@ -175,7 +175,7 @@ async function ghpaInit() {
 
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
-    cloneObject(ghpaConfig, fritz);
+    cloneObject(george, fritz);
 
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
