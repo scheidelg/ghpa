@@ -1,3 +1,25 @@
+/*============================================================================
+GitHub Pages Authentication (GHP-Auth or GHPA)
+
+For details on GHPA see:
+
+ - GHPA GitHub repository: https://github.com/scheidelg/ghpa
+ 
+ - Corresponding GHPA website, published through GitHub Pages:
+   https://scheidelg.github.io/ghpa or https://ghpa.scheidel.net
+   
+ - GHPA GitHub repository - README.md:
+   https://github.com/scheidelg/ghpa/blob/master/README.md>README.md
+   
+The GHPA JavaScript and example HTML contain a large amount of comments and
+are formatted for readability.  You may want to use a 'minified' version of
+GHPA.
+----------------------------------------------------------------------------
+Copyright (c) Greg Scheidel.
+
+GHPA is licensed under the GNU General Public License v3.0.
+----------------------------------------------------------------------------*/
+
 'use strict';
 
 function ghpaConfigPropertyCheck(propertyName, parentObject, parentSchemaObject, parentString) {
@@ -146,14 +168,16 @@ async function ghpaInit() {
         return;
     }
 
-/*
     // tests for variations of the cloneObject() function
 
     let fritz = {};
+    let george = {};
 
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
+    george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
     cloneObject(ghpaConfig, fritz);
 
+/*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 1);
 
@@ -161,7 +185,7 @@ async function ghpaInit() {
     cloneObject(ghpaConfig, fritz, 2);
 */
 
-//    return;
+return;
 
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! cfgSchemaCheck(ghpaConfigSchema)) {
@@ -175,6 +199,36 @@ async function ghpaInit() {
     let x=1;
 }
 
+
+/*============================================================================
+function cloneObject(sourceObject, targetobject, cloneType)
+------------------------------------------------------------------------------
+'Clone' a JavaScript object by performing a deep copy:
+
+ - For child properties that are objects, create a new object in the target
+   instead of simply copying the reference from the source.
+
+ - Recurse through the source to child children, grandchildren, etc. to the
+   target.
+
+
+------------------------------------------------------------------------------
+Arguments
+
+authMessage                         string
+
+    The message to display.
+
+------------------------------------------------------------------------------
+Variables
+
+authMessageElement                  object
+
+    Reference to the web page element with id of 'ghpaAuthMessage'.
+
+------------------------------------------------------------------------------
+Return Value: none
+----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
     function cloneObjectRecursion(sourceObject, targetObject, cloneType) {
