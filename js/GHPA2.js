@@ -201,17 +201,41 @@ return;
 
 
 /*============================================================================
-function cloneObject(sourceObject, targetobject, cloneType)
+function cloneObject(sourceObject, targetObject, cloneType)
 ------------------------------------------------------------------------------
-'Clone' a JavaScript object by performing a deep copy:
+'Clone' a JavaScript object by performing a deep copy of non-inherited
+properties:
 
  - For child properties that are objects, create a new object in the target
    instead of simply copying the reference from the source.
 
- - Recurse through the source to child children, grandchildren, etc. to the
-   target.
+ - Recurse through the source to copy child children, grandchildren, etc.
+   properties to the target.
+
+------------------------------------------------------------------------------
+The cloneType argument determines how any existing targetObject properties
+will be handled: 0 = Recursively deleted; 1 = existing targetObject properties
+are retained unless they conflict with a sourceObject property; 2 = existing
+targetObject properties are retained unless they conflict with a sourceObject
+property.
 
 
+   0   All original targetObject properties are recursively deleted.
+       (default)
+
+   1   Original targetObject properties
+
+    // cloneType === 0: blow away existing targetObject
+    // cloneType === 1: all sourceObject properties replace existing targetObject properties;
+    //                  but extra targetObject properties are retained
+    // cloneType === 2: keep existing targetObject properties and property values
+
+Note:
+
+ - Only non-inherited properties are copied.
+
+ - A valid source object and target object must be passed in as function
+   arguments.
 ------------------------------------------------------------------------------
 Arguments
 
@@ -236,7 +260,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         for (const propertyKey in sourceObject) {
             if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
                 // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
-                // but don't delete a targetObject object properties that matchies the sourceObject object property key
+                // but don't delete if sourceObject and targetObject properties are both non-null objects
+ARGH. except if the sourceObject is a null and targetObject is a non-null object, then we have to recursively deleted targetObject
                 if ((cloneType === 1) && targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] !== 'object')) {
                     delete targetObject[propertyKey]
                 }
@@ -264,10 +289,6 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
-    // cloneType === 0: blow away existing targetObject
-    // cloneType === 1: all sourceObject properties replace existing targetObject properties;
-    //                  but extra targetObject properties are retained
-    // cloneType === 2: keep existing targetObject properties and property values
     if (typeof sourceObject !== 'object') {
         console.error("cloneObject() 'sourceObject' argument isn't an object.");
         return(false);
