@@ -375,13 +375,13 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                 if (propertyKey.charAt(1) === '*') {
                                     // 'keyRegex' child property must exist
                                     if (! cfgSchemaObj[propertyKey].hasOwnProperty('keyRegex')) {
-                                        console.error(`Configuration schema directive '${propertyString}' is for a wildcard property but doesn't have a child property 'keyRegex'.`);
+                                        console.error(`Configuration schema directive '${propertyString}' is a wildcard but doesn't have a child property 'keyRegex'.`);
                                         returnValue = false;
                                     }
 
                                     // 'createByDefault' child property can't exist
                                     if (cfgSchemaObj[propertyKey].hasOwnProperty('createByDefault')) {
-                                        console.error(`Configuration schema directive '${propertyString}' is for a wildcard property and has a child property 'createByDefault'.`);
+                                        console.error(`Configuration schema directive '${propertyString}' is a wildcard and has a child property 'createByDefault'.`);
                                         returnValue = false;
                                     }
 
@@ -451,6 +451,9 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                                     console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
                                                     returnValue = false;
                                                 }
+                                                break;
+
+                                            case 'keyClass':
                                                 break;
 
                                             default:
