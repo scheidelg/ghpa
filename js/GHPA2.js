@@ -242,7 +242,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                 }
 
                 // if sourceObject[propertyKey] is an object
-                if (typeof sourceObject[propertyKey] === 'object') {
+                if (typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null) {
                     // if the property doeesn't exist in the target, then create it as an empty object
                     if (! targetObject.hasOwnProperty(propertyKey)) {
                         targetObject[propertyKey] = {};
