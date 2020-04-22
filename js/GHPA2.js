@@ -177,8 +177,8 @@ async function ghpaInit() {
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(george, fritz);
 
-    george = { "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null};
-    fritz = { "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
+    george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null};
+    fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
     cloneObject(george, fritz, 1);
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
@@ -264,7 +264,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
             if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
                 // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
                 // but don't delete if sourceObject and targetObject properties are both non-null objects
-                if (cloneType === 1 && targetObject.hasOwnProperty(propertyKey) && !(typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null)) {
+                if (cloneType === 1 && targetObject.hasOwnProperty(propertyKey) && sourceObject[propertyKey] !== targetObject[propertyKey] && !(typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null)) {
                     if (typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
                         for (const subpropertyKey in targetObject[propertyKey]){
                             if (targetObject[propertyKey].hasOwnProperty(subpropertyKey)){
