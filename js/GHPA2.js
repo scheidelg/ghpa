@@ -173,10 +173,13 @@ async function ghpaInit() {
     let fritz = {};
     let george = {};
 
-    fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
+    fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(george, fritz);
 
+    george = { "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null};
+    fritz = { "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
+    cloneObject(george, fritz, 1);
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 1);
@@ -255,14 +258,20 @@ Return Value: none
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
-    function cloneObjectRecursion(sourceObject, targetObject, cloneType) {
+    function cloneObjectRecursion(sourceObject, targetObject) {
         // iterate through all properties in sourceObject
         for (const propertyKey in sourceObject) {
             if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
                 // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
                 // but don't delete if sourceObject and targetObject properties are both non-null objects
-ARGH. except if the sourceObject is a null and targetObject is a non-null object, then we have to recursively deleted targetObject
-                if ((cloneType === 1) && targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] !== 'object')) {
+                if (cloneType === 1 && targetObject.hasOwnProperty(propertyKey) && !(typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null)) {
+                    if (typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
+                        for (const subpropertyKey in targetObject[propertyKey]){
+                            if (targetObject[propertyKey].hasOwnProperty(subpropertyKey)){
+                                delete targetObject[propertyKey][subpropertyKey];
+                            }
+                        }
+                    }
                     delete targetObject[propertyKey]
                 }
 
@@ -274,8 +283,8 @@ ARGH. except if the sourceObject is a null and targetObject is a non-null object
                     }
 
                     // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
-                    if (targetObject.hasOwnProperty(propertyKey) && (typeof targetObject[propertyKey] === 'object')) {
-                        cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey], cloneType);
+                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object') {
+                        cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
                     }
 
                 // else sourceObject[propertyKey] is not an object
@@ -347,15 +356,15 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                 // if this property is a configuration schema directive that is an object and includes a keyClass property
                 if (propertyKey.charAt(0) === '(' &&
                     propertyKey.slice(-1) === ')' &&
-                    (typeof cfgSchemaObj[propertyKey] === 'object') &&
+                    typeof cfgSchemaObj[propertyKey] === 'object' &&
                     cfgSchemaObj[propertyKey].hasOwnProperty('keyClass')) {
                     
                     // make sure that the 'keyClass' property value is a string
                     if (typeof cfgSchemaObj[propertyKey]['keyClass'] === 'string') {
                         // make sure that there is a keyClass object at the configuration schema root
-                        if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && (typeof cfgSchemaRootObj['(keyClasses)'] === 'object')) {
+                        if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && typeof cfgSchemaRootObj['(keyClasses)'] === 'object') {
                             // check for the referenced keyClass definition, as an object
-                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && (typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] === 'object')) {
+                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] === 'object') {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr} ${cfgSchemaObj[propertyKey]['keyClass']}'.`);
                                     returnValue = false;
@@ -366,7 +375,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                             }
                                 
                             // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
-                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && (typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] === 'object')) {
+                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']}`] === 'object')) {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`);
                                     returnValue = false;
@@ -494,7 +503,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                                         // test whether this is a reference to a valid regex class
                                                         if (!(regexMatches &&
                                                             cfgSchemaRootObj.hasOwnProperty('(regexClasses)') &&
-                                                            (typeof cfgSchemaRootObj['(regexClasses)'] === 'object') &&
+                                                            typeof cfgSchemaRootObj['(regexClasses)'] === 'object' &&
                                                             cfgSchemaRootObj['(regexClasses)'].hasOwnProperty(regexMatches[1]))) {
 
                                                                 console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
