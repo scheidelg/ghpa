@@ -283,7 +283,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                     }
 
                     // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
-                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object') {
+                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
                         cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
                     }
 
