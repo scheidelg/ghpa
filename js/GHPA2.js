@@ -170,30 +170,31 @@ async function ghpaInit() {
 
     // tests for variations of the cloneObject() function
 
+    let y;
     let fritz = {};
     let george = {};
 
     george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    cloneObject(george, fritz);
+    y = cloneObject(george, fritz);
 
     george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null, "d": { "d_i": 1, "d_ii": 2}};
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
-    cloneObject(george, fritz, 1);
+    y = cloneObject(george, fritz, 1);
 
     george = {};
     george.a = {};
     george.a.b = {};
     george.a.b.c = george;
     fritz = {};
-    cloneObject(george, fritz, 1);
+    y = cloneObject(george, fritz, 1);
 
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    cloneObject(ghpaConfig, fritz, 1);
+    y = cloneObject(ghpaConfig, fritz, 1);
 
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    cloneObject(ghpaConfig, fritz, 2);
+    y = cloneObject(ghpaConfig, fritz, 2);
 */
 
 return;
@@ -452,7 +453,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                             keyStack.pop();
                             objStack.pop();
                         } else {
-                            console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}`);
+                            console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
                             returnValue = false;
                         }
                     }
