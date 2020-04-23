@@ -181,6 +181,7 @@ async function ghpaInit() {
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
     cloneObject(george, fritz, 1);
 
+    george = {};
     george.a = {};
     george.a.b = {};
     george.a.b.c = george;
@@ -428,14 +429,18 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                     if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
 
                         let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
-                        
-                        keyStack.push(keyStack.length == 0 ? '/' : propertyKey);
-                        objStack.push(sourceObject);
 
-                        cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
+                        if (ancestorCheck == -1) {
+                            keyStack.push(keyStack.length == 0 ? '(root)' : propertyKey);
+                            objStack.push(sourceObject);
 
-                        keyStack.pop();
-                        objStack.pop();
+                            cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
+
+                            keyStack.pop();
+                            objStack.pop();
+                        } else {
+                            console.log("WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}."
+                        }
                     }
 
                 // else sourceObject[propertyKey] is not an object
