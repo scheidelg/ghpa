@@ -177,7 +177,7 @@ async function ghpaInit() {
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(george, fritz);
 
-    george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null};
+    george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null, "d": { "d_i": 1, "d_ii": 2}};
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
     cloneObject(george, fritz, 1);
 
