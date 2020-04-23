@@ -439,7 +439,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                             keyStack.pop();
                             objStack.pop();
                         } else {
-                            console.log("WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}."
+                            console.log("WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}.");
                         }
                     }
 
