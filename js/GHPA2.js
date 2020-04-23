@@ -346,6 +346,9 @@ Return Value
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
+    let keyStack = [];
+    let objStack = [];
+
     /* Define a child function that will be called for the recursive copy.
      *
      * Note:
@@ -429,7 +432,14 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
                     // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
                     if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
+
+                        keyStack.push(keyStack.length == 0 ? '/' : propertyKey);
+                        objStack.push(sourceObject);
+
                         cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
+
+                        keyStack.pop;
+                        objStack.pop;
                     }
 
                 // else sourceObject[propertyKey] is not an object
