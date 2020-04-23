@@ -181,6 +181,8 @@ async function ghpaInit() {
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
     cloneObject(george, fritz, 1);
 
+    george.a = {};
+    george.a.b = {};
     george.a.b.c = george;
     fritz = {};
     cloneObject(george, fritz, 1);
