@@ -383,18 +383,17 @@ objStack                            string
     object), then we can check to see whether that object is already in
     objStack.  If it is, then the objects refers to one of its own ancestors;
     in other words, a circular reference.
-------------------------------------------------------------------------------
-    Note that if we didn't care about reporting on the the circular reference where in the reference tree
-    the circular reference pointed to, then we wouldn't need the keyStack
-    variable and we could use a WeakSet or WeakMap variable here instead of
-    e It would be slightly faster ((The only purpose this serves is for error or log messages.  When
-    reporting, we can use keyStack.join('.') to generate a string identifying
-    the keys that were traversed to get to the current object.
 
     Keys are pushed onto keyStack at the same time object references are
     pushed onto objStack.  This means that keyStack[x] corresponds to
     objStack[x], and that the path represented by keyStack[0..x] can be used
     to access objStack[x].
+
+    Note that if we didn't care about detailed reporting on the the circular
+    reference - specifically, the path to the circular reference and the path
+    to the referenced ancestor - then we wouldn't need the keyStack variable
+    and objStack could be a WeakSet or WeakMap variable instead of an array;
+    which could be slightly faster.
 
 propertyKey                         string
 
