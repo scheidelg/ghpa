@@ -218,15 +218,19 @@ function cloneObject(sourceObject, targetObject, cloneType)
 'Clone' a JavaScript object by performing a deep copy of non-inherited
 properties:
 
- - For child properties that are objects, create a new object in the target
-   instead of simply copying the reference from the source.
+ - For a child property that is an object, create a new object in the target
+   instead of simply copying the source object.
+
+   This means that target object properties will be separate from source
+   object properties, not simply references to the corresponding source
+   object properties.
 
  - Recurse through the source to copy child children, grandchildren, etc.
    properties to the target.
 
  - If a circular reference (a child object refers to an ancestor object), then
-   that the circular reference and any child properties aren't copied but the
-   rest of the object is still copied; and the function return value will be 2.
+   the circular reference and any child properties aren't copied but the rest
+   of the object is still copied; and the function return value will be 2.
 
 The cloneType argument determines how any existing targetObject properties
 will be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with
@@ -341,17 +345,60 @@ cloneType                           number; optional
 ------------------------------------------------------------------------------
 Variables
 
-propertyKey                         string
+authMessageElement                  object
 
-    Used to iterate through sourceObject properties.
+    Reference to the web page element with id of 'ghpaAuthMessage'.
 
 childpropertyKey                    string
 
     Used to iterate through sourceObject[propertyKey] properties.
 
-authMessageElement                  object
+keyStack                            string
 
-    Reference to the web page element with id of 'ghpaAuthMessage'.
+    An array used as a stack to track the sourceObject keys that are being
+    traversed through recursion.
+
+    As the sourceObject keys are traversed, just before recursion the current
+    propertyKey is pushed onto the stack; just after recursion that
+    propertyKey is popped off the stack.
+    
+    The only purpose this serves is for error or log messages.  When
+    reporting, we can use keyStack.join('.') to generate a string identifying
+    the keys that were traversed to get to the current object.
+
+    Keys are pushed onto keyStack at the same time object references are
+    pushed onto objStack.  This means that keyStack[x] corresponds to
+    objStack[x], and that the path represented by keyStack[0..x] can be used
+    to access objStack[x].
+
+objStack                            string
+
+    As the sourceObject keys are traversed, just before recursion the current
+    sourceObject[propertyKey] object is pushed onto the stack; just after
+    recursion that object is popped off the stack.
+
+    The purpose of this variable is so that we can check for circular
+    references during recursion, and not recurse into an object if it is a
+    circular reference.  If we're about to recurse into a property (that is an
+    object), then we can check to see whether that object is already in
+    objStack.  If it is, then the objects refers to one of its own ancestors;
+    in other words, a circular reference.
+------------------------------------------------------------------------------
+    Note that if we didn't care about reporting on the the circular reference where in the reference tree
+    the circular reference pointed to, then we wouldn't need the keyStack
+    variable and we could use a WeakSet or WeakMap variable here instead of
+    e It would be slightly faster ((The only purpose this serves is for error or log messages.  When
+    reporting, we can use keyStack.join('.') to generate a string identifying
+    the keys that were traversed to get to the current object.
+
+    Keys are pushed onto keyStack at the same time object references are
+    pushed onto objStack.  This means that keyStack[x] corresponds to
+    objStack[x], and that the path represented by keyStack[0..x] can be used
+    to access objStack[x].
+
+propertyKey                         string
+
+    Used to iterate through sourceObject properties.
 
 ------------------------------------------------------------------------------
 Return Value
@@ -380,6 +427,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *  - Return true if no circular references are found; return false if
      *    circular references are found. */
     function cloneObjectRecursion(sourceObject, targetObject) {
+        /* Variable to hold return value.  Set to true at start; set to false
+         * if there is an error; whenever recursing, set to 'recursion &&
+         * current value'. */
         let returnValue = true;
 
         /* Iterate through all non-inherited properties of sourceObject. */
@@ -419,7 +469,12 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                  *    strings and have the same value.
                  *  
                  *    sourceObject[]==={} and targetObject[]==={} are both
-                 *    objects but do *not* have the same value. */
+                 *    objects but do *not* have the same value.
+                 *
+                 * Note that for cloneType 0, all existing targetObject
+                 * properties were cleared before starting the recursion.  For
+                 * cloneType 2, we want existing targetObject properties to
+                 * take precedence (i.e., be retained). */
                 if (cloneType === 1 &&
                     targetObject.hasOwnProperty(propertyKey) &&
                     sourceObject[propertyKey] !== targetObject[propertyKey] &&
@@ -432,35 +487,98 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                     delete targetObject[propertyKey]
                 }
 
-                // if sourceObject[propertyKey] is an object
+                /* If sourceObject[propertyKey] is a non-null object, then
+                 * we'll want to recurse into it. */
                 if (typeof sourceObject[propertyKey] == 'object' && sourceObject[propertyKey] !== null) {
-                    // if the property doeesn't exist in the target, then create it as an empty object
+
+                    /* If the property doesn't already exist in the target,
+                     * then create it as an empty object so that we can
+                     * recurse into both sourceObject and targetObject. */
                     if (! targetObject.hasOwnProperty(propertyKey)) {
                         targetObject[propertyKey] = {};
                     }
 
-                    // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
-                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] == 'object' && targetObject[propertyKey] !== null) {
+                    /* If the property exists in the target - either because
+                     * it already did or because we just created it - and is
+                     * a non-null object, then recurse into  sourceObject and
+                     * targetObject to copy any sourceObject properties.
+                     *
+                     * Combined with previous actions based on cloneType 0 and
+                     * 1, and with the earler conditional creation of an empty
+                     * object, this test allows us to replace existing target
+                     * properties for cloneType 0, retain existing
+                     * non-conflicting target properties for cloneType 1, and
+                     * retain all existing target properties for cloneType 2.
+                     *
+                     * We could add an additional check here for whether
+                     * sourceObject[propertyKey] has any child properties, and
+                     * only recurse if it does.  However, that would be more
+                     * computationally expensive then just recursing and
+                     * returning when the 'for' loop generates an empty set.
+                     */
+                    if (targetObject.hasOwnProperty(propertyKey) &&
+                        typeof targetObject[propertyKey] == 'object' &&
+                        targetObject[propertyKey] !== null) {
 
+                        /* Look for the sourceObject[propertyKey] value (i.e.,
+                         * the object reference) in the stack of ancestor
+                         * object references.  If we find it, then
+                         * sourceObject[propertyKey] is a circular reference.
+                         */
                         let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
 
+                        /* Recurse if this isn't a circular reference. */
                         if (ancestorCheck == -1) {
+                            /* Push this propertyKey and the corresponding
+                             * object reference onto the keyStack and objStack
+                             * so that we can test whether descendant
+                             * properties are circular references.
+                             *
+                             * If the stack is currently empty, then we're at
+                             * the root of the original object before
+                             * recursion; use placeholder text to signify
+                             * that. */
                             keyStack.push(keyStack.length == 0 ? '(root)' : propertyKey);
                             objStack.push(sourceObject);
 
+                            /* Recurse; if recursion returns false then flip
+                             * returnValue to false. */
                             returnValue = cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
 
+                            /* Pop the processed propertyKey and corresponding
+                             * object reference off keyStack and objStack. */
                             keyStack.pop();
                             objStack.pop();
+
+                        /* If a circular reference was detected, then generate
+                         * a log message and set returnValue to false.
+                         * However, do *not* error out and stop processing. We
+                         * We want to copy all of the branches of the original
+                         * object, as far as each branch can go before hitting
+                         * a circular reference. */
                         } else {
+                            /* Note that this is console.log() instead of
+                             * console.error().  A circular reference may or
+                             * may not be an error depending on the specific
+                             * use case for cloning an object. */
                             console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
                             returnValue = false;
                         }
                     }
 
-                // else sourceObject[propertyKey] is not an object
+                /* If sourceObject[propertyKey] isn't an object or is a null
+                 * object, then we don't want to recurse; just set
+                 * targetObject[propertyKey]. */
                 } else {
-                    // if the target property doesn't exist - either because it wasn't present to begin with or because we deleted it - then set it
+                    /* If the target property doesn't exist - either because
+                     * it wasn't present to begin with or because we deleted
+                     * it - then set it.
+                     *
+                     * Combined with previous actions based on cloneType 0 and
+                     * 1, this test allows us to replace existing target
+                     * properties for cloneType 0, retain existing
+                     * non-conflicting target properties for cloneType 1, and
+                     * retain all existing target properties for cloneType 2. */
                     if (! targetObject.hasOwnProperty(propertyKey)) {
                         targetObject[propertyKey] = sourceObject[propertyKey];
                     }
