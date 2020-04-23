@@ -180,6 +180,11 @@ async function ghpaInit() {
     george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null};
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
     cloneObject(george, fritz, 1);
+
+    george.fritz = fritz;
+    fritz.george = george;
+    cloneObject(george, fritz, 1);
+
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
     cloneObject(ghpaConfig, fritz, 1);
@@ -215,23 +220,69 @@ properties:
  - Recurse through the source to copy child children, grandchildren, etc.
    properties to the target.
 
-------------------------------------------------------------------------------
 The cloneType argument determines how any existing targetObject properties
-will be handled: 0 = Recursively deleted; 1 = existing targetObject properties
-are retained unless they conflict with a sourceObject property; 2 = existing
-targetObject properties are retained unless they conflict with a sourceObject
-property.
+will be handled: 0 or undefined = Recursively deleted; 1 = replaced if they
+conflict with a sourceObject property; 2 = retained even if they conflict with
+a sourceObject property.
 
+For example, given two objects:
 
-   0   All original targetObject properties are recursively deleted.
-       (default)
+    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
 
-   1   Original targetObject properties
+cloneType === 0
 
-    // cloneType === 0: blow away existing targetObject
-    // cloneType === 1: all sourceObject properties replace existing targetObject properties;
-    //                  but extra targetObject properties are retained
-    // cloneType === 2: keep existing targetObject properties and property values
+    All existing targetObject properties are recursively deleted before
+    sourceObject is copied.  After the copy:
+
+        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+
+cloneType === 1
+
+    Existing targetObject properties are replaced if they conflict with a
+    sourceObject property; otherwise existing targetObject properties are
+    retained.  After the copy:
+
+        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3, "b_iii": 6},
+            "c": 4}
+
+     - targetObject["a"] value of 2 is replaced with 1
+
+     - targetObject["b"] is retained because both sourceObject["b"] and
+       targetObject["b"] are objects with children properties
+
+     - targetObject["b"]["b_ii"] value of 6 is replaced with 3
+
+     - targetObject["b"]["b_iii"] property and value are retained because
+       there is no sourceObject["b"]["b_iii"] to conflict with
+
+     - targetObject["c"] value of {} is replaced with null; while both
+       sourceObject["c"] and targetObject["c"] are objects, one is a null
+       value while the other is an empty object
+
+cloneType === 2
+
+    Existing targetObject properties are retained even if they conflict with a
+    sourceObject property.  After the copy:
+
+    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
+
+        targetObject =  {"a": 2, "b": {"b_i": 2, "b_ii": 5, "b_iii": 6}, "c": {}}
+
+     - targetObject["a"] value of 2 is retained, taking precedence over the
+       sourceObject["a"] value of 1
+
+     - targetObject["b"] is retained, including its child properties
+
+     - targetObject["b"]["b_ii"] value of 5 is retained, taking precedence
+       over sourceObject["b"]["b_ii"] value of 3
+
+     - targetObject["b"]["b_iii"] property and value are retained
+       because there is no sourceObject["b"]["b_iii"] to conflict with
+
+     - targetObject["c"] value of {} (empty object) is retained, taking
+       precedence over the sourceObject["c"] value of null
 
 Note:
 
@@ -239,39 +290,133 @@ Note:
 
  - A valid source object and target object must be passed in as function
    arguments.
+
+ - If it weren't for the cloneType options, then (a) this function would be
+   much simpler and (b) could simply return a new object instead of requiring
+   a targetObject argument.
+   
 ------------------------------------------------------------------------------
 Arguments
 
-authMessage                         string
+sourceObject                        object
 
-    The message to display.
+    The object to clone.
+
+targetObject                        object
+
+    The object to clone sourceObject into.
+
+cloneType                           number; optional
+
+    A number that determines how any existing targetObject properties will be
+    handled.
+
+        0: All existing targetObject properties are recursively deleted before
+           sourceObject is copied.
+
+        1: Existing targetObject properties are replaced if they conflict with
+           a sourceObject property; otherwise existing targetObject properties
+           are retained.
+
+        2: Existing targetObject properties are retained even if they conflict
+           with a sourceObject property.
+
+    See the function description for more detail.
 
 ------------------------------------------------------------------------------
 Variables
+
+propertyKey                         string
+
+    Used to iterate through sourceObject properties.
+
+childpropertyKey                    string
+
+    Used to iterate through sourceObject[propertyKey] properties.
 
 authMessageElement                  object
 
     Reference to the web page element with id of 'ghpaAuthMessage'.
 
 ------------------------------------------------------------------------------
-Return Value: none
+Return Value
+
+    true:  success
+    false: failure; probably due to invalid function arguments
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
+    /* Define a child function that will be called for the recursive copy.
+     *
+     * Note:
+     *
+     *  - Parent and child arguments are named the same; child arguments
+     *    take precedence within the scope of the child function.
+     *
+     *  - cloneType isn't passed to the child cloneObjectRecursion() function.
+     *    There's no need, since cloneType will be available within the scope
+     *    of the parent function. */
     function cloneObjectRecursion(sourceObject, targetObject) {
-        // iterate through all properties in sourceObject
+------------------------------------------------------------------------------
+        /* Iterate through all non-inherited properties of sourceObject. */
         for (const propertyKey in sourceObject) {
-            if (sourceObject.hasOwnProperty(propertyKey))   {      // only non-inherited properties
-                // if cloneType 1, then delete existing targetObject properties that conflict with copied sourceObject properties;
-                // but don't delete if sourceObject and targetObject properties are both non-null objects
-                if (cloneType === 1 && targetObject.hasOwnProperty(propertyKey) && sourceObject[propertyKey] !== targetObject[propertyKey] && !(typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null)) {
+            /* only non-inherited properties */
+            if (sourceObject.hasOwnProperty(propertyKey)) {
+
+                /* If cloneType 1, then delete all existing targetObject
+                 * properties that conflict with sourceObject properties.
+                 *
+                 * Properties that exist in both the sourceObject and
+                 * targetObject but do *not* conflict:
+                 *
+                 *  - Properties with the same type and value.
+                 *
+                 *    There's no need to delete and recreate a property with
+                 *    the same value.
+                 *
+                 *  - Properties that are both non-null objects.
+                 *
+                 *    There's no need to delete and recreate a property that
+                 *    is already a non-null object and will be used as a
+                 *    non-null object.  Also, deleting the existing non-null
+                 *    object would delete any child properties - which we want
+                 *    to keep, if they don't conflict with child properties in
+                 *    sourceObject.
+                 *
+                 * Examples:
+                 *
+                 *    sourceObject[]===null and targetObject[]===null are
+                 *    both objects and have the same value.
+                 *
+                 *    sourceObject[]===0 and targetObject[]===0 are both
+                 *    numbers and have the same value.
+                 *  
+                 *    sourceObject[]==="" and targetObject[]==="" are both
+                 *    strings and have the same value.
+                 *  
+                 *    sourceObject[]==={} and targetObject[]==={} are both
+                 *    objects but do *not* have the same value. */
+                if (cloneType === 1 &&
+                    targetObject.hasOwnProperty(propertyKey) &&
+                    sourceObject[propertyKey] !== targetObject[propertyKey] &&
+                    !(typeof sourceObject[propertyKey] === 'object' &&
+                        sourceObject[propertyKey] !== null &&
+                        typeof targetObject[propertyKey] === 'object' &&
+                        targetObject[propertyKey] !== null)) {
+
+                    /* If the existing targetObject property is a non-null
+                     * object, then recursively delete all non-inherited
+                     * children properties before deleting the main property.
+                     */
                     if (typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
-                        for (const subpropertyKey in targetObject[propertyKey]){
-                            if (targetObject[propertyKey].hasOwnProperty(subpropertyKey)){
-                                delete targetObject[propertyKey][subpropertyKey];
+                        for (const childPropertyKey in targetObject[propertyKey]){
+                            if (targetObject[propertyKey].hasOwnProperty(childPropertyKey)){
+                                delete targetObject[propertyKey][childPropertyKey];
                             }
                         }
                     }
+
+                    /* Delete the existing targetObject property. */
                     delete targetObject[propertyKey]
                 }
 
@@ -298,6 +443,14 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
+    /* Note: Technically the argument validation and (if cloneType is 0 or
+     * undefined) initial deletion of all object properties could be performed in
+     * the recursive child function... In which case we wouldn't need a parent
+     * function at all and could just call the recursive function to begin with.
+     * However, that would mean unnecessarily including and running this code
+     * in every recursive execution.  This is a better trade-off. */
+
+    /* validate argument types and values */
     if (typeof sourceObject !== 'object') {
         console.error("cloneObject() 'sourceObject' argument isn't an object.");
         return(false);
@@ -313,10 +466,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         return(false);
     }
 
-    // if cloneType is undefined (i.e., wasn't passed as an argument) or 0
-    //
-    // technically we could also do this in the recursive function, but I like the idea of having the code for this initial
-    // check for an empty cloneType only happen once
+    /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or was
+     * explicitely passed as undefined), then recursively delete any existing
+     * targetObject properties. */
     if (! cloneType) {
         for (const propertyKey in targetObject){
             if (targetObject.hasOwnProperty(propertyKey)){
@@ -325,11 +477,17 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
-    // kick off the recursion
+    /* kick off the recursive child function */
     cloneObjectRecursion(sourceObject, targetObject, cloneType);
-    
+
+    /* Return true.  If there was an error ; if there was an error in the
+     * argument validation then the function will have returned false there
+     * and never got here.  If we discover a case where the recursive copy
+     * could have an abnormal exit, then we can update this code to error trap
+     * and/or return false to be caught here. */
     return(true);
 }
+
 
 function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
