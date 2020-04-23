@@ -357,7 +357,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *    There's no need, since cloneType will be available within the scope
      *    of the parent function. */
     function cloneObjectRecursion(sourceObject, targetObject) {
-------------------------------------------------------------------------------
+
         /* Iterate through all non-inherited properties of sourceObject. */
         for (const propertyKey in sourceObject) {
             /* only non-inherited properties */
