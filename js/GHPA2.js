@@ -438,8 +438,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
                         cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
 
-                        keyStack.pop;
-                        objStack.pop;
+                        keyStack.pop();
+                        objStack.pop();
                     }
 
                 // else sourceObject[propertyKey] is not an object
