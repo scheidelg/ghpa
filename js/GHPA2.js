@@ -221,9 +221,9 @@ properties:
    properties to the target.
 
 The cloneType argument determines how any existing targetObject properties
-will be handled: 0 or undefined = Recursively deleted; 1 = replaced if they
-conflict with a sourceObject property; 2 = retained even if they conflict with
-a sourceObject property.
+will be handled: 0 or undefined = Deleted; 1 = replaced if they conflit with a
+sourceObject property; 2 = retained even if they conflict with a sourceObject
+property.
 
 For example, given two objects:
 
@@ -232,10 +232,14 @@ For example, given two objects:
 
 cloneType === 0
 
-    All existing targetObject properties are recursively deleted before
-    sourceObject is copied.  After the copy:
+    All existing targetObject properties are deleted before sourceObject
+    is copied.  After the copy:
 
         targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+
+    Existing properties are individually deleted instead of simply
+    deleting the entire object so that any existing references to the
+    object are still valid.
 
 cloneType === 1
 
@@ -292,8 +296,8 @@ Note:
    arguments.
 
  - If it weren't for the cloneType options, then (a) this function would be
-   much simpler and (b) could simply return a new object instead of requiring
-   a targetObject argument.
+   much simpler and (b) we could simply return a new object instead of
+   requiring a targetObject argument.
    
 ------------------------------------------------------------------------------
 Arguments
@@ -311,7 +315,7 @@ cloneType                           number; optional
     A number that determines how any existing targetObject properties will be
     handled.
 
-        0: All existing targetObject properties are recursively deleted before
+        0: All existing targetObject properties are  deleted before
            sourceObject is copied.
 
         1: Existing targetObject properties are replaced if they conflict with
@@ -407,18 +411,6 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                         typeof targetObject[propertyKey] === 'object' &&
                         targetObject[propertyKey] !== null)) {
 
-                    /* If the existing targetObject property is a non-null
-                     * object, then recursively delete all non-inherited
-                     * children properties before deleting the main property.
-                     */
-                    if (typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
-                        for (const childPropertyKey in targetObject[propertyKey]){
-                            if (targetObject[propertyKey].hasOwnProperty(childPropertyKey)){
-                                delete targetObject[propertyKey][childPropertyKey];
-                            }
-                        }
-                    }
-
                     /* Delete the existing targetObject property. */
                     delete targetObject[propertyKey]
                 }
@@ -433,6 +425,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                     // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
                     if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
 
+                        let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
+                        
                         keyStack.push(keyStack.length == 0 ? '/' : propertyKey);
                         objStack.push(sourceObject);
 
@@ -477,8 +471,12 @@ function cloneObject(sourceObject, targetObject, cloneType) {
     }
 
     /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or was
-     * explicitely passed as undefined), then recursively delete any existing
-     * targetObject properties. */
+     * explicitely passed as undefined), then delete any existing targetObject
+     * properties.
+     *
+     * Existing properties are individually deleted instead of simply deleting
+     * the entire object so that any existing references to the object are
+     * still valid. */
     if (! cloneType) {
         for (const propertyKey in targetObject){
             if (targetObject.hasOwnProperty(propertyKey)){
