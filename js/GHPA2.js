@@ -223,10 +223,14 @@ properties:
  - Recurse through the source to copy child children, grandchildren, etc.
    properties to the target.
 
+ - If a circular reference (a child object refers to an ancestor object), then
+   that the circular reference and any child properties aren't copied but the
+   rest of the object is still copied; and the function return value will be 2.
+
 The cloneType argument determines how any existing targetObject properties
-will be handled: 0 or undefined = Deleted; 1 = replaced if they conflit with a
-sourceObject property; 2 = retained even if they conflict with a sourceObject
-property.
+will be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with
+a sourceObject property; 2 = retained even if they conflict with a
+sourceObject property.
 
 For example, given two objects:
 
@@ -298,10 +302,13 @@ Note:
  - A valid source object and target object must be passed in as function
    arguments.
 
- - If it weren't for the cloneType options, then (a) this function would be
-   much simpler and (b) we could simply return a new object instead of
-   requiring a targetObject argument.
-   
+ - If it weren't for cloneType options 1 and 2, then this function could be
+   much simpler.
+
+ - If it weren't for cloneType options 1 and 2 and using the return value to
+   flag that circular references were found sourceObject, then we could simply
+   return a new object instead of requiring a targetObject argument.
+
 ------------------------------------------------------------------------------
 Arguments
 
@@ -348,8 +355,10 @@ authMessageElement                  object
 ------------------------------------------------------------------------------
 Return Value
 
-    true:  success
-    false: failure; probably due to invalid function arguments
+    0: success, no issues
+    1: invalid function arguments
+    2: circular reference detected and logged in console; may or may not be
+       a fatal error, depending on the specific use of the function
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
@@ -365,8 +374,12 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *
      *  - cloneType isn't passed to the child cloneObjectRecursion() function.
      *    There's no need, since cloneType will be available within the scope
-     *    of the parent function. */
+     *    of the parent function.
+     *
+     *  - Return true if no circular references are found; return false if
+     *    circular references are found. */
     function cloneObjectRecursion(sourceObject, targetObject) {
+        let returnValue = true;
 
         /* Iterate through all non-inherited properties of sourceObject. */
         for (const propertyKey in sourceObject) {
@@ -409,9 +422,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                 if (cloneType === 1 &&
                     targetObject.hasOwnProperty(propertyKey) &&
                     sourceObject[propertyKey] !== targetObject[propertyKey] &&
-                    !(typeof sourceObject[propertyKey] === 'object' &&
+                    !(typeof sourceObject[propertyKey] == 'object' &&
                         sourceObject[propertyKey] !== null &&
-                        typeof targetObject[propertyKey] === 'object' &&
+                        typeof targetObject[propertyKey] == 'object' &&
                         targetObject[propertyKey] !== null)) {
 
                     /* Delete the existing targetObject property. */
@@ -419,14 +432,14 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                 }
 
                 // if sourceObject[propertyKey] is an object
-                if (typeof sourceObject[propertyKey] === 'object' && sourceObject[propertyKey] !== null) {
+                if (typeof sourceObject[propertyKey] == 'object' && sourceObject[propertyKey] !== null) {
                     // if the property doeesn't exist in the target, then create it as an empty object
                     if (! targetObject.hasOwnProperty(propertyKey)) {
                         targetObject[propertyKey] = {};
                     }
 
                     // if the property exists in the target - either because it already did or because we just created it - and is an object, then recurse
-                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] === 'object' && targetObject[propertyKey] !== null) {
+                    if (targetObject.hasOwnProperty(propertyKey) && typeof targetObject[propertyKey] == 'object' && targetObject[propertyKey] !== null) {
 
                         let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
 
@@ -434,12 +447,13 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                             keyStack.push(keyStack.length == 0 ? '(root)' : propertyKey);
                             objStack.push(sourceObject);
 
-                            cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]);
+                            returnValue = cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
 
                             keyStack.pop();
                             objStack.pop();
                         } else {
-                            console.log("WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}.");
+                            console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0,ancestorCheck+1).join('.')}`);
+                            returnValue = false;
                         }
                     }
 
@@ -452,6 +466,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                 }
             }
         }
+
+        return(returnValue);
     }
 
     /* Note: Technically the argument validation and (if cloneType is 0 or
@@ -462,19 +478,19 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      * in every recursive execution.  This is a better trade-off. */
 
     /* validate argument types and values */
-    if (typeof sourceObject !== 'object') {
+    if (typeof sourceObject != 'object') {
         console.error("cloneObject() 'sourceObject' argument isn't an object.");
-        return(false);
+        return(1);
     }
 
-    if (typeof targetObject !== 'object') {
+    if (typeof targetObject != 'object') {
         console.error("cloneObject() 'targetObject' argument isn't an object.");
-        return(false);
+        return(1);
     }
 
-    if (!(typeof cloneType === 'number') && (cloneType < 0 || cloneType > 2)) {
+    if (!(typeof cloneType == 'number') && (cloneType < 0 || cloneType > 2)) {
         console.error("cloneObject() 'cloneType' argument must be a number between 0 and 2 (inclusive).");
-        return(false);
+        return(1);
     }
 
     /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or was
@@ -492,15 +508,13 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
-    /* kick off the recursive child function */
-    cloneObjectRecursion(sourceObject, targetObject, cloneType);
-
-    /* Return true.  If there was an error ; if there was an error in the
-     * argument validation then the function will have returned false there
-     * and never got here.  If we discover a case where the recursive copy
-     * could have an abnormal exit, then we can update this code to error trap
-     * and/or return false to be caught here. */
-    return(true);
+    /* Kick off the recursive child function.
+     *
+     * The child function will return false if it ran into a circular
+     * reference; the parent function should return 2.  The child function
+     * will return true if it didn't run into a circular reference; the parent
+     * function should return 0. */
+    return(cloneObjectRecursion(sourceObject, targetObject, cloneType) ? 0 : 2);
 }
 
 
@@ -529,15 +543,15 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                 // if this property is a configuration schema directive that is an object and includes a keyClass property
                 if (propertyKey.charAt(0) === '(' &&
                     propertyKey.slice(-1) === ')' &&
-                    typeof cfgSchemaObj[propertyKey] === 'object' &&
+                    typeof cfgSchemaObj[propertyKey] == 'object' &&
                     cfgSchemaObj[propertyKey].hasOwnProperty('keyClass')) {
                     
                     // make sure that the 'keyClass' property value is a string
-                    if (typeof cfgSchemaObj[propertyKey]['keyClass'] === 'string') {
+                    if (typeof cfgSchemaObj[propertyKey]['keyClass'] == 'string') {
                         // make sure that there is a keyClass object at the configuration schema root
-                        if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && typeof cfgSchemaRootObj['(keyClasses)'] === 'object') {
+                        if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && typeof cfgSchemaRootObj['(keyClasses)'] == 'object') {
                             // check for the referenced keyClass definition, as an object
-                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] === 'object') {
+                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] == 'object') {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr} ${cfgSchemaObj[propertyKey]['keyClass']}'.`);
                                     returnValue = false;
@@ -548,7 +562,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                             }
                                 
                             // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
-                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] === 'object') {
+                            if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] == 'object') {
                                 if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`);
                                     returnValue = false;
@@ -580,7 +594,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                 // if propertyName starts with '(' - in other words, a configuration schema directive
                 if (propertyKey.charAt(0) === '(') {
 
-                    if (typeof cfgSchemaObj[propertyKey] !== 'object') {
+                    if (typeof cfgSchemaObj[propertyKey] != 'object') {
                         console.error(`Configuration schema directive '${propertyString}' is not an object.`);
                         returnValue = false;
                     }
@@ -611,10 +625,10 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
                             // check for required and invalid child properties of a dynamic configuration schema directive
                             // already reported on whether this is an object; testing here to avoid spurious error messages
-                            if (typeof cfgSchemaObj[propertyKey] === 'object') {
+                            if (typeof cfgSchemaObj[propertyKey] == 'object') {
 
                                 // checks specific to a dynamic configuration schema directive that references an object property
-                                if (propertyKeyReferenced && cfgSchemaObj.hasOwnProperty(propertyKeyReferenced) && typeof cfgSchemaObj[propertyKeyReferenced] === 'object') {
+                                if (propertyKeyReferenced && cfgSchemaObj.hasOwnProperty(propertyKeyReferenced) && typeof cfgSchemaObj[propertyKeyReferenced] == 'object') {
                                     // 'valueRegex' child property can't exist
                                     if (cfgSchemaObj[propertyKey]['valueRegex']) {
                                         console.error(`Configuration schema directive '${propertyString}' is for an object property but has a child property 'valueregex'.`);
@@ -667,7 +681,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
                                                 // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
                                                 // or references a valid regex class
-                                                if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] === 'string') {
+                                                if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] == 'string') {
 
                                                     // is propertyKeySubkey a reference to a regex class?
                                                     if (cfgSchemaObj[propertyKey][propertyKeySubkey].slice(0, 12) === '(regexClass:') {
@@ -676,7 +690,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                                         // test whether this is a reference to a valid regex class
                                                         if (!(regexMatches &&
                                                             cfgSchemaRootObj.hasOwnProperty('(regexClasses)') &&
-                                                            typeof cfgSchemaRootObj['(regexClasses)'] === 'object' &&
+                                                            typeof cfgSchemaRootObj['(regexClasses)'] == 'object' &&
                                                             cfgSchemaRootObj['(regexClasses)'].hasOwnProperty(regexMatches[1]))) {
 
                                                                 console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
@@ -704,7 +718,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                             case 'required':
                                             case 'createByDefault':
 
-                                                if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] !== 'boolean') {
+                                                if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] != 'boolean') {
                                                     console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
                                                     returnValue = false;
                                                 }
@@ -738,7 +752,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                     }
 
                     // if this proeprty is an object, then recurse
-                    if (typeof cfgSchemaObj[propertyKey] === 'object') {
+                    if (typeof cfgSchemaObj[propertyKey] == 'object') {
                         returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey], cfgSchemaStr + ' ' + propertyKey, cfgSchemaRootObj) && returnValue;
                     }
                 }
@@ -750,13 +764,13 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
     let returnValue = true;
 
-    if (typeof cfgSchemaObj !== 'object') {
+    if (typeof cfgSchemaObj != 'object') {
         console.error("cfSchemaCheck() 'cfgSchemaObj' argument isn't an object.");
         return (false);
     }
 
     if (cfgSchemaRootObj) {
-        if (typeof cfgSchemaRootObj !== 'object') {
+        if (typeof cfgSchemaRootObj != 'object') {
         console.error("cfSchemaCheck() 'cfgSchemaRootObj' argument isn't an object.");
             return (false);
         }
@@ -767,11 +781,11 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
     // validate '/ (regexClasses)' data before starting recursion
 
     if (cfgSchemaRootObj.hasOwnProperty('(regexClasses)')) {
-        if (typeof cfgSchemaObj['(regexClasses)'] === 'object') {
+        if (typeof cfgSchemaObj['(regexClasses)'] == 'object') {
             for (const regexClassName in cfgSchemaObj['(regexClasses)']) {
                 if (cfgSchemaObj['(regexClasses)'].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
                     // if the regex class value is a string, then test whether this is a valid regular expression
-                    if (typeof cfgSchemaObj['(regexClasses)'][regexClassName] === 'string') {
+                    if (typeof cfgSchemaObj['(regexClasses)'][regexClassName] == 'string') {
                         // try to use the string as a regular expression; catch any errorrs
                         try {
                             new RegExp(cfgSchemaObj['(regexClasses)'][regexClassName]);
