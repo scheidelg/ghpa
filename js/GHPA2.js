@@ -307,6 +307,15 @@ Note:
  - A valid source object and target object must be passed in as function
    arguments.
 
+ - The properties of the copied targetObject will *not* enumerate in the same
+   order as the properties of sourceObject, for two reasons.  First, we review
+   the properties of the sourceObject in reverse order using while(keyIndex--)
+   for slightly better performance, which means we copy the properties to
+   targetObject in reverse order.  Second, if we retain existing properties
+   with cloneType 1 or 2, then the 'position' of those properties - relative
+   to other properties - can be different in sourceObject and the copied
+   targetObject.
+
  - If it weren't for cloneType options 1 and 2, then this function could be
    much simpler.
 
@@ -440,14 +449,15 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
         /* Iterate through all non-inherited properties of sourceObject.
          *
-         * We're using Object.keys() to create an array of enumerable
-         * non-inherited properties, and while(keyCounter--) to iterate - as
-         * opposed to a for...in loop; for better performance.  The trade-off
-         * is using up a very small bit more memory for the array. */
-        const sourceObjectKeys = Object.keys(sourceObject);
-        let keyCounter = sourceObjectKeys.length;
-        while(keyCounter--) {
-            const propertyKey = sourceObjectKeys[keyCounter];
+         * We're using Object.getOwnPropertyNames() to create an array of
+         * enumerable and non-enumerable non-inherited properties, and
+         * while(keyCounter--) to iterate - as opposed to a for...in loop; for
+         * better performance.  The trade-off is using up a very small bit
+         * more memory for the array. */
+        const sourceObjectKeys = Object.getOwnPropertyNames(sourceObject);
+        let keyIndex = sourceObjectKeys.length;
+        while(keyIndex--) {
+            const propertyKey = sourceObjectKeys[keyIndex];
 
             /* If cloneType 1, then delete all existing targetObject
              * properties that conflict with sourceObject properties.
