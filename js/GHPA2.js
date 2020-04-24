@@ -17,7 +17,7 @@ GHPA.
 ----------------------------------------------------------------------------
 Copyright (c) Greg Scheidel.
 
-GHPA is licensed under the GNU General Public License v3.0.
+Licensed under the GNU General Public License v3.0.
 ----------------------------------------------------------------------------*/
 
 'use strict';
@@ -418,6 +418,8 @@ Return Value
        a fatal error, depending on the specific use of the function
 ------------------------------------------------------------------------------
 (c) Greg Scheidel, 2020.04.24
+
+Licensed under the GNU General Public License v3.0.
 ----------------------------------------------------------------------------*/
 function copyObject(sourceObject, targetObject, copyType) {
 
