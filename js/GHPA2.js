@@ -789,7 +789,7 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
 
                                 // 'createByDefault' child property can't exist
                                 if (cfgSchemaObj[propertyKey].hasOwnProperty('createByDefault')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is a wildcard and has a child property 'createByDefault'.`);
+                                    console.error(`Configuration schema directive '${propertyString}' is a wildcard but has a child property 'createByDefault'; 'createByDefault' is only valid for a non-wildcard.`);
                                     returnValue = false;
                                 }
 
@@ -797,13 +797,13 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                             } else {
                                 // 'keyRegex' child property can't exist
                                 if (cfgSchemaObj[propertyKey].hasOwnProperty('keyRegex')) {
-                                    console.error(`Configuration schema directive '${propertyString}' references a configuration schema value property but has a child property 'keyRegex'; 'keyRegex' is only valid when referencing a configuration schema object property.`);
+                                    console.error(`Configuration schema directive '${propertyString}' references a configuration schema value property but has a child property 'keyRegex'; 'keyRegex' is only valid when referencing a wildcard configuration schema object property.`);
                                     returnValue = false;
                                 }
 
                                 // 'createByDefault' child property must exist
                                 if (! cfgSchemaObj[propertyKey].hasOwnProperty('createByDefault')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is for a configuration scheme value property but doesn't have a child property 'createByDefault'.`);
+                                    console.error(`Configuration schema directive '${propertyString}' is for a configuration schema value property but doesn't have a child property 'createByDefault'.`);
                                     returnValue = false;
                                 }
                             }
@@ -877,7 +877,7 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
 
                 // configuration schema directive that doesn't end with a closing ')' character?
                 } else {
-                    console.error(`Configuration schema property '${propertyString}' starts with a '(' but doesn't end with a ')'.`);
+                    console.error(`Configuration schema property or directive key '${propertyString}' starts with a '(' but doesn't end with a ')'.`);
                     returnValue = false;
                 }
 
