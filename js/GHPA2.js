@@ -417,7 +417,10 @@ Return Value
     2: circular reference detected and logged in console; may or may not be
        a fatal error, depending on the specific use of the function
 ------------------------------------------------------------------------------
-(c) Greg Scheidel, 2020.04.24
+2020.04.24-01, original version
+
+------------------------------------------------------------------------------
+(c) Greg Scheidel, 2020.04.24, v1.0
 
 Licensed under the GNU General Public License v3.0.
 ----------------------------------------------------------------------------*/
