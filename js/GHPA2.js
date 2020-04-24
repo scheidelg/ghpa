@@ -228,15 +228,15 @@ properties:
  - Recurse through the source to copy child children, grandchildren, etc.
    properties to the target.
 
- - If a circular reference (a child object refers to an ancestor object), then
-   don't copy the circular reference or it's children properties.  Continue
-   copying the rest of the object; and set a return value indicating a
-   circular reference was found.
+ - If a circular reference (a child object refers to an ancestor object), is
+   found, then don't copy the circular reference or it's children properties.
+   Continue copying the rest of the object; and set a return value indicating
+   a circular reference was found.
 
-The copyType argument determines how any existing targetObject properties
-will be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with
-a sourceObject property; 2 = retained even if they conflict with a
-sourceObject property.
+The copyType argument determines how any existing targetObject properties will
+be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with a
+sourceObject property; 2 = retained even if they conflict with a sourceObject
+property.
 
 For example, given two objects:
 
