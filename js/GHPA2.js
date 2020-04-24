@@ -906,7 +906,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
     if (cfgSchemaRootObj.hasOwnProperty('(regexClasses)')) {
         if (typeof cfgSchemaObj['(regexClasses)'] == 'object') {
 
-            const cfgSchemaObjKeys = Object.getOwnPropertyNames(cfgSchemaObj);
+            const cfgSchemaObjKeys = Object.getOwnPropertyNames(cfgSchemaObj['(regexClasses)']);
             let keyIndex = cfgSchemaObjKeys.length;
             while(keyIndex--) {
 
