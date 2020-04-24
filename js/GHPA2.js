@@ -409,8 +409,10 @@ Return Value
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
-    let keyStack = [];
-    let objStack = [];
+    let keyStack = ['(root)'];
+    let objStack = [sourceObject];
+//                            keyStack.push('(root)');
+//                            objStack.push(sourceObject);
 
     /* Define a child function that will be called for the recursive copy.
      *
@@ -642,8 +644,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                              * the root of the original object before
                              * recursion; use placeholder text to signify
                              * that. */
-                            keyStack.push('(root)');
-                            objStack.push(sourceObject);
+//                            keyStack.push('(root)');
+//                            objStack.push(sourceObject);
  // note - don't need to pop because the stack vars will be cleared on function exit
  
     /* Kick off the recursive child function.
