@@ -808,21 +808,28 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                                 }
                             }
 
-                            // check to make sure that any propertyKey subkeys that do exist are correctly defined
-                            for (const propertyKeySubkey in cfgSchemaObj[propertyKey]) {
-                                if (cfgSchemaObj[propertyKey].hasOwnProperty(propertyKeySubkey)) {        // only continue if this is a non-inherited property
 
-                                    switch(propertyKeySubkey) {
+
+                            // check to make sure that any propertyKey subkeys that do exist are correctly defined
+                            const cfgSchemaObjSubkeys = Object.getOwnPropertyNames(cfgSchemaObj[propertyKey]);
+                            let subkeyIndex = cfgSchemaObjSubkeys.length;
+                            while(subkeyIndex--) {
+                                const propertySubkey = cfgSchemaObjSubkeys[subkeyIndex];
+
+//                            for (const propertySubkey in cfgSchemaObj[propertyKey]) {
+//                                if (cfgSchemaObj[propertyKey].hasOwnProperty(propertySubkey)) {        // only continue if this is a non-inherited property
+
+                                    switch(propertySubkey) {
                                         case 'keyRegex':
                                         case 'valueRegex':
 
-                                            // if the propertyKeySubkey value is a string, then test whether this is a valid regular expression
+                                            // if the propertySubkey value is a string, then test whether this is a valid regular expression
                                             // or references a valid regex class
-                                            if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] == 'string') {
+                                            if (typeof cfgSchemaObj[propertyKey][propertySubkey] == 'string') {
 
-                                                // is propertyKeySubkey a reference to a regex class?
-                                                if (cfgSchemaObj[propertyKey][propertyKeySubkey].slice(0, 12) === '(regexClass:') {
-                                                    const regexMatches = cfgSchemaObj[propertyKey][propertyKeySubkey].match(/\(regexClass:(.*)\)/);
+                                                // is propertySubkey a reference to a regex class?
+                                                if (cfgSchemaObj[propertyKey][propertySubkey].slice(0, 12) === '(regexClass:') {
+                                                    const regexMatches = cfgSchemaObj[propertyKey][propertySubkey].match(/\(regexClass:(.*)\)/);
 
                                                     // test whether this is a reference to a valid regex class
                                                     if (!(regexMatches &&
@@ -830,24 +837,24 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                                                         typeof cfgSchemaRootObj['(regexClasses)'] == 'object' &&
                                                         cfgSchemaRootObj['(regexClasses)'].hasOwnProperty(regexMatches[1]))) {
 
-                                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' references a non-existing regular expression class.`);
+                                                            console.error(`Configuration schema property '${propertyKey} / ${propertySubkey}' references a non-existing regular expression class.`);
                                                             returnValue = false;
                                                     }
 
-                                                // propertyKeySubkey is not a reference to a regex class; test whether it's a valid regex
+                                                // propertySubkey is not a reference to a regex class; test whether it's a valid regex
                                                 } else {
                                                     // try to use the string as a regular expression; catch any errorrs
                                                     try {
-                                                        new RegExp(cfgSchemaObj[propertyKey][propertyKeySubkey]);
+                                                        new RegExp(cfgSchemaObj[propertyKey][propertySubkey]);
                                                     } catch (errorObject) {
-                                                        console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' value /${cfgSchemaObj[propertyKeySubkey]}/ isn't a valid regular expression.`);
+                                                        console.error(`Configuration schema property '${propertyKey} / ${propertySubkey}' value /${cfgSchemaObj[propertySubkey]}/ isn't a valid regular expression.`);
                                                         returnValue = false;
                                                     }
                                                 }
 
-                                            // propertyKeySubkey property value isn't a string; error
+                                            // propertySubkey property value isn't a string; error
                                             } else {
-                                                console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a string.`);
+                                                console.error(`Configuration schema property '${propertyKey} / ${propertySubkey}' isn't a string.`);
                                                 returnValue = false;
                                             }
                                             break;
@@ -855,8 +862,8 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                                         case 'required':
                                         case 'createByDefault':
 
-                                            if (typeof cfgSchemaObj[propertyKey][propertyKeySubkey] != 'boolean') {
-                                                console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a boolean.`);
+                                            if (typeof cfgSchemaObj[propertyKey][propertySubkey] != 'boolean') {
+                                                console.error(`Configuration schema property '${propertyKey} / ${propertySubkey}' isn't a boolean.`);
                                                 returnValue = false;
                                             }
                                             break;
@@ -865,11 +872,11 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                                             break;
 
                                         default:
-                                            console.error(`Configuration schema property '${propertyKey} / ${propertyKeySubkey}' isn't a valid property of a dynamic configuration schema directive.`);
+                                            console.error(`Configuration schema property '${propertyKey} / ${propertySubkey}' isn't a valid property of a dynamic configuration schema directive.`);
                                             returnValue = false;
                                             break;
                                     }
-                                }
+//                                }
                             }
                         }
                     }
