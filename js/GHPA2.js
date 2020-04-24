@@ -168,37 +168,6 @@ async function ghpaInit() {
         return;
     }
 
-    // tests for variations of the copyObject() function
-
-    let y;
-    let fritz = {};
-    let george = {};
-
-    george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
-    fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = copyObject(george, fritz);
-
-    george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null, "d": { "d_i": 1, "d_ii": 2}};
-    fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
-    y = copyObject(george, fritz, 1);
-
-    george = {};
-    george.a = {};
-    george.a.b = {};
-    george.a.b.c = george;
-    fritz = {};
-    y = copyObject(george, fritz, 1);
-
-/*
-    fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = copyObject(ghpaConfig, fritz, 1);
-
-    fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = copyObject(ghpaConfig, fritz, 2);
-*/
-
-return;
-
     // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
     if (! cfgSchemaCheck(ghpaConfigSchema)) {
         console.error('GHPA configuration schema check failed; exiting.');
@@ -688,7 +657,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         // we have to do this as an initial pass instead of whenever we get to the configuration schema directive in the
         // full loop because the cfgSchemaObj properties aren't guaranteed to ordered with configuration schema directives before
         // their referenced configuration options.
-        for (const propertyKey in cfgSchemaObj) {        // iterate through all properties in the passed object
+        for (const propertyKey in cfgSchemaObj) {        // iterate through all non-inherited properties in the passed object
             if (cfgSchemaObj.hasOwnProperty(propertyKey)) {        // only continue if this is a non-inherited property
                 const propertyString = cfgSchemaStr + ' ' + propertyKey;
                 
@@ -930,32 +899,38 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
          cfgSchemaRootObj = cfgSchemaObj;
     }
 
+
+
     // validate '/ (regexClasses)' data before starting recursion
 
     if (cfgSchemaRootObj.hasOwnProperty('(regexClasses)')) {
         if (typeof cfgSchemaObj['(regexClasses)'] == 'object') {
-            for (const regexClassName in cfgSchemaObj['(regexClasses)']) {
-                if (cfgSchemaObj['(regexClasses)'].hasOwnProperty(regexClassName)) {        // only continue if this is a non-inherited property
-                    // if the regex class value is a string, then test whether this is a valid regular expression
-                    if (typeof cfgSchemaObj['(regexClasses)'][regexClassName] == 'string') {
-                        // try to use the string as a regular expression; catch any errorrs
-                        try {
-                            new RegExp(cfgSchemaObj['(regexClasses)'][regexClassName]);
-                        } catch (errorObject) {
-                            console.error(`Configuration schema property '/ (regexClasses) / ${regexClassName}' value /${cfgSchemaObj[regexClassName]}/ isn't a valid regular expression.`);
-                            returnValue = false;
-                        }
 
-                    // regex class property value isn't a string; error
-                    } else {
-                        console.error(`Configuration schema property '/ (regexClasses) / ${regexClassName}' isn't a string.`);
+            const cfgSchemaObjKeys = Object.getOwnPropertyNames(cfgSchemaObj);
+            let keyIndex = cfgSchemaObjKeys.length;
+            while(keyIndex--) {
+
+                const regexClassName = cfgSchemaObjKeys[keyIndex];
+                
+                // if the regex class value is a string, then test whether this is a valid regular expression
+                if (typeof cfgSchemaObj['(regexClasses)'][regexClassName] == 'string') {
+                    // try to use the string as a regular expression; catch any errorrs
+                    try {
+                        new RegExp(cfgSchemaObj['(regexClasses)'][regexClassName]);
+                    } catch (errorObject) {
+                        console.error(`Configuration schema property '(root).(regexClasses).${regexClassName}' value /${cfgSchemaObj[regexClassName]}/ isn't a valid regular expression.`);
                         returnValue = false;
                     }
+
+                // regex class property value isn't a string; error
+                } else {
+                    console.error(`Configuration schema property '(root).(regexClasses).${regexClassName}' isn't a string.`);
+                    returnValue = false;
                 }
             }
         // '/ (regexClasses)' isn't an object
         } else {
-            console.error(`Configuration schema directive '/ (regexClasses)' error; must be an object.`);
+            console.error(`Configuration schema directive '(root).(regexClasses)' error; must be an object.`);
             returnValue = false;
         }
     }
@@ -1023,4 +998,7 @@ let ghpaConfigSchema;
 // make an initial pass on the schema to make sure everything is OK, report errors there (i.e., only once), remove things from the schema that don't make sense; then when processing just skip over problems with the schema
 
 // allow comments in config files; strip them out before or as part of the *.json() call
+
+// review code for appropriate use of == vs ===
+//  x copyObject()
 
