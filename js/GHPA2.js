@@ -999,6 +999,6 @@ let ghpaConfigSchema;
 
 // allow comments in config files; strip them out before or as part of the *.json() call
 
-// review code for appropriate use of == vs ===
+// review code for appropriate use of == vs. ===
 //  x copyObject()
 
