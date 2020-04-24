@@ -168,7 +168,7 @@ async function ghpaInit() {
         return;
     }
 
-    // tests for variations of the cloneObject() function
+    // tests for variations of the copyObject() function
 
     let y;
     let fritz = {};
@@ -176,25 +176,25 @@ async function ghpaInit() {
 
     george = { "a": "1", "b": { "b_i": 2.1, "b_ii": null }};
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = cloneObject(george, fritz);
+    y = copyObject(george, fritz);
 
     george = { "z": 3, "a": "1", "b": { "b_i": {"b_i_a": "fritz"}, "b_ii": null }, "c": null, "d": { "d_i": 1, "d_ii": 2}};
     fritz = { "z": 3, "a": null, "b": { "b_i": null, "b_ii": null }, "c": {"x": 1, "y": 2}};
-    y = cloneObject(george, fritz, 1);
+    y = copyObject(george, fritz, 1);
 
     george = {};
     george.a = {};
     george.a.b = {};
     george.a.b.c = george;
     fritz = {};
-    y = cloneObject(george, fritz, 1);
+    y = copyObject(george, fritz, 1);
 
 /*
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = cloneObject(ghpaConfig, fritz, 1);
+    y = copyObject(ghpaConfig, fritz, 1);
 
     fritz = { "joey": "test", "pageOptions": { "george": true }, "loginFormOptions": 12, "ghpaClasses": {"fritz": { "organization": "bob" } } } ;
-    y = cloneObject(ghpaConfig, fritz, 2);
+    y = copyObject(ghpaConfig, fritz, 2);
 */
 
 return;
@@ -213,26 +213,27 @@ return;
 
 
 /*============================================================================
-function cloneObject(sourceObject, targetObject, cloneType)
+function copyObject(sourceObject, targetObject, copyType)
 ------------------------------------------------------------------------------
-'Clone' a JavaScript object by performing a deep copy of non-inherited
+Copy a JavaScript object by performing a deep copy of non-inherited
 properties:
 
- - For a child property that is an object, create a new object in the target
-   instead of simply copying the source object.
+ - If a a source object's property is an object, then create a new object
+   property in the target instead of simply copying the source object
+   property.
 
-   This means that target object properties will be separate from source
-   object properties, not simply references to the corresponding source
-   object properties.
+   This means that target object properties will distinct object references,
+   not simply references to the corresponding source object properties.
 
  - Recurse through the source to copy child children, grandchildren, etc.
    properties to the target.
 
  - If a circular reference (a child object refers to an ancestor object), then
-   the circular reference and any child properties aren't copied but the rest
-   of the object is still copied; and the function return value will be 2.
+   don't copy the circular reference or it's children properties.  Continue
+   copying the rest of the object; and set a return value indicating a
+   circular reference was found.
 
-The cloneType argument determines how any existing targetObject properties
+The copyType argument determines how any existing targetObject properties
 will be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with
 a sourceObject property; 2 = retained even if they conflict with a
 sourceObject property.
@@ -242,7 +243,7 @@ For example, given two objects:
     sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
     targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
 
-cloneType === 0
+copyType === 0
 
     All existing targetObject properties are deleted before sourceObject
     is copied.  After the copy:
@@ -253,7 +254,7 @@ cloneType === 0
     deleting the entire object so that any existing references to the
     object are still valid.
 
-cloneType === 1
+copyType === 1
 
     Existing targetObject properties are replaced if they conflict with a
     sourceObject property; otherwise existing targetObject properties are
@@ -276,7 +277,7 @@ cloneType === 1
        sourceObject["c"] and targetObject["c"] are objects, one is a null
        value while the other is an empty object
 
-cloneType === 2
+copyType === 2
 
     Existing targetObject properties are retained even if they conflict with a
     sourceObject property.  After the copy:
@@ -312,14 +313,14 @@ Note:
    the properties of the sourceObject in reverse order using while(keyIndex--)
    for slightly better performance, which means we copy the properties to
    targetObject in reverse order.  Second, if we retain existing properties
-   with cloneType 1 or 2, then the 'position' of those properties - relative
+   with copyType 1 or 2, then the 'position' of those properties - relative
    to other properties - can be different in sourceObject and the copied
    targetObject.
 
- - If it weren't for cloneType options 1 and 2, then this function could be
+ - If it weren't for copyType options 1 and 2, then this function could be
    much simpler.
 
- - If it weren't for cloneType options 1 and 2 and using the return value to
+ - If it weren't for copyType options 1 and 2 and using the return value to
    flag that circular references were found sourceObject, then we could simply
    return a new object instead of requiring a targetObject argument.
 
@@ -328,13 +329,13 @@ Arguments
 
 sourceObject                        object
 
-    The object to clone.
+    The object to copy.
 
 targetObject                        object
 
-    The object to clone sourceObject into.
+    The object to copy sourceObject into.
 
-cloneType                           number; optional
+copyType                           number; optional
 
     A number that determines how any existing targetObject properties will be
     handled.
@@ -415,8 +416,10 @@ Return Value
     1: invalid function arguments
     2: circular reference detected and logged in console; may or may not be
        a fatal error, depending on the specific use of the function
+------------------------------------------------------------------------------
+(c) Greg Scheidel, 2020.04.24
 ----------------------------------------------------------------------------*/
-function cloneObject(sourceObject, targetObject, cloneType) {
+function copyObject(sourceObject, targetObject, copyType) {
 
     /* Initialize objStack (for circular reference checks) to the initial
      * object, with corresponding placeholder text in keyStack. */
@@ -430,9 +433,9 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *  - Parent and child arguments are named the same; child arguments
      *    take precedence within the scope of the child function.
      *
-     *  - cloneType, keyStack, and objStack aren't passed to the child
-     *    cloneObjectRecursion() function.  There's no need, since they will
-     *    be available within the scope of the parent function; cloneType
+     *  - copyType, keyStack, and objStack aren't passed to the child
+     *    copyObjectRecursion() function.  There's no need, since they will
+     *    be available within the scope of the parent function; copyType
      *    doesn't change value across recursive calls; and keyStack and
      *    objStack elements change across recursive calls but values are
      *    pushed/popped before/after each recursive call and the recursive
@@ -441,7 +444,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *
      *  - Return true if no circular references are found; return false if
      *    circular references are found. */
-    function cloneObjectRecursion(sourceObject, targetObject) {
+    function copyObjectRecursion(sourceObject, targetObject) {
         /* Variable to hold return value.  Set to true at start; set to false
          * if there is an error; whenever recursing, set to 'recursion &&
          * current value'. */
@@ -459,7 +462,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         while(keyIndex--) {
             const propertyKey = sourceObjectKeys[keyIndex];
 
-            /* If cloneType 1, then delete all existing targetObject
+            /* If copyType 1, then delete all existing targetObject
              * properties that conflict with sourceObject properties.
              *
              * Properties that exist in both the sourceObject and targetObject
@@ -493,11 +496,11 @@ function cloneObject(sourceObject, targetObject, cloneType) {
              *    sourceObject[]==={} and targetObject[]==={} are both objects
              *    but do *not* have the same value.
              *
-             * Note that for cloneType 0, all existing targetObject properties
-             * were cleared before starting the recursion.  For cloneType 2,
+             * Note that for copyType 0, all existing targetObject properties
+             * were cleared before starting the recursion.  For copyType 2,
              * we want existing targetObject properties to take precedence
              * (i.e., be retained). */
-            if (cloneType === 1 &&
+            if (copyType === 1 &&
                 targetObject.hasOwnProperty(propertyKey) &&
                 sourceObject[propertyKey] !== targetObject[propertyKey] &&
                 !(typeof sourceObject[propertyKey] == 'object' &&
@@ -525,12 +528,12 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                  * non-null object, then recurse into  sourceObject and
                  * targetObject to copy any sourceObject properties.
                  *
-                 * Combined with previous actions based on cloneType 0 and 1,
+                 * Combined with previous actions based on copyType 0 and 1,
                  * and with the earler conditional creation of an empty
                  * object, this test allows us to replace existing target
-                 * properties for cloneType 0, retain existing non-conflicting
-                 * non-conflicting target properties for cloneType 1, and
-                 * retain all existing target properties for cloneType 2.
+                 * properties for copyType 0, retain existing non-conflicting
+                 * non-conflicting target properties for copyType 1, and
+                 * retain all existing target properties for copyType 2.
                  *
                  * We could add an additional check here for whether
                  * sourceObject[propertyKey] has any child properties, and
@@ -559,7 +562,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
                         /* Recurse; if recursion returns false then flip
                          * returnValue to false. */
-                        returnValue = cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
+                        returnValue = copyObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
 
                         /* Pop the processed propertyKey and corresponding
                          * object reference off keyStack and objStack. */
@@ -577,7 +580,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                          * console.error().  A circular reference may or may
                          * not be an error depending on the specific use case
                          * for cloning an object. */
-                        console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
+                        console.log(`WARNING: copyObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
                         returnValue = false;
                     }
                 }
@@ -590,11 +593,11 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                  * wasn't present to begin with or because we deleted it -
                  * then set it.
                  *
-                 * Combined with previous actions based on cloneType 0 and 1,
+                 * Combined with previous actions based on copyType 0 and 1,
                  * this test allows us to replace existing target properties
-                 * for cloneType 0, retain existing non-conflicting target
-                 * properties for cloneType 1, and retain all existing target
-                 * properties for cloneType 2. */
+                 * for copyType 0, retain existing non-conflicting target
+                 * properties for copyType 1, and retain all existing target
+                 * properties for copyType 2. */
                 if (! targetObject.hasOwnProperty(propertyKey)) {
                     targetObject[propertyKey] = sourceObject[propertyKey];
                 }
@@ -604,7 +607,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         return(returnValue);
     }
 
-    /* Note: Technically the argument validation and (if cloneType is 0 or
+    /* Note: Technically the argument validation and (if copyType is 0 or
      * undefined) initial deletion of all object properties could be performed
      * in the recursive child function... In which case we wouldn't need a
      * parent function at all and could just call the recursive function to
@@ -614,28 +617,28 @@ function cloneObject(sourceObject, targetObject, cloneType) {
 
     /* validate argument types and values */
     if (typeof sourceObject != 'object') {
-        console.error("cloneObject() 'sourceObject' argument isn't an object.");
+        console.error("copyObject() 'sourceObject' argument isn't an object.");
         return(1);
     }
 
     if (typeof targetObject != 'object') {
-        console.error("cloneObject() 'targetObject' argument isn't an object.");
+        console.error("copyObject() 'targetObject' argument isn't an object.");
         return(1);
     }
 
-    if (!(typeof cloneType == 'number') && (cloneType < 0 || cloneType > 2)) {
-        console.error("cloneObject() 'cloneType' argument must be a number between 0 and 2 (inclusive).");
+    if (!(typeof copyType == 'number') && (copyType < 0 || copyType > 2)) {
+        console.error("copyObject() 'copyType' argument must be a number between 0 and 2 (inclusive).");
         return(1);
     }
 
-    /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or
+    /* If copyType is 0 or undefined (i.e., wasn't passed as an argument or
      * was explicitely passed as undefined), then delete any existing
      * targetObject properties.
      *
      * Existing properties are individually deleted instead of simply
      * deleting the entire object so that any existing references to the
      * object are still valid. */
-    if (! cloneType) {
+    if (! copyType) {
         for (const propertyKey in targetObject){
             if (targetObject.hasOwnProperty(propertyKey)){
                 delete targetObject[propertyKey];
@@ -658,7 +661,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      * next step is to exit this function, and we don't need the variables any
      * more (the variables will go out of scope and the referenced memory will
      * be reclaimed). */
-    return(cloneObjectRecursion(sourceObject, targetObject, cloneType) ? 0 : 2);
+    return(copyObjectRecursion(sourceObject, targetObject, copyType) ? 0 : 2);
  }
 
 
@@ -696,7 +699,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                         if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && typeof cfgSchemaRootObj['(keyClasses)'] == 'object') {
                             // check for the referenced keyClass definition, as an object
                             if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) && typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] == 'object') {
-                                if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
+                                if (!copyObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr} ${cfgSchemaObj[propertyKey]['keyClass']}'.`);
                                     returnValue = false;
                                 }
@@ -707,7 +710,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                 
                             // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
                             if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] == 'object') {
-                                if (!cloneObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
+                                if (!copyObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
                                     console.error(`Error copying keyClass data '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`);
                                     returnValue = false;
                                 }
