@@ -543,13 +543,8 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                             /* Push this propertyKey and the corresponding
                              * object reference onto the keyStack and objStack
                              * so that we can test whether descendant
-                             * properties are circular references.
-                             *
-                             * If the stack is currently empty, then we're at
-                             * the root of the original object before
-                             * recursion; use placeholder text to signify
-                             * that. */
-                            keyStack.push(keyStack.length == 0 ? '(root)' : propertyKey);
+                             * properties are circular references. */
+                            keyStack.push(propertyKey);
                             objStack.push(sourceObject);
 
                             /* Recurse; if recursion returns false then flip
@@ -638,6 +633,19 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
+                            /* Push this propertyKey and the corresponding
+                             * object reference onto the keyStack and objStack
+                             * so that we can test whether descendant
+                             * properties are circular references.
+                             *
+                             * If the stack is currently empty, then we're at
+                             * the root of the original object before
+                             * recursion; use placeholder text to signify
+                             * that. */
+                            keyStack.push('(root)');
+                            objStack.push(sourceObject);
+ // note - don't need to pop because the stack vars will be cleared on function exit
+ 
     /* Kick off the recursive child function.
      *
      * The child function will return false if it ran into a circular
@@ -645,7 +653,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      * will return true if it didn't run into a circular reference; the parent
      * function should return 0. */
     return(cloneObjectRecursion(sourceObject, targetObject, cloneType) ? 0 : 2);
-}
+ }
 
 
 function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
