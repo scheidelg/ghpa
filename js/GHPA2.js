@@ -545,7 +545,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                              * so that we can test whether descendant
                              * properties are circular references. */
                             keyStack.push(propertyKey);
-                            objStack.push(sourceObject);
+                            objStack.push(sourceObject[propertyKey]);
 
                             /* Recurse; if recursion returns false then flip
                              * returnValue to false. */
