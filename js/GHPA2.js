@@ -644,15 +644,15 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
     function cfgSchemaCheckRecursion(cfgSchemaObj, cfgSchemaStr) {
         let keyIndex;
         let returnValue = true;
-        
+
+        cfgSchemaStr = keyStack.join('.');      // (! cfgSchemaStr) ? '/' : (cfgSchemaStr + ' /');
+
         // get an array of non-inherited enumerable and non-enumerable keys for this object; do this once up top
         // because we're going to reference this array on multiple passes through the keys
         //
         // we use this technique instead of a for...in because it's faster; we *can* use this technique instead of a
         // for...in becuase we're not going to add or delete the object's keys during processing
         const cfgSchemaObjKeys = Object.getOwnPropertyNames(cfgSchemaObj);
-        
-        cfgSchemaStr = (! cfgSchemaStr) ? '/' : (cfgSchemaStr + ' /');
 
         // take an initial pass at the cfgSchemaObj properties (at this level of recursion) to find any dynamic configuration schema directives that contain
         // 'keyClass' properties; if any are found, then copy in the properties from the specified keyClass.
@@ -671,7 +671,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         while(keyIndex--) {
             const propertyKey = cfgSchemaObjKeys[keyIndex];
 
-            const propertyString = cfgSchemaStr + ' ' + propertyKey;
+            const propertyString = `${keyStack.join('.')}.${propertyKey}`;
 
             // if this property is a configuration schema directive that is an object and includes a keyClass property
             if (propertyKey.charAt(0) == '(' &&
@@ -725,7 +725,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         while(keyIndex--) {
             const propertyKey = cfgSchemaObjKeys[keyIndex];
 
-            const propertyString = cfgSchemaStr + ' ' + propertyKey;
+            const propertyString = `${keyStack.join('.')}.${propertyKey}`;
 console.log(`schema check: ${propertyString}`);       // debugging - get rid of this
 
             // if propertyName starts with '(' - in other words, a configuration schema directive
