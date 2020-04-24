@@ -687,7 +687,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                         if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) &&
                             typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] == 'object') {
 
-                            if (!copyObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2)) {
+                            if (copyObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2) != 0) {
                                 console.error(`Error copying keyClass data '(root).(keyClasses) / ${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr} ${cfgSchemaObj[propertyKey]['keyClass']}'.`);
                                 returnValue = false;
                             }
@@ -698,7 +698,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
                         // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
                         if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] == 'object') {
-                            if (!copyObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2)) {
+                            if (copyObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2) != 0) {
                                 console.error(`Error copying keyClass data '/ (keyClasses) / (${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`);
                                 returnValue = false;
                             }
