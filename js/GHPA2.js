@@ -409,10 +409,10 @@ Return Value
 ----------------------------------------------------------------------------*/
 function cloneObject(sourceObject, targetObject, cloneType) {
 
-    let keyStack = ['(root)'];
-    let objStack = [sourceObject];
-//                            keyStack.push('(root)');
-//                            objStack.push(sourceObject);
+    /* Initialize objStack (for circular reference checks) to the initial
+     * object, with corresponding placeholder text in keyStack. */
+    const keyStack = ['(root)'];
+    const objStack = [sourceObject];
 
     /* Define a child function that will be called for the recursive copy.
      *
@@ -438,171 +438,169 @@ function cloneObject(sourceObject, targetObject, cloneType) {
          * current value'. */
         let returnValue = true;
 
-        /* Iterate through all non-inherited properties of sourceObject. */
-//var keys = Object.keys(obj), i = keys.length;
-
-//while(i--) {
+        /* Iterate through all non-inherited properties of sourceObject.
+         *
+         * We're using Object.keys() to create an array of enumerable
+         * non-inherited properties, and while(keyCounter--) to iterate - as
+         * opposed to a for...in loop; for better performance.  The trade-off
+         * is using up a very small bit more memory for the array. */
         const sourceObjectKeys = Object.keys(sourceObject);
         let keyCounter = sourceObjectKeys.length;
         while(keyCounter--) {
             const propertyKey = sourceObjectKeys[keyCounter];
- //        for (const propertyKey in sourceObject) {
-            /* only non-inherited properties */
-//            if (sourceObject.hasOwnProperty(propertyKey)) {
 
-                /* If cloneType 1, then delete all existing targetObject
-                 * properties that conflict with sourceObject properties.
-                 *
-                 * Properties that exist in both the sourceObject and
-                 * targetObject but do *not* conflict:
-                 *
-                 *  - Properties with the same type and value.
-                 *
-                 *    There's no need to delete and recreate a property with
-                 *    the same value.
-                 *
-                 *  - Properties that are both non-null objects.
-                 *
-                 *    There's no need to delete and recreate a property that
-                 *    is already a non-null object and will be used as a
-                 *    non-null object.  Also, deleting the existing non-null
-                 *    object would delete any child properties - which we want
-                 *    to keep, if they don't conflict with child properties in
-                 *    sourceObject.
-                 *
-                 * Examples:
-                 *
-                 *    sourceObject[]===null and targetObject[]===null are
-                 *    both objects and have the same value.
-                 *
-                 *    sourceObject[]===0 and targetObject[]===0 are both
-                 *    numbers and have the same value.
-                 *  
-                 *    sourceObject[]==="" and targetObject[]==="" are both
-                 *    strings and have the same value.
-                 *  
-                 *    sourceObject[]==={} and targetObject[]==={} are both
-                 *    objects but do *not* have the same value.
-                 *
-                 * Note that for cloneType 0, all existing targetObject
-                 * properties were cleared before starting the recursion.  For
-                 * cloneType 2, we want existing targetObject properties to
-                 * take precedence (i.e., be retained). */
-                if (cloneType === 1 &&
-                    targetObject.hasOwnProperty(propertyKey) &&
-                    sourceObject[propertyKey] !== targetObject[propertyKey] &&
-                    !(typeof sourceObject[propertyKey] == 'object' &&
-                        sourceObject[propertyKey] !== null &&
-                        typeof targetObject[propertyKey] == 'object' &&
-                        targetObject[propertyKey] !== null)) {
+            /* If cloneType 1, then delete all existing targetObject
+             * properties that conflict with sourceObject properties.
+             *
+             * Properties that exist in both the sourceObject and targetObject
+             * but do *not* conflict:
+             *
+             *  - Properties with the same type and value.
+             *
+             *    There's no need to delete and recreate a property with the
+             *    same value.
+             *
+             *  - Properties that are both non-null objects.
+             *
+             *    There's no need to delete and recreate a property that is
+             *    already a non-null object and will be used as a non-null
+             *    object.  Also, deleting the existing non-null object would
+             *    delete any child properties - which we want to keep, at
+             *    least to keep, if they don't conflict with child properties
+             *    in sourceObject.
+             *
+             * Examples:
+             *
+             *    sourceObject[]===null and targetObject[]===null are both
+             *    objects and have the same value.
+             *
+             *    sourceObject[]===0 and targetObject[]===0 are both numbers
+             *    and have the same value.
+             *  
+             *    sourceObject[]==="" and targetObject[]==="" are both strings
+             *    and have the same value.
+             *  
+             *    sourceObject[]==={} and targetObject[]==={} are both objects
+             *    but do *not* have the same value.
+             *
+             * Note that for cloneType 0, all existing targetObject properties
+             * were cleared before starting the recursion.  For cloneType 2,
+             * we want existing targetObject properties to take precedence
+             * (i.e., be retained). */
+            if (cloneType === 1 &&
+                targetObject.hasOwnProperty(propertyKey) &&
+                sourceObject[propertyKey] !== targetObject[propertyKey] &&
+                !(typeof sourceObject[propertyKey] == 'object' &&
+                    sourceObject[propertyKey] !== null &&
+                    typeof targetObject[propertyKey] == 'object' &&
+                    targetObject[propertyKey] !== null)) {
 
-                    /* Delete the existing targetObject property. */
-                    delete targetObject[propertyKey]
+                /* Delete the existing targetObject property. */
+                delete targetObject[propertyKey]
+            }
+
+            /* If sourceObject[propertyKey] is a non-null object, then we'll
+             * want to recurse into it. */
+            if (typeof sourceObject[propertyKey] == 'object' && sourceObject[propertyKey] !== null) {
+
+                /* If the property doesn't already exist in the target, then
+                 * create it as an empty object so that we can recurse into
+                 * both sourceObject and targetObject. */
+                if (! targetObject.hasOwnProperty(propertyKey)) {
+                    targetObject[propertyKey] = {};
                 }
 
-                /* If sourceObject[propertyKey] is a non-null object, then
-                 * we'll want to recurse into it. */
-                if (typeof sourceObject[propertyKey] == 'object' && sourceObject[propertyKey] !== null) {
+                /* If the property exists in the target - either because it
+                 * already did or because we just created it - and is a
+                 * non-null object, then recurse into  sourceObject and
+                 * targetObject to copy any sourceObject properties.
+                 *
+                 * Combined with previous actions based on cloneType 0 and 1,
+                 * and with the earler conditional creation of an empty
+                 * object, this test allows us to replace existing target
+                 * properties for cloneType 0, retain existing non-conflicting
+                 * non-conflicting target properties for cloneType 1, and
+                 * retain all existing target properties for cloneType 2.
+                 *
+                 * We could add an additional check here for whether
+                 * sourceObject[propertyKey] has any child properties, and
+                 * only recurse if it does.  However, that would be more
+                 * computationally expensive then just recursing and returning
+                 * when the 'for' loop generates an empty set. */
+                if (targetObject.hasOwnProperty(propertyKey) &&
+                    typeof targetObject[propertyKey] == 'object' &&
+                    targetObject[propertyKey] !== null) {
 
-                    /* If the property doesn't already exist in the target,
-                     * then create it as an empty object so that we can
-                     * recurse into both sourceObject and targetObject. */
-                    if (! targetObject.hasOwnProperty(propertyKey)) {
-                        targetObject[propertyKey] = {};
-                    }
-
-                    /* If the property exists in the target - either because
-                     * it already did or because we just created it - and is
-                     * a non-null object, then recurse into  sourceObject and
-                     * targetObject to copy any sourceObject properties.
-                     *
-                     * Combined with previous actions based on cloneType 0 and
-                     * 1, and with the earler conditional creation of an empty
-                     * object, this test allows us to replace existing target
-                     * properties for cloneType 0, retain existing
-                     * non-conflicting target properties for cloneType 1, and
-                     * retain all existing target properties for cloneType 2.
-                     *
-                     * We could add an additional check here for whether
-                     * sourceObject[propertyKey] has any child properties, and
-                     * only recurse if it does.  However, that would be more
-                     * computationally expensive then just recursing and
-                     * returning when the 'for' loop generates an empty set.
+                    /* Look for the sourceObject[propertyKey] value (i.e., the
+                     * object reference) in the stack of ancestor object
+                     * references.  If we find it, then
+                     * sourceObject[propertyKey] is a circular reference.
                      */
-                    if (targetObject.hasOwnProperty(propertyKey) &&
-                        typeof targetObject[propertyKey] == 'object' &&
-                        targetObject[propertyKey] !== null) {
+                    let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
 
-                        /* Look for the sourceObject[propertyKey] value (i.e.,
-                         * the object reference) in the stack of ancestor
-                         * object references.  If we find it, then
-                         * sourceObject[propertyKey] is a circular reference.
-                         */
-                        let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
+                    /* Recurse if this isn't a circular reference. */
+                    if (ancestorCheck == -1) {
+                        /* Push this propertyKey and the corresponding object
+                         * reference onto the keyStack and objStack so that we
+                         * can test whether descendant properties are circular
+                         * references. */
+                        keyStack.push(propertyKey);
+                        objStack.push(sourceObject[propertyKey]);
 
-                        /* Recurse if this isn't a circular reference. */
-                        if (ancestorCheck == -1) {
-                            /* Push this propertyKey and the corresponding
-                             * object reference onto the keyStack and objStack
-                             * so that we can test whether descendant
-                             * properties are circular references. */
-                            keyStack.push(propertyKey);
-                            objStack.push(sourceObject[propertyKey]);
+                        /* Recurse; if recursion returns false then flip
+                         * returnValue to false. */
+                        returnValue = cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
 
-                            /* Recurse; if recursion returns false then flip
-                             * returnValue to false. */
-                            returnValue = cloneObjectRecursion(sourceObject[propertyKey], targetObject[propertyKey]) && returnValue;
+                        /* Pop the processed propertyKey and corresponding
+                         * object reference off keyStack and objStack. */
+                        keyStack.pop();
+                        objStack.pop();
 
-                            /* Pop the processed propertyKey and corresponding
-                             * object reference off keyStack and objStack. */
-                            keyStack.pop();
-                            objStack.pop();
-
-                        /* If a circular reference was detected, then generate
-                         * a log message and set returnValue to false.
-                         * However, do *not* error out and stop processing. We
-                         * We want to copy all of the branches of the original
-                         * object, as far as each branch can go before hitting
-                         * a circular reference. */
-                        } else {
-                            /* Note that this is console.log() instead of
-                             * console.error().  A circular reference may or
-                             * may not be an error depending on the specific
-                             * use case for cloning an object. */
-                            console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
-                            returnValue = false;
-                        }
-                    }
-
-                /* If sourceObject[propertyKey] isn't an object or is a null
-                 * object, then we don't want to recurse; just set
-                 * targetObject[propertyKey]. */
-                } else {
-                    /* If the target property doesn't exist - either because
-                     * it wasn't present to begin with or because we deleted
-                     * it - then set it.
-                     *
-                     * Combined with previous actions based on cloneType 0 and
-                     * 1, this test allows us to replace existing target
-                     * properties for cloneType 0, retain existing
-                     * non-conflicting target properties for cloneType 1, and
-                     * retain all existing target properties for cloneType 2. */
-                    if (! targetObject.hasOwnProperty(propertyKey)) {
-                        targetObject[propertyKey] = sourceObject[propertyKey];
+                    /* If a circular reference was detected, then generate a
+                     * log message and set returnValue to false.  However, do
+                     * *not* error out and stop processing. We want to copy
+                     * all of the branches of the original object, as far as
+                     * each branch can go before hitting a circular
+                     * reference. */
+                    } else {
+                        /* Note that this is console.log() instead of
+                         * console.error().  A circular reference may or may
+                         * not be an error depending on the specific use case
+                         * for cloning an object. */
+                        console.log(`WARNING: cloneObject() circular reference detected in sourceObject; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
+                        returnValue = false;
                     }
                 }
-            //}
+
+            /* If sourceObject[propertyKey] isn't an object or is a null
+             * object, then we don't want to recurse; just set
+             * targetObject[propertyKey]. */
+            } else {
+                /* If the target property doesn't exist - either because it
+                 * wasn't present to begin with or because we deleted it -
+                 * then set it.
+                 *
+                 * Combined with previous actions based on cloneType 0 and 1,
+                 * this test allows us to replace existing target properties
+                 * for cloneType 0, retain existing non-conflicting target
+                 * properties for cloneType 1, and retain all existing target
+                 * properties for cloneType 2. */
+                if (! targetObject.hasOwnProperty(propertyKey)) {
+                    targetObject[propertyKey] = sourceObject[propertyKey];
+                }
+            }
         }
 
         return(returnValue);
     }
 
     /* Note: Technically the argument validation and (if cloneType is 0 or
-     * undefined) initial deletion of all object properties could be performed in
-     * the recursive child function... In which case we wouldn't need a parent
-     * function at all and could just call the recursive function to begin with.
-     * However, that would mean unnecessarily including and running this code
-     * in every recursive execution.  This is a better trade-off. */
+     * undefined) initial deletion of all object properties could be performed
+     * in the recursive child function... In which case we wouldn't need a
+     * parent function at all and could just call the recursive function to
+     * begin with. However, that would mean unnecessarily including and
+     * running this code in every recursive execution.  This is a better
+     * trade-off. */
 
     /* validate argument types and values */
     if (typeof sourceObject != 'object') {
@@ -620,13 +618,13 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         return(1);
     }
 
-    /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or was
-     * explicitely passed as undefined), then delete any existing targetObject
-     * properties.
+    /* If cloneType is 0 or undefined (i.e., wasn't passed as an argument or
+     * was explicitely passed as undefined), then delete any existing
+     * targetObject properties.
      *
-     * Existing properties are individually deleted instead of simply deleting
-     * the entire object so that any existing references to the object are
-     * still valid. */
+     * Existing properties are individually deleted instead of simply
+     * deleting the entire object so that any existing references to the
+     * object are still valid. */
     if (! cloneType) {
         for (const propertyKey in targetObject){
             if (targetObject.hasOwnProperty(propertyKey)){
@@ -635,25 +633,21 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         }
     }
 
-                            /* Push this propertyKey and the corresponding
-                             * object reference onto the keyStack and objStack
-                             * so that we can test whether descendant
-                             * properties are circular references.
-                             *
-                             * If the stack is currently empty, then we're at
-                             * the root of the original object before
-                             * recursion; use placeholder text to signify
-                             * that. */
-//                            keyStack.push('(root)');
-//                            objStack.push(sourceObject);
- // note - don't need to pop because the stack vars will be cleared on function exit
- 
     /* Kick off the recursive child function.
      *
      * The child function will return false if it ran into a circular
      * reference; the parent function should return 2.  The child function
      * will return true if it didn't run into a circular reference; the parent
-     * function should return 0. */
+     * function should return 0.
+     *
+     * Note: Inside the child function, before recursion we push the next
+     * object onto objStack, and it's key onto keystack; after recursion we
+     * pop those values.  We don't need to push here because we already set
+     * the initial values at the top of this function when we created the
+     * objStack and keyStack variables; we don't need to pop here because our
+     * next step is to exit this function, and we don't need the variables any
+     * more (the variables will go out of scope and the referenced memory will
+     * be reclaimed). */
     return(cloneObjectRecursion(sourceObject, targetObject, cloneType) ? 0 : 2);
  }
 
