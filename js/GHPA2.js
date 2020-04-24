@@ -419,9 +419,14 @@ function cloneObject(sourceObject, targetObject, cloneType) {
      *  - Parent and child arguments are named the same; child arguments
      *    take precedence within the scope of the child function.
      *
-     *  - cloneType isn't passed to the child cloneObjectRecursion() function.
-     *    There's no need, since cloneType will be available within the scope
-     *    of the parent function.
+     *  - cloneType, keyStack, and objStack aren't passed to the child
+     *    cloneObjectRecursion() function.  There's no need, since they will
+     *    be available within the scope of the parent function; cloneType
+     *    doesn't change value across recursive calls; and keyStack and
+     *    objStack elements change across recursive calls but values are
+     *    pushed/popped before/after each recursive call and the recursive
+     *    calls aren't being executed in parallel (if they were, then each
+     *    recursive call would need its own copy of the stacks).
      *
      *  - Return true if no circular references are found; return false if
      *    circular references are found. */
@@ -432,9 +437,16 @@ function cloneObject(sourceObject, targetObject, cloneType) {
         let returnValue = true;
 
         /* Iterate through all non-inherited properties of sourceObject. */
-        for (const propertyKey in sourceObject) {
+//var keys = Object.keys(obj), i = keys.length;
+
+//while(i--) {
+        const sourceObjectKeys = Object.keys(sourceObject);
+        let keyCounter = sourceObjectKeys.length;
+        while(keyCounter--) {
+            const propertyKey = sourceObjectKeys[keyCounter];
+ //        for (const propertyKey in sourceObject) {
             /* only non-inherited properties */
-            if (sourceObject.hasOwnProperty(propertyKey)) {
+//            if (sourceObject.hasOwnProperty(propertyKey)) {
 
                 /* If cloneType 1, then delete all existing targetObject
                  * properties that conflict with sourceObject properties.
@@ -582,7 +594,7 @@ function cloneObject(sourceObject, targetObject, cloneType) {
                         targetObject[propertyKey] = sourceObject[propertyKey];
                     }
                 }
-            }
+            //}
         }
 
         return(returnValue);
