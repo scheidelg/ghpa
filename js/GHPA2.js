@@ -172,7 +172,7 @@ function readJSONfile(JSONfile) {
         return(response.text());
     })
     .then(function (text) {
-        return(JSON.parse(text));
+        return(JSON.parse(text.replace(/^\s*\/\/.*$/gm, '').replace(/^\s*\/\*(.|[\r\n])*?\*\//gm, '')));
     })
     .catch(function (errObject) {
         console.error(`Error processing ${JSONfile}: ${errObject.message}`);
