@@ -1,6 +1,6 @@
 // this is a test
 {
-    "(regexClasses)": {  // this is another test
+    "(regexClasses)": {
         "URIpath": "^(([0-9a-zA-Z\\$\\-_\\.\\+\\!\\*\\'\\(\\),\\/])|(%[2-9a-fA-F][0-9a-fA-F]))+$",
         "URIfile": "^(([0-9a-zA-Z\\$\\-_\\.\\+\\!\\*\\'\\(\\),])|(%[2-9a-fA-F][0-9a-fA-F]))+$"
 /* this is some more testing
