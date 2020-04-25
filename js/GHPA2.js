@@ -186,15 +186,15 @@ async function ghpaInit() {
         return;
     }
 
-    // read the GHPA configuration
-    if (!(ghpaConfig = await readJSONfile('/ghpaConfig.json'))) {
-        console.error('Failed to load of the GHPA configuration file; exiting.');
+    // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
+    if (! csmSchemaCheck(ghpaConfigSchema)) {
+        console.error('GHPA configuration schema check failed; exiting.');
         return;
     }
 
-    // process the GHPA configuration schema to ensure that it doesn't have any issues; everything needs to be solid to continue
-    if (! cfgSchemaCheck(ghpaConfigSchema)) {
-        console.error('GHPA configuration schema check failed; exiting.');
+    // read the GHPA configuration
+    if (!(ghpaConfig = await readJSONfile('/ghpaConfig.json'))) {
+        console.error('Failed to load of the GHPA configuration file; exiting.');
         return;
     }
 
@@ -664,117 +664,14 @@ function copyObject(sourceObject, targetObject, copyType) {
 
 
 /*============================================================================
-function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj)
+function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj)
 ------------------------------------------------------------------------------
-Given a 
-Copy a JavaScript object by performing a deep copy of non-inherited
-properties:
+Validate the structure and contents of a Config Settings Management (CSM)
+schema object; and deference configuration schema directive 'keyClass'
+references.
 
- - If a a source object's property is an object, then create a new object
-   property in the target instead of simply copying the source object
-   property.
-
-   This means that target object properties will distinct object references,
-   not simply references to the corresponding source object properties.
-
- - Recurse through the source to copy child children, grandchildren, etc.
-   properties to the target.
-
- - If a circular reference (a child object refers to an ancestor object), is
-   found, then don't copy the circular reference or it's children properties.
-   Continue copying the rest of the object; and set a return value indicating
-   a circular reference was found.
-
-The copyType argument determines how any existing targetObject properties will
-be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with a
-sourceObject property; 2 = retained even if they conflict with a sourceObject
-property.
-
-For example, given two objects:
-
-    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
-    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
-
-copyType === 0
-
-    All existing targetObject properties are deleted before sourceObject
-    is copied.  After the copy:
-
-        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
-
-    Existing properties are individually deleted instead of simply
-    deleting the entire object so that any existing references to the
-    object are still valid.
-
-copyType === 1
-
-    Existing targetObject properties are replaced if they conflict with a
-    sourceObject property; otherwise existing targetObject properties are
-    retained.  After the copy:
-
-        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3, "b_iii": 6},
-            "c": 4}
-
-     - targetObject["a"] value of 2 is replaced with 1
-
-     - targetObject["b"] is retained because both sourceObject["b"] and
-       targetObject["b"] are objects with children properties
-
-     - targetObject["b"]["b_ii"] value of 6 is replaced with 3
-
-     - targetObject["b"]["b_iii"] property and value are retained because
-       there is no sourceObject["b"]["b_iii"] to conflict with
-
-     - targetObject["c"] value of {} is replaced with null; while both
-       sourceObject["c"] and targetObject["c"] are objects, one is a null
-       value while the other is an empty object
-
-copyType === 2
-
-    Existing targetObject properties are retained even if they conflict with a
-    sourceObject property.  After the copy:
-
-    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
-    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
-
-        targetObject =  {"a": 2, "b": {"b_i": 2, "b_ii": 5, "b_iii": 6}, "c": {}}
-
-     - targetObject["a"] value of 2 is retained, taking precedence over the
-       sourceObject["a"] value of 1
-
-     - targetObject["b"] is retained, including its child properties
-
-     - targetObject["b"]["b_ii"] value of 5 is retained, taking precedence
-       over sourceObject["b"]["b_ii"] value of 3
-
-     - targetObject["b"]["b_iii"] property and value are retained
-       because there is no sourceObject["b"]["b_iii"] to conflict with
-
-     - targetObject["c"] value of {} (empty object) is retained, taking
-       precedence over the sourceObject["c"] value of null
-
-Note:
-
- - Only non-inherited properties are copied.
-
- - A valid source object and target object must be passed in as function
-   arguments.
-
- - The properties of the copied targetObject will *not* enumerate in the same
-   order as the properties of sourceObject, for two reasons.  First, we review
-   the properties of the sourceObject in reverse order using while(keyIndex--)
-   for slightly better performance, which means we copy the properties to
-   targetObject in reverse order.  Second, if we retain existing properties
-   with copyType 1 or 2, then the 'position' of those properties - relative
-   to other properties - can be different in sourceObject and the copied
-   targetObject.
-
- - If it weren't for copyType options 1 and 2, then this function could be
-   much simpler.
-
- - If it weren't for copyType options 1 and 2 and using the return value to
-   flag that circular references were found sourceObject, then we could simply
-   return a new object instead of requiring a targetObject argument.
+Circular references in the CSM schema object are detected and processing
+halted for that branch of the object.
 
 ------------------------------------------------------------------------------
 Arguments
@@ -871,9 +768,9 @@ Return Value
 ------------------------------------------------------------------------------
 2020.04.24-01, original version
 ----------------------------------------------------------------------------*/
-function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
+function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
-    function cfgSchemaCheckRecursion(cfgSchemaObj) {
+    function csmSchemaCheckRecursion(cfgSchemaObj) {
         let keyIndex;
         let returnValue = true;
 
@@ -1133,7 +1030,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                         keyStack.push(propertyKey);
                         objStack.push(cfgSchemaObj[propertyKey]);
 
-                        returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey]) && returnValue;
+                        returnValue = csmSchemaCheckRecursion(cfgSchemaObj[propertyKey]) && returnValue;
 
                         /* Pop the processed propertyKey and corresponding
                          * object reference off keyStack and objStack. */
@@ -1144,7 +1041,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                          * console.error().  A circular reference may or may
                          * not be an error depending on the specific use case
                          * for cloning an object. */
-                        console.error(`cfgSchemaCheck() circular reference detected in cfgSchemaObj; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
+                        console.error(`csmSchemaCheck() circular reference detected in cfgSchemaObj; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
                         returnValue = false;
                     }
                 }
@@ -1213,7 +1110,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 //need to add checks for keyClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
 
     // now process everything else, including recursion if needed
-    returnValue = cfgSchemaCheckRecursion(cfgSchemaObj) && returnValue;
+    returnValue = csmSchemaCheckRecursion(cfgSchemaObj) && returnValue;
     
     return (returnValue);
 }
