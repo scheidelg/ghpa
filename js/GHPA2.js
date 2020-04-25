@@ -148,7 +148,7 @@ function ghpaReadConfig(configFile) {
     }));
 }
 
-function cfReadJSONfile(JSONfile) {
+function readJSONfile(JSONfile) {
     return(fetch(JSONfile)
     .then(function (response) {
         if (response.status != 200) {
@@ -162,9 +162,15 @@ function cfReadJSONfile(JSONfile) {
 }
 
 async function ghpaInit() {
-    // read the GHPA configuration and the GHPA configuration schema
-    if (!(ghpaConfig = await cfReadJSONfile('/ghpaConfig.json')) || !(ghpaConfigSchema = await cfReadJSONfile('/ghpaConfigSchema.json'))) {
-        console.error('Failed to load one of the GHPA configuration file or GHPA configuration schema file; exiting.');
+    // read the GHPA configuration schema
+    if (!(ghpaConfigSchema = await readJSONfile('/ghpaConfigSchema.json'))) {
+        console.error('Failed to load the GHPA configuration schema file; exiting.');
+        return;
+    }
+
+    // read the GHPA configuration
+    if (!(ghpaConfig = await readJSONfile('/ghpaConfig.json'))) {
+        console.error('Failed to load of the GHPA configuration file; exiting.');
         return;
     }
 
@@ -639,6 +645,214 @@ function copyObject(sourceObject, targetObject, copyType) {
  }
 
 
+/*============================================================================
+function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj)
+------------------------------------------------------------------------------
+Given a 
+Copy a JavaScript object by performing a deep copy of non-inherited
+properties:
+
+ - If a a source object's property is an object, then create a new object
+   property in the target instead of simply copying the source object
+   property.
+
+   This means that target object properties will distinct object references,
+   not simply references to the corresponding source object properties.
+
+ - Recurse through the source to copy child children, grandchildren, etc.
+   properties to the target.
+
+ - If a circular reference (a child object refers to an ancestor object), is
+   found, then don't copy the circular reference or it's children properties.
+   Continue copying the rest of the object; and set a return value indicating
+   a circular reference was found.
+
+The copyType argument determines how any existing targetObject properties will
+be handled: 0 or undefined = Deleted; 1 = replaced if they conflict with a
+sourceObject property; 2 = retained even if they conflict with a sourceObject
+property.
+
+For example, given two objects:
+
+    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
+
+copyType === 0
+
+    All existing targetObject properties are deleted before sourceObject
+    is copied.  After the copy:
+
+        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+
+    Existing properties are individually deleted instead of simply
+    deleting the entire object so that any existing references to the
+    object are still valid.
+
+copyType === 1
+
+    Existing targetObject properties are replaced if they conflict with a
+    sourceObject property; otherwise existing targetObject properties are
+    retained.  After the copy:
+
+        targetObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3, "b_iii": 6},
+            "c": 4}
+
+     - targetObject["a"] value of 2 is replaced with 1
+
+     - targetObject["b"] is retained because both sourceObject["b"] and
+       targetObject["b"] are objects with children properties
+
+     - targetObject["b"]["b_ii"] value of 6 is replaced with 3
+
+     - targetObject["b"]["b_iii"] property and value are retained because
+       there is no sourceObject["b"]["b_iii"] to conflict with
+
+     - targetObject["c"] value of {} is replaced with null; while both
+       sourceObject["c"] and targetObject["c"] are objects, one is a null
+       value while the other is an empty object
+
+copyType === 2
+
+    Existing targetObject properties are retained even if they conflict with a
+    sourceObject property.  After the copy:
+
+    sourceObject = {"a": 1, "b": {"b_i": 2, "b_ii": 3}, "c": null}
+    targetObject = {"a": 2, "b": {"b_ii": 5, "b_iii": 6}, "c": {}}
+
+        targetObject =  {"a": 2, "b": {"b_i": 2, "b_ii": 5, "b_iii": 6}, "c": {}}
+
+     - targetObject["a"] value of 2 is retained, taking precedence over the
+       sourceObject["a"] value of 1
+
+     - targetObject["b"] is retained, including its child properties
+
+     - targetObject["b"]["b_ii"] value of 5 is retained, taking precedence
+       over sourceObject["b"]["b_ii"] value of 3
+
+     - targetObject["b"]["b_iii"] property and value are retained
+       because there is no sourceObject["b"]["b_iii"] to conflict with
+
+     - targetObject["c"] value of {} (empty object) is retained, taking
+       precedence over the sourceObject["c"] value of null
+
+Note:
+
+ - Only non-inherited properties are copied.
+
+ - A valid source object and target object must be passed in as function
+   arguments.
+
+ - The properties of the copied targetObject will *not* enumerate in the same
+   order as the properties of sourceObject, for two reasons.  First, we review
+   the properties of the sourceObject in reverse order using while(keyIndex--)
+   for slightly better performance, which means we copy the properties to
+   targetObject in reverse order.  Second, if we retain existing properties
+   with copyType 1 or 2, then the 'position' of those properties - relative
+   to other properties - can be different in sourceObject and the copied
+   targetObject.
+
+ - If it weren't for copyType options 1 and 2, then this function could be
+   much simpler.
+
+ - If it weren't for copyType options 1 and 2 and using the return value to
+   flag that circular references were found sourceObject, then we could simply
+   return a new object instead of requiring a targetObject argument.
+
+------------------------------------------------------------------------------
+Arguments
+
+sourceObject                        object
+
+    The object to copy.
+
+targetObject                        object
+
+    The object to copy sourceObject into.
+
+copyType                           number; optional
+
+    A number that determines how any existing targetObject properties will be
+    handled.
+
+        0: All existing targetObject properties are  deleted before
+           sourceObject is copied.
+
+        1: Existing targetObject properties are replaced if they conflict with
+           a sourceObject property; otherwise existing targetObject properties
+           are retained.
+
+        2: Existing targetObject properties are retained even if they conflict
+           with a sourceObject property.
+
+    See the function description for more detail.
+
+------------------------------------------------------------------------------
+Variables
+
+authMessageElement                  object
+
+    Reference to the web page element with id of 'ghpaAuthMessage'.
+
+childpropertyKey                    string
+
+    Used to iterate through sourceObject[propertyKey] properties.
+
+keyStack                            string
+
+    An array used as a stack to track the sourceObject keys that are being
+    traversed through recursion.
+
+    As the sourceObject keys are traversed, just before recursion the current
+    propertyKey is pushed onto the stack; just after recursion that
+    propertyKey is popped off the stack.
+    
+    The only purpose this serves is for error or log messages.  When
+    reporting, we can use keyStack.join('.') to generate a string identifying
+    the keys that were traversed to get to the current object.
+
+    Keys are pushed onto keyStack at the same time object references are
+    pushed onto objStack.  This means that keyStack[x] corresponds to
+    objStack[x], and that the path represented by keyStack[0..x] can be used
+    to access objStack[x].
+
+objStack                            string
+
+    As the sourceObject keys are traversed, just before recursion the current
+    sourceObject[propertyKey] object is pushed onto the stack; just after
+    recursion that object is popped off the stack.
+
+    The purpose of this variable is so that we can check for circular
+    references during recursion, and not recurse into an object if it is a
+    circular reference.  If we're about to recurse into a property (that is an
+    object), then we can check to see whether that object is already in
+    objStack.  If it is, then the objects refers to one of its own ancestors;
+    in other words, a circular reference.
+
+    Keys are pushed onto keyStack at the same time object references are
+    pushed onto objStack.  This means that keyStack[x] corresponds to
+    objStack[x], and that the path represented by keyStack[0..x] can be used
+    to access objStack[x].
+
+    Note that if we didn't care about detailed reporting on the the circular
+    reference - specifically, the path to the circular reference and the path
+    to the referenced ancestor - then we wouldn't need the keyStack variable
+    and objStack could be a WeakSet or WeakMap variable instead of an array;
+    which could be slightly faster.
+
+propertyKey                         string
+
+    Used to iterate through sourceObject properties.
+
+------------------------------------------------------------------------------
+Return Value
+
+    0: success, no issues
+    1: invalid function arguments
+    2: circular reference detected and logged in console; may or may not be
+       a fatal error, depending on the specific use of the function
+------------------------------------------------------------------------------
+2020.04.24-01, original version
+----------------------------------------------------------------------------*/
 function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
     function cfgSchemaCheckRecursion(cfgSchemaObj) {
@@ -724,7 +938,6 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
             const propertyKey = cfgSchemaObjKeys[keyIndex];
 
             const propertyString = `${keyStack.join('.')}.${propertyKey}`;
-console.log(`schema check: ${propertyString}`);       // debugging - get rid of this
 
             // if propertyName starts with '(' - in other words, a configuration schema directive
             if (propertyKey.charAt(0) === '(') {
