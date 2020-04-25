@@ -13,7 +13,7 @@ and last
     "(keyClasses)": {
         "ghpaClass": {
             "organization": "",
-
+/* this is another text */
             "(organization)": {
                 "required": false,
                 "createByDefault": false,
