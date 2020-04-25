@@ -518,7 +518,7 @@ function copyObject(sourceObject, targetObject, copyType) {
                      * references.  If we find it, then
                      * sourceObject[propertyKey] is a circular reference.
                      */
-                    let ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
+                    const ancestorCheck = objStack.indexOf(sourceObject[propertyKey]);
 
                     /* Recurse if this isn't a circular reference. */
                     if (ancestorCheck == -1) {
@@ -889,15 +889,33 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
 
                 // if this proeprty is an object, then recurse
                 if (typeof cfgSchemaObj[propertyKey] == 'object') {
-                    keyStack.push(propertyKey);
-                    objStack.push(cfgSchemaObj[propertyKey]);
 
-                    returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey]) && returnValue;
+                    /* Look for the cfgSchemaObj[propertyKey] value (i.e., the
+                     * object reference) in the stack of ancestor object
+                     * references.  If we find it, then
+                     * cfgSchemaObj[propertyKey] is a circular reference.
+                     */
+                    const ancestorCheck = objStack.indexOf(cfgSchemaObj[propertyKey]);
 
-                    /* Pop the processed propertyKey and corresponding
-                     * object reference off keyStack and objStack. */
-                    keyStack.pop();
-                    objStack.pop();
+                    /* Recurse if this isn't a circular reference. */
+                    if (ancestorCheck == -1) {
+                        keyStack.push(propertyKey);
+                        objStack.push(cfgSchemaObj[propertyKey]);
+
+                        returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey]) && returnValue;
+
+                        /* Pop the processed propertyKey and corresponding
+                         * object reference off keyStack and objStack. */
+                        keyStack.pop();
+                        objStack.pop();
+                    } else {
+                        /* Note that this is console.log() instead of
+                         * console.error().  A circular reference may or may
+                         * not be an error depending on the specific use case
+                         * for cloning an object. */
+                        console.error(`cfgSchemaCheck() circular reference detected in cfgSchemaObj; ${keyStack.join('.')}.${propertyKey} = ${keyStack.slice(0, ancestorCheck+1).join('.')}`);
+                        returnValue = false;
+                    }
                 }
             }
         }
