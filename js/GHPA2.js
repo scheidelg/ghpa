@@ -148,6 +148,7 @@ function ghpaReadConfig(configFile) {
     }));
 }
 
+/*
 function readJSONfile(JSONfile) {
     return(fetch(JSONfile)
     .then(function (response) {
@@ -155,6 +156,23 @@ function readJSONfile(JSONfile) {
             throw new Error(`${response.status} HTTP response retrieving JSON file ${JSONfile}`);
         }
         return (response.json());
+    })
+    .catch(function (errObject) {
+        console.error(`Error processing ${JSONfile}: ${errObject.message}`);
+    }));
+}
+*/
+
+function readJSONfile(JSONfile) {
+    return(fetch(JSONfile)
+    .then(function (response) {
+        if (response.status != 200) {
+            throw new Error(`${response.status} HTTP response retrieving JSON file ${JSONfile}`);
+        }
+        return(response.text());
+    })
+    .then(function (text) {
+        return(JSON.parse(text));
     })
     .catch(function (errObject) {
         console.error(`Error processing ${JSONfile}: ${errObject.message}`);
