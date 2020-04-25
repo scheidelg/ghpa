@@ -641,11 +641,9 @@ function copyObject(sourceObject, targetObject, copyType) {
 
 function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
-    function cfgSchemaCheckRecursion(cfgSchemaObj, cfgSchemaStr) {
+    function cfgSchemaCheckRecursion(cfgSchemaObj) {
         let keyIndex;
         let returnValue = true;
-
-        cfgSchemaStr = keyStack.join('.');      // (! cfgSchemaStr) ? '/' : (cfgSchemaStr + ' /');
 
         // get an array of non-inherited enumerable and non-enumerable keys for this object; do this once up top
         // because we're going to reference this array on multiple passes through the keys
@@ -688,7 +686,7 @@ function cfgSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                             typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] == 'object') {
 
                             if (copyObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2) != 0) {
-                                console.error(`Error copying keyClass data '(root).(keyClasses).${cfgSchemaObj[propertyKey]['keyClass']}' to '${cfgSchemaStr}.${propertyKey.slice(1,-1)}'.`); // OK
+                                console.error(`Error copying keyClass data '(root).(keyClasses).${cfgSchemaObj[propertyKey]['keyClass']}' to '${keyStack.join('.')}.${propertyKey.slice(1,-1)}'.`); // OK
                                 returnValue = false;
                             }
                         } else {
@@ -743,7 +741,7 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                         // if we're at the root of the configuration schema, then we should have already validated the regex classes before starting recursion
                         //
                         // if not at the root, then log an error and set returnValue to false
-                        if (cfgSchemaStr !== '/') {
+                        if (cfgSchemaObj !== cfgSchemaRootObj) {
                             console.error(`Configuration schema directive '${propertyString}' error; regular expression classes and key classes can only be defined at the root of the configuration schema.`);
                             returnValue = false;
                         }
@@ -894,7 +892,7 @@ console.log(`schema check: ${propertyString}`);       // debugging - get rid of 
                     keyStack.push(propertyKey);
                     objStack.push(cfgSchemaObj[propertyKey]);
 
-                    returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey], cfgSchemaStr + ' ' + propertyKey) && returnValue;
+                    returnValue = cfgSchemaCheckRecursion(cfgSchemaObj[propertyKey]) && returnValue;
 
                     /* Pop the processed propertyKey and corresponding
                      * object reference off keyStack and objStack. */
