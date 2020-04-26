@@ -666,8 +666,8 @@ function copyObject(sourceObject, targetObject, copyType) {
 /*============================================================================
 function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj)
 ------------------------------------------------------------------------------
-Validate the structure and contents of a Config Settings Management (CSM)
-schema object; and deference configuration schema directive 'keyClass'
+Validate the structure and contents of a Configfiguration Settings Management
+(CSM) schema object; and deference configuration schema directive 'keyClass'
 references.
 
 Circular references in the CSM schema object are detected and processing
