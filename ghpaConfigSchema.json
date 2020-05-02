@@ -10,7 +10,7 @@ and more
 and last
 */
     
-    "(keyClasses)": {
+    "(optionClasses)": {
         "ghpaClass": {
             "organization": "",
 /* this is another text */
@@ -104,7 +104,7 @@ and last
         "*ghpaClass": {},
         
         "(*ghpaClass)": {
-            "keyClass": "ghpaClass",
+            "optionClass": "ghpaClass",
             "keyRegex": "^[a-zA-Z]([0-9a-zA-Z]|([\\-_](?![\\-_])))*(?<![\\-_])$"
         },
 
@@ -117,7 +117,7 @@ and last
         },
 
         "(global)": {
-            "keyClass": "ghpaClass",
+            "optionClass": "ghpaClass",
             "createByDefault": true
         }
     },
