@@ -667,7 +667,7 @@ function copyObject(sourceObject, targetObject, copyType) {
 function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj)
 ------------------------------------------------------------------------------
 Validate the structure and contents of a Configfiguration Settings Management
-(CSM) schema object; and deference configuration schema directive 'keyClass'
+(CSM) schema object; and deference configuration schema directive 'optionClass'
 references.
 
 Circular references in the CSM schema object are detected and processing
@@ -782,10 +782,10 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         const cfgSchemaObjKeys = Object.getOwnPropertyNames(cfgSchemaObj);
 
         // take an initial pass at the cfgSchemaObj properties (at this level of recursion) to find any dynamic configuration schema directives that contain
-        // 'keyClass' properties; if any are found, then copy in the properties from the specified keyClass.
+        // 'optionClass' properties; if any are found, then copy in the properties from the specified optionClass.
         //
-        // by copying in the properties instead of just referencing the keyClass, we'll reduce complexity later because we
-        // won't have to check local properties and keyClass properties, including not having to check for which takes
+        // by copying in the properties instead of just referencing the optionClass, we'll reduce complexity later because we
+        // won't have to check local properties and optionClass properties, including not having to check for which takes
         // precedence every time.  this applies to the rest of this function's check on the cfgSchemaObj properties and later
         // when a configuration is actually used.
         //
@@ -800,46 +800,47 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
             const propertyString = `${keyStack.join('.')}.${propertyKey}`;
 
-            // if this property is a configuration schema directive that is an object and includes a keyClass property
+            // if this property is a configuration schema directive that is an object and includes an optionClass property
             if (propertyKey.charAt(0) == '(' &&
                 propertyKey.slice(-1) == ')' &&
                 typeof cfgSchemaObj[propertyKey] == 'object' &&
-                cfgSchemaObj[propertyKey].hasOwnProperty('keyClass')) {
+                cfgSchemaObj[propertyKey].hasOwnProperty('optionClass')) {
 
-                // make sure that the 'keyClass' property value is a non-empty string
-                if (typeof cfgSchemaObj[propertyKey]['keyClass'] == 'string' && cfgSchemaObj[propertyKey]['keyClass'].length > 0) {
-                    // make sure that there is a keyClass object at the configuration schema root
-                    if (cfgSchemaRootObj.hasOwnProperty('(keyClasses)') && typeof cfgSchemaRootObj['(keyClasses)'] == 'object') {
-                        // check for the referenced keyClass definition, as an object
-                        if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['keyClass']) &&
-                            typeof cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']] == 'object') {
+                // make sure that the 'optionClass' property value is a non-empty string
+                if (typeof cfgSchemaObj[propertyKey]['optionClass'] == 'string' && cfgSchemaObj[propertyKey]['optionClass'].length > 0) {
+                    // make sure that there is a optionClass object at the configuration schema root
+                    if (cfgSchemaRootObj.hasOwnProperty('(optionClasses)') && typeof cfgSchemaRootObj['(optionClasses)'] == 'object') {
+                        // check for the referenced optionClass definition, as an object
+                        if (cfgSchemaRootObj['(optionClasses)'].hasOwnProperty(cfgSchemaObj[propertyKey]['optionClass']) &&
+                            typeof cfgSchemaRootObj['(optionClasses)'][cfgSchemaObj[propertyKey]['optionClass']] == 'object') {
 
-                            if (copyObject(cfgSchemaRootObj['(keyClasses)'][cfgSchemaObj[propertyKey]['keyClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2) != 0) {
-                                console.error(`Error copying keyClass data '(root).(keyClasses).${cfgSchemaObj[propertyKey]['keyClass']}' to '${keyStack.join('.')}.${propertyKey.slice(1,-1)}'.`); // OK
+                            if (copyObject(cfgSchemaRootObj['(optionClasses)'][cfgSchemaObj[propertyKey]['optionClass']], cfgSchemaObj[propertyKey.slice(1,-1)], 2) != 0) {
+                                console.error(`Error copying optionClass data '(root).(optionClasses).${cfgSchemaObj[propertyKey]['optionClass']}' to '${keyStack.join('.')}.${propertyKey.slice(1,-1)}'.`); // OK
                                 returnValue = false;
                             }
                         } else {
-                            console.error(`Configuration schema property '${propertyString}.keyClass' references keyClass '${cfgSchemaObj[propertyKey]['keyClass']}'; '(root).(keyClasses).${cfgSchemaObj[propertyKey]['keyClass']}' doesn't exist as an object.`); // OK
+                            console.error(`Configuration schema property '${propertyString}.optionClass' references optionClass '${cfgSchemaObj[propertyKey]['optionClass']}'; '(root).(optionClasses).${cfgSchemaObj[propertyKey]['optionClass']}' doesn't exist as an object.`); // OK
                             returnValue = false;
                         }
 
-                        // check for the dynamic configuration schema directive for the referenced keyClass definition, as an object
-                        if (cfgSchemaRootObj['(keyClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['keyClass']})`) && typeof cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`] == 'object') {
-                            if (copyObject(cfgSchemaRootObj['(keyClasses)'][`(${cfgSchemaObj[propertyKey]['keyClass']})`], cfgSchemaObj[propertyKey], 2) != 0) {
-                                console.error(`Error copying keyClass data '(root).(keyClasses).(${cfgSchemaObj[propertyKey]['keyClass']})' to '${propertyString}'.`); // OK
+                        // check for the dynamic configuration schema directive for the referenced optionClass definition, as an object
+                        if (cfgSchemaRootObj['(optionClasses)'].hasOwnProperty(`(${cfgSchemaObj[propertyKey]['optionClass']})`) && typeof cfgSchemaRootObj['(optionClasses)'][`(${cfgSchemaObj[propertyKey]['optionClass']})`] == 'object') {
+                            if (copyObject(cfgSchemaRootObj['(optionClasses)'][`(${cfgSchemaObj[propertyKey]['optionClass']})`], cfgSchemaObj[propertyKey], 2) != 0) {
+                                console.error(`Error copying optionClass data '(root).(optionClasses).(${cfgSchemaObj[propertyKey]['optionClass']})' to '${propertyString}'.`); // OK
                                 returnValue = false;
                             }
                         } else {
-                            console.error(`Configuration schema property '${propertyString}.keyClass' references keyClass '${cfgSchemaObj[propertyKey]['keyClass']}'; '(root).(keyClasses).(${cfgSchemaObj[propertyKey]['keyClass']})' doesn't exist as an object.`); // OK
+                            console.error(`Configuration schema property '${propertyString}.optionClass' references optionClass '${cfgSchemaObj[propertyKey]['optionClass']}'; '(root).(optionClasses).(${cfgSchemaObj[propertyKey]['optionClass']})' doesn't exist as an object.`); // OK
                             returnValue = false;
                         }
 
-                    // there's no keyClass object at the configuration schema root
+                    // there's no optionClass object at the configuration schema root
                     } else {
-                        console.error(`Configuration schema property '${propertyString}' has a 'keyClass' child property but there is no '(root).(keyClass)' object.`); // OK
+                        console.error(`Configuration schema property '${propertyString}' has a 'optionClass' child property but there is no '(root).(optionClass)' object.`); // OK
                         returnValue = false;
                     }
-                // 'keyClass isn't a non-empty string; error message and returnValue = false
+
+                // optionClass isn't a non-empty string; error message and returnValue = false
                 } else {
                     console.error(`Configuration schema property '${propertyString}' must be a non-empty string.`); // OK
                     returnValue = false;
@@ -865,7 +866,7 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                 // must end with a closing ')' character
                 if (propertyKey.slice(-1) === ')') {
 
-                    if (propertyKey === '(regexClasses)' || propertyKey === '(keyClasses)') {
+                    if (propertyKey === '(regexClasses)' || propertyKey === '(optionClasses)') {
                         // if we're at the root of the configuration schema, then we should have already validated the regex classes before starting recursion
                         //
                         // if not at the root, then log an error and set returnValue to false
@@ -989,7 +990,7 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                         }
                                         break;
 
-                                    case 'keyClass':
+                                    case 'optionClass':
                                         break;
 
                                     default:
@@ -1107,7 +1108,7 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
         }
     }
 
-//need to add checks for keyClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
+//need to add checks for optionClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
 
     // now process everything else, including recursion if needed
     returnValue = csmSchemaCheckRecursion(cfgSchemaObj) && returnValue;
@@ -1157,7 +1158,7 @@ let ghpaConfigSchema;
 //     - %xx where xx is 20 through FF
 //  - cannot start with or contain a /
 
-// when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'keyClass'
+// when processing config, if an option is specified that starts with '(' or '*' then kick it back as reserved for config schema; also, no keys 'optionClass'
 
 // note that "regex": is always optional, but in particular for for booleans - since it generally doesn't make sense, we know that it's either true or false, and if it's only one or the other then why do you need a configuration option?
 
@@ -1174,4 +1175,4 @@ let ghpaConfigSchema;
 // review code for appropriate use of == vs. ===
 //  x copyObject()
 
-//need to add checks for keyClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
+//need to add checks for optionClass syntax & structure - it's an object, each schema directive has a key, vice-versa; make sure that's all OK
