@@ -908,9 +908,9 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
                             // check for required, invalid, and default child properties for configuration schema directive of a wildcard property
                             if (propertyKey.charAt(1) === '*') {
-                                // 'keyRegex' child property must exist
-                                if (! cfgSchemaObj[propertyKey].hasOwnProperty('keyRegex')) {
-                                    console.error(`Configuration schema directive '${propertyString}' is a wildcard but doesn't have a child property 'keyRegex'.`);
+                                // 'optionRegex' child property must exist
+                                if (! cfgSchemaObj[propertyKey].hasOwnProperty('optionRegex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' is a wildcard but doesn't have a child property 'optionRegex'.`);
                                     returnValue = false;
                                 }
 
@@ -922,9 +922,9 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
 
                             // check for required and default child properties for configuration schema directive of a non-wildcard property
                             } else {
-                                // 'keyRegex' child property can't exist
-                                if (cfgSchemaObj[propertyKey].hasOwnProperty('keyRegex')) {
-                                    console.error(`Configuration schema directive '${propertyString}' references a configuration schema value property but has a child property 'keyRegex'; 'keyRegex' is only valid when referencing a wildcard configuration schema object property.`);
+                                // 'optionRegex' child property can't exist
+                                if (cfgSchemaObj[propertyKey].hasOwnProperty('optionRegex')) {
+                                    console.error(`Configuration schema directive '${propertyString}' references a configuration schema value property but has a child property 'optionRegex'; 'optionRegex' is only valid when referencing a wildcard configuration schema object property.`);
                                     returnValue = false;
                                 }
 
@@ -942,7 +942,7 @@ function csmSchemaCheck(cfgSchemaObj, cfgSchemaRootObj) {
                                 const propertySubkey = cfgSchemaObjSubkeys[subkeyIndex];
 
                                 switch(propertySubkey) {
-                                    case 'keyRegex':
+                                    case 'optionRegex':
                                     case 'valueRegex':
 
                                         // if the propertySubkey value is a string, then test whether this is a valid regular expression
